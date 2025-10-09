@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:15.3
+    ports:
+      - ${DB_PORT}:5432
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - './data/docker/volumes/postgres/:/var/lib/postgresql'
+  cognito:
+    image: jagregory/cognito-local
+    ports:
+      - '${COGNITO_PORT:-9229}:9229'
+    volumes:
+      - './data/docker/volumes/cognito:/app/.cognito'
+  localstack:
+    image: 'localstack/localstack:3.5'
+    environment:
+      SES_IDENTITY_EMAIL: '${SES_IDENTITY_EMAIL}'
+      S3_BUCKET: '${S3_BUCKET}'
+      SNS_ARN_TOPIC: '${SNS_ARN_TOPIC}'
+      SQS_QUEUE_NAME: '${SQS_QUEUE_NAME}'
+      AWS_REGION: '${AWS_REGION}'
+      DEBUG: 1
+      SERVICES: 'ses,s3,sns,sqs'
+    ports:
+      - '4566:4566'
+    volumes:
+      - './data/docker/volumes/localstack/var/run/docker.sock:/var/run/docker.sock'
+      - './data/docker/scripts:/etc/localstack/init/ready.d'

@@ -1,0 +1,26 @@
+entity: User
+items:
+  super-admin-user:
+    username: _test_super_admin@biggertech.co
+    email: '_test_super_admin@biggertech.co'
+    externalId: '00000000-0000-0000-0000-00000000000A'
+    roles: superAdmin
+    isVerified: true
+  admin-user:
+    username: _test_admin@biggertech.co
+    email: '_test_admin@biggertech.co'
+    externalId: '00000000-0000-0000-0000-00000000000X'
+    roles: admin
+    isVerified: true
+  confirm-user:
+    username: _test_confirm@biggertech.co
+    email: '_test_confirm@biggertech.co'
+    externalId: '00000000-0000-0000-0000-00000000000Y'
+    roles: admin
+    isVerified: false
+  error-user:
+    username: _test_error@biggertech.co
+    email: '_test_error@biggertech.co'
+    externalId: '00000000-0000-0000-0000-00000000000Z'
+    roles: admin
+    isVerified: true

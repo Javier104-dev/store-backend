@@ -1,0 +1,12 @@
+entity: Genre
+items:
+  genre1:
+    name: Test Genre 1
+  genre2:
+    name: Test Genre 2
+  genre3:
+    name: Test Genre 3
+  romance:
+    name: 'John'
+  genre{4..23}:
+    name: '{{string.alpha}}'

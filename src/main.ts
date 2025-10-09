@@ -1,8 +1,28 @@
+import registerDatabaseOnAdminJS from '@module/adminjs/utils/register-database.util';
+import { AppModule } from '@module/app.module';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import {
+  StorageDriver,
+  initializeTransactionalContext,
+} from 'typeorm-transactional';
+
+import { setupApp, setupSwagger } from '@config/app.config';
+
+import { DatabaseModule } from '@/module/db/database.module';
 
 async function bootstrap() {
+  initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
+  await registerDatabaseOnAdminJS();
   const app = await NestFactory.create(AppModule);
-  await app.listen(process.env.PORT ?? 3000);
+  await DatabaseModule.initialize();
+  const configService = app.get(ConfigService);
+  app.enableCors(configService.get('frontend.url'));
+  setupApp(app);
+  setupSwagger(app);
+  const port = configService.get('server.port');
+  await app.listen(port);
+  console.log(`Server is running on port ${port}`);
 }
+
 bootstrap();
