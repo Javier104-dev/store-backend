@@ -8,7 +8,6 @@ import {
 } from '@nestjs/common';
 import { BaseExceptionFilter, HttpAdapterHost } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as Sentry from '@sentry/nestjs';
 
 import { ENVIRONMENT } from '@config/environment.enum';
 

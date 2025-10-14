@@ -49,7 +49,7 @@ const policyHandlersProviders = [CreateUserPolicyHandler];
 export class AuthenticationModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(EmailDomainMiddleware).forRoutes({
-      path: '**/auth/sign-up',
+      path: '*auth/sign-up',
       method: RequestMethod.POST,
     });
   }

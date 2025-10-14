@@ -1,0 +1,42 @@
+module.exports = {
+  moduleFileExtensions: ['js', 'json', 'ts'],
+  rootDir: 'src',
+  testRegex: '.*\\.(spec|test)\\.ts$',
+  transform: {
+    '^.+\\.(t|j)s$': 'ts-jest',
+  },
+
+  collectCoverageFrom: [
+    '<rootDir>/common/**/*.{ts,js}',
+    '<rootDir>/module/**/*.{ts,js}',
+  ],
+  coverageDirectory: '../coverage',
+  coverageThreshold: {
+    global: {
+      branches: 90,
+      functions: 90,
+      lines: 90,
+      statements: 90,
+    },
+  },
+  coveragePathIgnorePatterns: [
+    '<rootDir>/module/iam/authentication/infrastructure/cognito/cognito.service.ts',
+    '<rootDir>/module/aws/',
+    '<rootDir>/module/queue/',
+  ],
+  testEnvironment: 'node',
+  testPathIgnorePatterns: [
+    '<rootDir>/module/aws/',
+    '<rootDir>/module/queue/',
+  ],
+  // Keep these mappings synchronized with the ones in tsconfig.json as you add new modules
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/../src/$1',
+    '^@root/(.*)$': '<rootDir>/../$1',
+    '^@data/(.*)$': '<rootDir>/../data/$1',
+    '^@common/(.*)$': '<rootDir>/common/$1',
+    '^@config/(.*)$': '<rootDir>/config/$1',
+    '^@module/(.*)$': '<rootDir>/module/$1',
+    '^@test/(.*)$': '<rootDir>/test/$1',
+  },
+};

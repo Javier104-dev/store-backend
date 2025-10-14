@@ -28,12 +28,12 @@ extract_value() {
 echo "Creating SQS queue: ${SQS_QUEUE_NAME}"
 echo "==================="
 
-queue_response=$(awslocal --endpoint-url=http://localhost:4566 sqs create-queue --queue-name ${SQS_QUEUE_NAME} --region ${AWS_REGION} --attributes VisibilityTimeout=30 --output json)
+queue_response=$(aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name ${SQS_QUEUE_NAME} --region ${AWS_REGION} --attributes VisibilityTimeout=30 --output json)
 queue_url=$(extract_value "$queue_response" "QueueUrl")
 
 sqs_endpoint=$(echo "${queue_url}" | grep -o "http://[^/]*")
 
-awslocal --endpoint-url=http://localhost:4566 sqs list-queues --region ${AWS_REGION}
+aws --endpoint-url=http://localhost:4566 sqs list-queues --region ${AWS_REGION}
 
 echo -e "${BLUE}SQS Queue created:${NC} ${GREEN}${SQS_QUEUE_NAME}${NC}"
 echo -e "${BLUE}SQS Endpoint:${NC} ${GREEN}${sqs_endpoint}${NC}"

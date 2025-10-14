@@ -1,4 +1,3 @@
-import registerDatabaseOnAdminJS from '@module/adminjs/utils/register-database.util';
 import { AppModule } from '@module/app.module';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
@@ -13,7 +12,6 @@ import { DatabaseModule } from '@/module/db/database.module';
 
 async function bootstrap() {
   initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
-  await registerDatabaseOnAdminJS();
   const app = await NestFactory.create(AppModule);
   await DatabaseModule.initialize();
   const configService = app.get(ConfigService);

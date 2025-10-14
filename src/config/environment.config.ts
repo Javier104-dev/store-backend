@@ -28,10 +28,5 @@ export const environmentConfig = () => ({
   },
   s3: {
     bucket: process.env.S3_BUCKET,
-  },
-  openai: {
-    apiKey: process.env.OPENAI_API_KEY,
-    organization: process.env.OPENAI_ORGANIZATION,
-    defaultModel: process.env.OPENAI_DEFAULT_MODEL,
-  },
+  }
 });
