@@ -1,6 +1,7 @@
 import { AppModule } from '@module/app.module';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import {
   StorageDriver,
   initializeTransactionalContext,
@@ -12,7 +13,8 @@ import { DatabaseModule } from '@/module/db/database.module';
 
 async function bootstrap() {
   initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.set('query parser', 'extended');
   await DatabaseModule.initialize();
   const configService = app.get(ConfigService);
   app.enableCors(configService.get('frontend.url'));
