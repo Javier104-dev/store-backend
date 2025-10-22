@@ -22,6 +22,8 @@ import { BookModule } from '@/module/book/book.module';
 import { GenreModule } from '@/module/genre/genre.module';
 import { HealthController } from '@/module/health/interface/health.controller';
 
+import { ProductModule } from './product/product.module';
+
 @Global()
 @Module({
   imports: [
@@ -45,6 +47,7 @@ import { HealthController } from '@/module/health/interface/health.controller';
     BookModule,
     AuthorModule,
     GenreModule,
+    ProductModule,
     SentryModule.forRoot(),
   ],
   providers: [
