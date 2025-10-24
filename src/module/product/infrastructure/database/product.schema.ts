@@ -1,3 +1,4 @@
+import { Category } from '@module/category/domain/category.entity';
 import { User } from '@module/iam/user/domain/user.entity';
 import { Product } from '@module/product/domain/product.entity';
 import { EntitySchema } from 'typeorm';
@@ -36,6 +37,21 @@ export const ProductSchema = new EntitySchema<Product>({
       nullable: true,
       onDelete: 'CASCADE',
       inverseSide: 'products',
+    },
+    categories: {
+      type: 'many-to-many',
+      target: Category.name,
+      joinTable: {
+        name: 'product_category',
+        joinColumn: {
+          name: 'product_id',
+        },
+        inverseJoinColumn: {
+          name: 'category_id',
+        },
+      },
+      inverseSide: 'products',
+      eager: true,
     },
   },
 });

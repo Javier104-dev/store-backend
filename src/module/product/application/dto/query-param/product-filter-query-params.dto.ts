@@ -7,7 +7,7 @@ import { ProductDto } from '../product.dto';
 
 class UserFilter {
   @IsOptional()
-  name?: string;
+  username?: string;
 }
 
 export class ProductFilterQueryParamsDto
