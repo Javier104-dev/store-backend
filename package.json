@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.906.0",
+    "@aws-sdk/client-s3": "^3.913.0",
     "@aws-sdk/client-ses": "^3.906.0",
     "@aws-sdk/client-sns": "^3.906.0",
     "@aws-sdk/client-sqs": "^3.906.0",
@@ -59,14 +60,11 @@
     "@sentry/nestjs": "^10.18.0",
     "@sentry/profiling-node": "^10.18.0",
     "@ssut/nestjs-sqs": "^3.0.1",
-    "@types/jsonapi-serializer": "^3.6.8",
-    "@types/multer": "^2.0.0",
     "aws-sdk": "^2.1692.0",
     "better-sqlite3": "^12.4.1",
     "change-case-all": "^2.1.0",
+    "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
-    "client-s3": "github:aws-sdk/client-s3",
-    "cross-env": "^10.1.0",
     "jsonapi-serializer": "^3.6.9",
     "jwks-rsa": "^3.2.0",
     "openai": "^6.2.0",
@@ -75,7 +73,7 @@
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "session-file-store": "^1.5.0",
-    "typeorm-fixtures-cli": "^4.1.0",
+    "typeorm": "^0.3.27",
     "typeorm-naming-strategies": "^4.1.0",
     "typeorm-transactional": "^0.5.0",
     "uuid4": "^2.0.3"
@@ -89,10 +87,14 @@
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
+    "@types/jsonapi-serializer": "^3.6.8",
+    "@types/multer": "^2.0.0",
     "@types/node": "^22.10.7",
     "@types/supertest": "^6.0.2",
+    "cross-env": "^10.1.0",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-no-comments": "^1.1.10",
     "eslint-plugin-prettier": "^5.2.2",
     "globals": "^16.0.0",
     "jest": "^30.0.0",
@@ -103,24 +105,8 @@
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
+    "typeorm-fixtures-cli": "^4.1.0",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
   }
 }
