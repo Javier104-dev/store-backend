@@ -51,7 +51,6 @@ export const ProductSchema = new EntitySchema<Product>({
         },
       },
       inverseSide: 'products',
-      eager: true,
     },
   },
 });

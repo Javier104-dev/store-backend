@@ -16,5 +16,6 @@ const productRepositoryProvider: Provider = {
   imports: [TypeOrmModule.forFeature([ProductSchema])],
   controllers: [ProductController],
   providers: [ProductCrudUseCase, productRepositoryProvider],
+  exports: [ProductCrudUseCase]
 })
 export class ProductModule {}

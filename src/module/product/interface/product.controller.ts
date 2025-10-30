@@ -29,6 +29,18 @@ import { ProductCrudUseCase } from '../application/use-cases/product-crud.use-ca
 export class ProductController {
   constructor(private readonly crudUseCase: ProductCrudUseCase) {}
 
+  @Get('category/:categoryId')
+  async getAllProductsByCategoryId(
+    @Query('page') page: PageQueryParamsDto,
+    @Query('sort') sort: SortOptions<ProductDto>,
+    @Param('categoryId') categoryId: string,
+  ): Promise<ManySerializedResponseDto<ProductDto>> {
+    return this.crudUseCase.getAllProductsByCategoryId(categoryId, {
+      page,
+      sort,
+    });
+  }
+
   @Get()
   async getAll(
     @Query('page') page: PageQueryParamsDto,
