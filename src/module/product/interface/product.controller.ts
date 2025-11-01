@@ -70,7 +70,7 @@ export class ProductController {
   ): Promise<any> {
     const productToSave = {
       ...createDto,
-      sellerId: user.id,
+      storeId: user.id,
     };
 
     return this.crudUseCase.saveOne(productToSave);

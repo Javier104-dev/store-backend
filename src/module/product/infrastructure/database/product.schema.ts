@@ -1,6 +1,6 @@
 import { Category } from '@module/category/domain/category.entity';
-import { User } from '@module/iam/user/domain/user.entity';
 import { Product } from '@module/product/domain/product.entity';
+import { Store } from '@module/store/domain/store.entity';
 import { EntitySchema } from 'typeorm';
 
 import { withBaseSchemaColumns } from '@common/base/infrastructure/database/base.schema';
@@ -22,19 +22,19 @@ export const ProductSchema = new EntitySchema<Product>({
       type: 'text',
       nullable: false,
     },
-    sellerId: {
+    storeId: {
       type: String,
-      nullable: true,
+      nullable: false,
     },
   }),
   relations: {
-    user: {
+    store: {
       type: 'many-to-one',
-      target: User.name,
+      target: Store.name,
       joinColumn: {
-        name: 'seller_id',
+        name: 'store_id',
       },
-      nullable: true,
+      nullable: false,
       onDelete: 'CASCADE',
       inverseSide: 'products',
     },

@@ -10,9 +10,9 @@ export class Product extends Base {
 
   description: string;
 
-  sellerId?: string;
+  storeId?: string;
 
-  user?: User;
+  store?: User;
 
   categories?: Category[];
 }

@@ -5,9 +5,9 @@ import { FilterOptions } from '@common/base/get-all-options.interface';
 
 import { ProductDto } from '../product.dto';
 
-class UserFilter {
+class StoreFilter {
   @IsOptional()
-  username?: string;
+  name?: string;
 }
 
 export class ProductFilterQueryParamsDto
@@ -16,6 +16,6 @@ export class ProductFilterQueryParamsDto
 {
   @IsOptional()
   @ValidateNested()
-  @Type(() => UserFilter)
-  user?: UserFilter;
+  @Type(() => StoreFilter)
+  store?: StoreFilter;
 }
