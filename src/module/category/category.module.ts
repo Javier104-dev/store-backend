@@ -1,3 +1,4 @@
+import { ProductModule } from '@module/product/product.module';
 import { Module, Provider } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -13,7 +14,7 @@ const categoryRepositoryProvider: Provider = {
 };
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CategorySchema])],
+  imports: [TypeOrmModule.forFeature([CategorySchema]), ProductModule],
   controllers: [CategoryController],
   providers: [CategoryCrudUseCase, categoryRepositoryProvider],
 })

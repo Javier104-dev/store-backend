@@ -43,7 +43,7 @@ export class ProductCrudUseCase extends BaseCrudUseCase<
     const collectionDto = new CollectionDto({
       ...collection,
       data: collection.data.map((entity) =>
-        this.mapper.fromEntity<Product>(entity),
+        this.mapper.fromEntity<ProductDto>(entity),
       ),
     });
 

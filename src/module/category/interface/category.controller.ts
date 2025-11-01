@@ -19,6 +19,7 @@ import { CategoryDto } from '../application/dto/category.dto';
 import { CreateCategoryDto } from '../application/dto/create-category.dto';
 import { CategoryFieldsQueryParamsDto } from '../application/dto/query-param/category-fields-query-params.dto';
 import { CategoryFilterQueryParamsDto } from '../application/dto/query-param/category-filter-query-param.dto';
+import { ProductsQueryParamsDto } from '../application/dto/query-param/product-limit-query-params.dto';
 import { UpdateCategoryDto } from '../application/dto/update-category.dto';
 import { CategoryCrudUseCase } from '../application/use-cases/category-crud.use-case';
 
@@ -26,6 +27,21 @@ import { CategoryCrudUseCase } from '../application/use-cases/category-crud.use-
 @ApiTags('category')
 export class CategoryController {
   constructor(private readonly crudUseCase: CategoryCrudUseCase) {}
+
+  @Get('with-products')
+  async getAllCategoriesWithProducts(
+    @Query('page') page: PageQueryParamsDto,
+    @Query('sort') sort: SortOptions<CategoryDto>,
+    @Query('products') products: ProductsQueryParamsDto,
+  ): Promise<ManySerializedResponseDto<CategoryDto>> {
+    return this.crudUseCase.getAllCategoriesWithProducts(
+      products.productsLimit,
+      {
+        page,
+        sort,
+      },
+    );
+  }
 
   @Get()
   async getAll(

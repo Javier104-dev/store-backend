@@ -27,12 +27,12 @@ export const StoreSchema = new EntitySchema<Store>({
         name: 'owner_id',
       },
       nullable: false,
+      onDelete: 'CASCADE',
       inverseSide: 'store',
     },
     products: {
       type: 'one-to-many',
       target: Product.name,
-      cascade: true,
       inverseSide: 'store',
     },
   },
