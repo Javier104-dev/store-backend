@@ -24,6 +24,7 @@ import { HealthController } from '@/module/health/interface/health.controller';
 
 import { CategoryModule } from './category/category.module';
 import { ProductModule } from './product/product.module';
+import { StoreModule } from './store/store.module';
 
 @Global()
 @Module({
@@ -50,6 +51,7 @@ import { ProductModule } from './product/product.module';
     GenreModule,
     ProductModule,
     CategoryModule,
+    StoreModule,
     SentryModule.forRoot(),
   ],
   providers: [
