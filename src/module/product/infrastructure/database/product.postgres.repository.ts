@@ -1,4 +1,5 @@
 import { Product } from '@module/product/domain/product.entity';
+import { ProductSchema } from '@module/product/infrastructure/database/product.schema';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -6,8 +7,6 @@ import { Repository } from 'typeorm';
 import { ICollection } from '@common/base/application/dto/collection.interface';
 import { IGetAllOptions } from '@common/base/get-all-options.interface';
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
-
-import { ProductSchema } from './product.schema';
 
 @Injectable()
 export class ProductPostgresRepository extends BaseRepository<Product> {

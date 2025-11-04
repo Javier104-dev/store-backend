@@ -1,6 +1,6 @@
-import { FilterOptions } from '@common/base/get-all-options.interface';
+import { CategoryDto } from '@module/category/application/dto/category.dto';
 
-import { CategoryDto } from '../category.dto';
+import { FilterOptions } from '@common/base/get-all-options.interface';
 
 export class CategoryFilterQueryParamsDto
   extends CategoryDto

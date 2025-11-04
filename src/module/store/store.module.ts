@@ -1,11 +1,10 @@
+import { STORE_REPOSITORY_KEY } from '@module/store/application/repository/store.repository.interface';
+import { StoreCrudUseCase } from '@module/store/application/use-cases/store-crud.use-case';
+import { StorePostgresRepository } from '@module/store/infrastructure/database/store.postgres.repository';
+import { StoreSchema } from '@module/store/infrastructure/database/store.schema';
+import { StoreController } from '@module/store/interface/store.controller';
 import { Module, Provider } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
-import { STORE_REPOSITORY_KEY } from './application/repository/store.repository.interface';
-import { StoreCrudUseCase } from './application/use-cases/store-crud.use-case';
-import { StorePostgresRepository } from './infrastructure/database/store.postgres.repository';
-import { StoreSchema } from './infrastructure/database/store.schema';
-import { StoreController } from './interface/store.controller';
 
 const storeRepositoryProvider: Provider = {
   provide: STORE_REPOSITORY_KEY,

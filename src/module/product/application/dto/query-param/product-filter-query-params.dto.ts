@@ -1,9 +1,8 @@
+import { ProductDto } from '@module/product/application/dto/product.dto';
 import { Type } from 'class-transformer';
 import { IsOptional, ValidateNested } from 'class-validator';
 
 import { FilterOptions } from '@common/base/get-all-options.interface';
-
-import { ProductDto } from '../product.dto';
 
 class StoreFilter {
   @IsOptional()

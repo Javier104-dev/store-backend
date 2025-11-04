@@ -1,5 +1,5 @@
 import { Category } from '@module/category/domain/category.entity';
-import { User } from '@module/iam/user/domain/user.entity';
+import { User } from '@sentry/nestjs';
 
 import { Base } from '@common/base/domain/base.entity';
 

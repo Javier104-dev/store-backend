@@ -39,7 +39,7 @@ export const testModuleBootstrapper = async (): Promise<TestingModule> => {
       {
         provide: DATABASE_SERVICE_KEY,
         useClass: DatabaseService,
-      }
+      },
     ],
   })
     .overrideProvider(IDENTITY_PROVIDER_SERVICE_KEY)

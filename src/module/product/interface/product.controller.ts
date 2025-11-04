@@ -1,5 +1,10 @@
 import { CurrentUser } from '@module/iam/authentication/infrastructure/decorator/current-user.decorator';
-import { User } from '@module/iam/user/domain/user.entity';
+import { CreateProductDto } from '@module/product/application/dto/create-product.dto';
+import { ProductDto } from '@module/product/application/dto/product.dto';
+import { ProductFieldsQueryParamsDto } from '@module/product/application/dto/query-param/product-fields-query-params.dto';
+import { ProductFilterQueryParamsDto } from '@module/product/application/dto/query-param/product-filter-query-params.dto';
+import { UpdateProductDto } from '@module/product/application/dto/update-product.dto';
+import { ProductCrudUseCase } from '@module/product/application/use-cases/product-crud.use-case';
 import {
   Body,
   Controller,
@@ -11,18 +16,12 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { User } from '@sentry/nestjs';
 
 import { ManySerializedResponseDto } from '@common/base/application/dto/many-serialized-response.dto';
 import { OneSerializedResponseDto } from '@common/base/application/dto/one-serialized-response.dto';
 import { PageQueryParamsDto } from '@common/base/application/dto/query-param/page-query-params.dto';
 import { SortOptions } from '@common/base/get-all-options.interface';
-
-import { CreateProductDto } from '../application/dto/create-product.dto';
-import { ProductDto } from '../application/dto/product.dto';
-import { ProductFieldsQueryParamsDto } from '../application/dto/query-param/product-fields-query-params.dto';
-import { ProductFilterQueryParamsDto } from '../application/dto/query-param/product-filter-query-params.dto';
-import { UpdateProductDto } from '../application/dto/update-product.dto';
-import { ProductCrudUseCase } from '../application/use-cases/product-crud.use-case';
 
 @Controller('product')
 @ApiTags('product')
