@@ -6,7 +6,7 @@ import { FilterOptions } from '@common/base/get-all-options.interface';
 
 class StoreFilter {
   @IsOptional()
-  name?: string;
+  name: string;
 }
 
 export class ProductFilterQueryParamsDto

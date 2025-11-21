@@ -1,3 +1,4 @@
+import { StoreMapper } from '@module/store/application/mapper/store.mapper';
 import { STORE_REPOSITORY_KEY } from '@module/store/application/repository/store.repository.interface';
 import { StoreCrudUseCase } from '@module/store/application/use-cases/store-crud.use-case';
 import { StorePostgresRepository } from '@module/store/infrastructure/database/store.postgres.repository';
@@ -14,6 +15,7 @@ const storeRepositoryProvider: Provider = {
 @Module({
   imports: [TypeOrmModule.forFeature([StoreSchema])],
   controllers: [StoreController],
-  providers: [StoreCrudUseCase, storeRepositoryProvider],
+  providers: [StoreCrudUseCase, storeRepositoryProvider, StoreMapper],
+  exports: [StoreCrudUseCase],
 })
 export class StoreModule {}

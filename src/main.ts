@@ -9,13 +9,10 @@ import {
 
 import { setupApp, setupSwagger } from '@config/app.config';
 
-import { DatabaseModule } from '@/module/db/database.module';
-
 async function bootstrap() {
   initializeTransactionalContext({ storageDriver: StorageDriver.AUTO });
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.set('query parser', 'extended');
-  await DatabaseModule.initialize();
   const configService = app.get(ConfigService);
   app.enableCors(configService.get('frontend.url'));
   setupApp(app);

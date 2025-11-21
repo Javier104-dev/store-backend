@@ -11,9 +11,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { BaseResponseAdapter } from '@common/base/application/adapter/base-response.adapter';
 import { CollectionDto } from '@common/base/application/dto/collection.dto';
 import { ManySerializedResponseDto } from '@common/base/application/dto/many-serialized-response.dto';
-import { DtoMapper } from '@common/base/application/mapper/dto.mapper';
 import BaseCrudUseCase from '@common/base/application/use-case/base.crud.use-case';
 import { IGetAllOptions } from '@common/base/get-all-options.interface';
+import { ProductMapper } from '@module/product/application/mapper/product.mapper';
 
 @Injectable()
 export class ProductCrudUseCase extends BaseCrudUseCase<
@@ -25,10 +25,10 @@ export class ProductCrudUseCase extends BaseCrudUseCase<
   constructor(
     @Inject(PRODUCT_REPOSITORY_KEY)
     protected readonly repository: IProductRepository,
-    mapper: DtoMapper,
+    private readonly productMapper: ProductMapper,
     responseAdapter: BaseResponseAdapter,
   ) {
-    super(repository, mapper, responseAdapter, Product.getEntityName());
+    super(repository, productMapper, responseAdapter, Product.getEntityName());
   }
 
   async getAllProductsByCategoryId(
@@ -42,7 +42,7 @@ export class ProductCrudUseCase extends BaseCrudUseCase<
     const collectionDto = new CollectionDto({
       ...collection,
       data: collection.data.map((entity) =>
-        this.mapper.fromEntity<ProductDto>(entity),
+        this.productMapper.fromEntity<ProductDto>(entity),
       ),
     });
 

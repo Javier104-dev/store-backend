@@ -2,8 +2,8 @@ import { AppService } from '@module/app/application/service/app.service';
 import { ResponseSerializerService } from '@module/app/application/service/response-serializer.service';
 import { AuthorModule } from '@module/author/author.module';
 import { BookModule } from '@module/book/book.module';
+import { CatalogModule } from '@module/catalog/catalog.module';
 import { CategoryModule } from '@module/category/category.module';
-import { DatabaseModule } from '@module/db/database.module';
 import { GenreModule } from '@module/genre/genre.module';
 import { HealthController } from '@module/health/interface/health.controller';
 import { AuthenticationModule } from '@module/iam/authentication/authentication.module';
@@ -43,7 +43,6 @@ import { datasourceOptions } from '@config/orm.config';
     }),
     AuthenticationModule,
     IamModule,
-    DatabaseModule,
     DiscoveryModule,
     BookModule,
     AuthorModule,
@@ -51,6 +50,7 @@ import { datasourceOptions } from '@config/orm.config';
     ProductModule,
     CategoryModule,
     StoreModule,
+    CatalogModule,
     SentryModule.forRoot(),
   ],
   providers: [
@@ -58,10 +58,10 @@ import { datasourceOptions } from '@config/orm.config';
     ResponseSerializerService,
     BaseResponseAdapter,
     DtoMapper,
-    {
-      provide: APP_FILTER,
-      useClass: SentryGlobalFilter,
-    },
+    // {
+    //   provide: APP_FILTER,
+    //   useClass: SentryGlobalFilter,
+    // },
   ],
   exports: [
     AppService,

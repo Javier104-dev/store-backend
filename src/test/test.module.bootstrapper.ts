@@ -6,18 +6,6 @@ import {
 import { Test, TestingModule } from '@nestjs/testing';
 import { initializeTransactionalContext } from 'typeorm-transactional';
 
-import {
-  DATABASE_SERVICE_KEY,
-  IDatabaseService,
-} from '@/module/db/application/interfaces/database.service.interfaces';
-import { DatabaseService } from '@/module/db/application/service/database.service';
-
-export const databaseServiceMock: jest.MockedObject<IDatabaseService> = {
-  executeQuery: jest.fn(),
-  allModels: jest.fn(),
-  getTableSchema: jest.fn(),
-  databaseInfo: jest.fn(),
-};
 
 export const identityProviderServiceMock: jest.MockedObject<IIdentityProviderService> =
   {
@@ -35,12 +23,6 @@ export const testModuleBootstrapper = async (): Promise<TestingModule> => {
 
   return Test.createTestingModule({
     imports: [AppModule],
-    providers: [
-      {
-        provide: DATABASE_SERVICE_KEY,
-        useClass: DatabaseService,
-      },
-    ],
   })
     .overrideProvider(IDENTITY_PROVIDER_SERVICE_KEY)
     .useValue(identityProviderServiceMock)
