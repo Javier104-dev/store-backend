@@ -92,6 +92,7 @@ export class ResponseSerializerService {
     relationshipKeys.forEach((relationKey) => {
       const relatedResource = resource[relationKey];
       if (!relatedResource) return;
+
       const currentRequestUrl = this.appService.getCurrentRequestUrl();
       const normalizedCurrentRequestUrl = this.normalizeUrl(currentRequestUrl);
       const relationEndpoint = this.appService.getEndpointForRelatedEntity(
@@ -101,14 +102,26 @@ export class ResponseSerializerService {
       const urlParamId = addIdToSelfLink
         ? `/${(resource as { id: string | number }).id}`
         : '';
+
       const self = `${normalizedCurrentRequestUrl}${urlParamId}/relationships/${relationKey}`;
-      const related = `${this.appBaseUrl}${relationEndpoint}/${(relatedResource as { id: string | number })?.id?.toString()}`;
+      const related = `${this.appBaseUrl}${relationEndpoint}`;
+
+      let data: any;
+      if (Array.isArray(relatedResource)) {
+        data = relatedResource.map((item: any) => ({
+          type: relationKey,
+          id: item.id?.toString(),
+        }));
+      } else {
+        const item = relatedResource as { id: string | number };
+        data = {
+          type: relationKey,
+          id: item.id?.toString(),
+        };
+      }
 
       relationships[relationKey] = {
-        data: {
-          type: relationKey,
-          id: (relatedResource as { id: string | number })?.id?.toString(),
-        },
+        data,
         links: {
           self,
           related,
@@ -166,35 +179,35 @@ export class ResponseSerializerService {
       const relatedResource = resource[relationKey];
       if (!relatedResource) return;
 
-      const isOnRelationship = included.find((data) => {
-        return (
-          data.type === relationKey && `${data.id}` === `${relatedResource.id}`
+      const relatedArray = Array.isArray(relatedResource)
+        ? relatedResource
+        : [relatedResource];
+
+      relatedArray.forEach((rel) => {
+        const alreadyIncluded = included.find(
+          (data) => data.type === relationKey && `${data.id}` === `${rel.id}`,
         );
-      });
+        if (alreadyIncluded) return;
 
-      if (isOnRelationship) return;
+        const relationSerializer = new Serializer(relationKey, {
+          ...RESPONSE_ADAPTER_BASE_OPTIONS,
+          attributes: Object.keys(rel).filter((attr) => attr !== 'id'),
+        });
 
-      const relationSerializer = new Serializer(relationKey, {
-        ...RESPONSE_ADAPTER_BASE_OPTIONS,
-        attributes: Object.keys(relatedResource).filter(
-          (attribute: string) => attribute !== 'id',
-        ),
-      });
+        const selfEndpoint = this.appService.getEndpointForRelatedEntity(
+          entityName,
+          relationKey,
+        );
 
-      const selfEndpoint = this.appService.getEndpointForRelatedEntity(
-        entityName,
-        relationKey,
-      );
+        const data = relationSerializer.serialize(rel).data;
+        const links = {
+          self: `${this.appBaseUrl}${selfEndpoint}/${rel.id}`,
+        };
 
-      const data = relationSerializer.serialize(relatedResource).data;
-
-      const links = {
-        self: `${this.appBaseUrl}${selfEndpoint}/${relatedResource.id}`,
-      };
-
-      included.push({
-        ...data,
-        links,
+        included.push({
+          ...data,
+          links,
+        });
       });
     });
 

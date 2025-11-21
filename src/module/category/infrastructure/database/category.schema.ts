@@ -19,7 +19,6 @@ export const CategorySchema = new EntitySchema<Category>({
       type: 'many-to-many',
       target: Product.name,
       inverseSide: 'categories',
-      // onDelete: 'CASCADE',
     },
   },
 });

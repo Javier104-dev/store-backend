@@ -1,5 +1,5 @@
 import { Category } from '@module/category/domain/category.entity';
-import { User } from '@module/iam/user/domain/user.entity';
+import { User } from '@sentry/nestjs';
 
 import { Base } from '@common/base/domain/base.entity';
 
@@ -10,9 +10,9 @@ export class Product extends Base {
 
   description: string;
 
-  sellerId?: string;
+  storeId?: string;
 
-  user?: User;
+  store?: User;
 
   categories?: Category[];
 }

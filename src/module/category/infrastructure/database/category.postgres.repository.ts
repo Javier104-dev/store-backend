@@ -1,11 +1,10 @@
 import { Category } from '@module/category/domain/category.entity';
+import { CategorySchema } from '@module/category/infrastructure/database/category.schema';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
-
-import { CategorySchema } from './category.schema';
 
 @Injectable()
 export class CategoryPostgresRepository extends BaseRepository<Category> {
@@ -14,5 +13,9 @@ export class CategoryPostgresRepository extends BaseRepository<Category> {
     protected readonly repository: Repository<Category>,
   ) {
     super(repository);
+  }
+
+  async getCategoriesByIds(categoryIds: string[]): Promise<Category[] | []> {
+    return this.repository.findBy({ id: In(categoryIds) });
   }
 }

@@ -1,3 +1,12 @@
-import { ProductDto } from './product.dto';
+import { ProductDto } from '@module/product/application/dto/product.dto';
+import { IsArray, IsOptional, IsUUID } from 'class-validator';
 
-export class CreateProductDto extends ProductDto {}
+import { DtoProperty } from '@common/base/application/dto/base.dto';
+
+export class CreateProductDto extends ProductDto {
+  @DtoProperty
+  @IsOptional()
+  @IsArray()
+  @IsUUID('all', { each: true })
+  categoryIds?: string[];
+}

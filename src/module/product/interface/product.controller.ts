@@ -1,5 +1,11 @@
-import { CurrentUser } from '@module/iam/authentication/infrastructure/decorator/current-user.decorator';
-import { User } from '@module/iam/user/domain/user.entity';
+import { Policies } from '@module/iam/authorization/infrastructure/policy/decorator/policy.decorator';
+import { PolicyGuard } from '@module/iam/authorization/infrastructure/policy/guard/policy.guard';
+import { ProductDto } from '@module/product/application/dto/product.dto';
+import { ProductFieldsQueryParamsDto } from '@module/product/application/dto/query-param/product-fields-query-params.dto';
+import { ProductFilterQueryParamsDto } from '@module/product/application/dto/query-param/product-filter-query-params.dto';
+import { UpdateProductDto } from '@module/product/application/dto/update-product.dto';
+import { ReadProductPolicyHandler } from '@module/product/application/policy/read-product.policy-handler';
+import { ProductCrudUseCase } from '@module/product/application/use-cases/product-crud.use-case';
 import {
   Body,
   Controller,
@@ -7,8 +13,8 @@ import {
   Get,
   Param,
   Patch,
-  Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -17,19 +23,27 @@ import { OneSerializedResponseDto } from '@common/base/application/dto/one-seria
 import { PageQueryParamsDto } from '@common/base/application/dto/query-param/page-query-params.dto';
 import { SortOptions } from '@common/base/get-all-options.interface';
 
-import { CreateProductDto } from '../application/dto/create-product.dto';
-import { ProductDto } from '../application/dto/product.dto';
-import { ProductFieldsQueryParamsDto } from '../application/dto/query-param/product-fields-query-params.dto';
-import { ProductFilterQueryParamsDto } from '../application/dto/query-param/product-filter-query-params.dto';
-import { UpdateProductDto } from '../application/dto/update-product.dto';
-import { ProductCrudUseCase } from '../application/use-cases/product-crud.use-case';
-
 @Controller('product')
+@UseGuards(PolicyGuard)
 @ApiTags('product')
 export class ProductController {
   constructor(private readonly crudUseCase: ProductCrudUseCase) {}
 
+  @Get('category/:categoryId')
+  @Policies(ReadProductPolicyHandler)
+  async getAllProductsByCategoryId(
+    @Query('page') page: PageQueryParamsDto,
+    @Query('sort') sort: SortOptions<ProductDto>,
+    @Param('categoryId') categoryId: string,
+  ): Promise<ManySerializedResponseDto<ProductDto>> {
+    return this.crudUseCase.getAllProductsByCategoryId(categoryId, {
+      page,
+      sort,
+    });
+  }
+
   @Get()
+  @Policies(ReadProductPolicyHandler)
   async getAll(
     @Query('page') page: PageQueryParamsDto,
     @Query('filter') filter: ProductFilterQueryParamsDto,
@@ -49,19 +63,6 @@ export class ProductController {
     @Param('id') id: string,
   ): Promise<OneSerializedResponseDto<ProductDto>> {
     return this.crudUseCase.getOneByIdOrFail(id);
-  }
-
-  @Post()
-  async saveOne(
-    @Body() createDto: CreateProductDto,
-    @CurrentUser() user: User,
-  ): Promise<any> {
-    const productToSave = {
-      ...createDto,
-      sellerId: user.id,
-    };
-
-    return this.crudUseCase.saveOne(productToSave);
   }
 
   @Patch(':id')

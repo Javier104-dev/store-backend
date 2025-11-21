@@ -68,6 +68,10 @@ abstract class BaseCrudUseCase<
   async deleteOneOrFail(id: string): Promise<void> {
     return this.repository.deleteOneOrFail(id);
   }
+
+  async saveOneRaw(entity: Entity): Promise<Entity> {
+    return this.repository.saveOne(entity);
+  }
 }
 
 export default BaseCrudUseCase;

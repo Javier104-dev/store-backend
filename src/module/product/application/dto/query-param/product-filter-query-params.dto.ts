@@ -1,13 +1,12 @@
+import { ProductDto } from '@module/product/application/dto/product.dto';
 import { Type } from 'class-transformer';
 import { IsOptional, ValidateNested } from 'class-validator';
 
 import { FilterOptions } from '@common/base/get-all-options.interface';
 
-import { ProductDto } from '../product.dto';
-
-class UserFilter {
+class StoreFilter {
   @IsOptional()
-  username?: string;
+  name: string;
 }
 
 export class ProductFilterQueryParamsDto
@@ -16,6 +15,6 @@ export class ProductFilterQueryParamsDto
 {
   @IsOptional()
   @ValidateNested()
-  @Type(() => UserFilter)
-  user?: UserFilter;
+  @Type(() => StoreFilter)
+  store?: StoreFilter;
 }
