@@ -4,6 +4,7 @@ import { CategoryCrudUseCase } from '@module/category/application/use-cases/cate
 import { Category } from '@module/category/domain/category.entity';
 import { CreateProductDto } from '@module/product/application/dto/create-product.dto';
 import { ProductDto } from '@module/product/application/dto/product.dto';
+import { UpdateProductDto } from '@module/product/application/dto/update-product.dto';
 import { ProductCrudUseCase } from '@module/product/application/use-cases/product-crud.use-case';
 import { Product } from '@module/product/domain/product.entity';
 import { StoreCrudUseCase } from '@module/store/application/use-cases/store-crud.use-case';
@@ -61,20 +62,38 @@ export class CatalogCrudUseCase {
     const store = await this.storeCrudUseCase.getStoreFromUserIdOrFail(userId);
     const categories = await this.resolveCategories(categoryIds);
 
-    const product = await this.productCrudUseCase.saveOneRaw(
-      this.catalogMapper.toEntity<Product>({
-        ...createDto,
-        store,
-        categories,
-      }),
-    );
+    const product = await this.productCrudUseCase.saveOneRaw({
+      ...createDto,
+      store,
+      categories,
+    });
 
     return this.responseAdapter.oneEntityResponse<ProductDto>(
       Product.getEntityName(),
       this.catalogMapper.fromEntity<ProductDto>(product, {
-        exclude: ['storeId', 'categoryIds'],
+        exclude: ['categoryIds'],
       }),
       ['store', 'categories'],
+    );
+  }
+
+  async updateOneOrFail(
+    id: string,
+    updateDto: UpdateProductDto,
+  ): Promise<OneSerializedResponseDto<ProductDto>> {
+    const { categoryIds } = updateDto;
+
+    const categories = await this.resolveCategories(categoryIds);
+    const product = await this.productCrudUseCase.updateOneOrFailRaw(id, {
+      ...updateDto,
+      categories,
+    });
+
+    return this.responseAdapter.oneEntityResponse<ProductDto>(
+      Product.getEntityName(),
+      this.catalogMapper.fromEntity<ProductDto>(product, {
+        exclude: ['categories'],
+      }),
     );
   }
 
@@ -82,7 +101,6 @@ export class CatalogCrudUseCase {
     if (!categoryIds?.length) {
       return [];
     }
-
     return this.categoryCrudUseCase.getCategoriesByIds(categoryIds);
   }
 }

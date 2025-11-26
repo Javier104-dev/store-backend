@@ -6,8 +6,6 @@ import { Base } from '@common/base/domain/base.entity';
 export class Store extends Base {
   name: string;
 
-  ownerId?: string;
-
   owner?: User;
 
   products?: Product[];

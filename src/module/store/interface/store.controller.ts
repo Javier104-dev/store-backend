@@ -1,3 +1,5 @@
+import { CurrentUser } from '@module/iam/authentication/infrastructure/decorator/current-user.decorator';
+import { User } from '@module/iam/user/domain/user.entity';
 import { CreateStoreDto } from '@module/store/application/dto/create-store.dto';
 import { StoreDto } from '@module/store/application/dto/store.dto';
 import { UpdateStoreDto } from '@module/store/application/dto/upate-store.dto';
@@ -51,8 +53,9 @@ export class StoreController {
   @Post()
   async saveOne(
     @Body() createDto: CreateStoreDto,
+    @CurrentUser() user: User,
   ): Promise<OneSerializedResponseDto<StoreDto>> {
-    return this.crudUseCase.saveOne(createDto);
+    return this.crudUseCase.createStore(createDto, user);
   }
 
   @Patch(':id')

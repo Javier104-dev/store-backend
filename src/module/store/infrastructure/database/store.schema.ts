@@ -14,21 +14,14 @@ export const StoreSchema = new EntitySchema<Store>({
       type: String,
       nullable: false,
     },
-    ownerId: {
-      type: String,
-      nullable: false,
-    },
   }),
   relations: {
     owner: {
       type: 'one-to-one',
       target: User.name,
-      joinColumn: {
-        name: 'owner_id',
-      },
       nullable: false,
       onDelete: 'CASCADE',
-      inverseSide: 'store',
+      joinColumn: true,
     },
     products: {
       type: 'one-to-many',
