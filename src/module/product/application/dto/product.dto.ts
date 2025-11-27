@@ -16,13 +16,4 @@ export class ProductDto extends BaseDto {
   @DtoProperty
   @IsOptional()
   description: string;
-
-  @DtoProperty
-  @IsOptional()
-  store?: Store;
-
-  @DtoProperty
-  @IsOptional()
-  @IsArray()
-  categories?: Category[];
 }

@@ -7,8 +7,4 @@ export class StoreDto extends BaseDto {
   @DtoProperty
   @IsOptional()
   name?: string;
-
-  @DtoProperty
-  @IsOptional()
-  owner?: User;
 }

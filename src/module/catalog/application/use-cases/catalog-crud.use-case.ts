@@ -7,6 +7,7 @@ import { ProductDto } from '@module/product/application/dto/product.dto';
 import { UpdateProductDto } from '@module/product/application/dto/update-product.dto';
 import { ProductCrudUseCase } from '@module/product/application/use-cases/product-crud.use-case';
 import { Product } from '@module/product/domain/product.entity';
+import { StoreMapper } from '@module/store/application/mapper/store.mapper';
 import { StoreCrudUseCase } from '@module/store/application/use-cases/store-crud.use-case';
 import { Injectable } from '@nestjs/common';
 
@@ -23,6 +24,7 @@ export class CatalogCrudUseCase {
     private readonly categoryCrudUseCase: CategoryCrudUseCase,
     private readonly catalogMapper: CatalogMapper,
     private readonly responseAdapter: BaseResponseAdapter,
+    private readonly storeMapper: StoreMapper,
   ) {}
 
   async getAllCategoriesWithProducts(
@@ -62,15 +64,17 @@ export class CatalogCrudUseCase {
     const store = await this.storeCrudUseCase.getStoreFromUserIdOrFail(userId);
     const categories = await this.resolveCategories(categoryIds);
 
-    const product = await this.productCrudUseCase.saveOneRaw({
+    const product = this.storeMapper.toEntity<Product>({
       ...createDto,
       store,
       categories,
     });
 
+    const productCreated = await this.productCrudUseCase.saveOneRaw(product);
+
     return this.responseAdapter.oneEntityResponse<ProductDto>(
       Product.getEntityName(),
-      this.catalogMapper.fromEntity<ProductDto>(product, {
+      this.catalogMapper.fromEntity<ProductDto>(productCreated, {
         exclude: ['categoryIds'],
       }),
       ['store', 'categories'],
@@ -84,14 +88,23 @@ export class CatalogCrudUseCase {
     const { categoryIds } = updateDto;
 
     const categories = await this.resolveCategories(categoryIds);
-    const product = await this.productCrudUseCase.updateOneOrFailRaw(id, {
+
+    const product = this.storeMapper.toEntity<Product>({
       ...updateDto,
       categories,
     });
 
+    const productUpdated = await this.productCrudUseCase.updateOneOrFailRaw(
+      id,
+      {
+        ...product,
+        categories,
+      },
+    );
+
     return this.responseAdapter.oneEntityResponse<ProductDto>(
       Product.getEntityName(),
-      this.catalogMapper.fromEntity<ProductDto>(product, {
+      this.catalogMapper.fromEntity<ProductDto>(productUpdated, {
         exclude: ['categories'],
       }),
     );
