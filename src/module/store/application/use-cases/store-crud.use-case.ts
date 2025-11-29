@@ -34,10 +34,12 @@ export class StoreCrudUseCase extends BaseCrudUseCase<
     createDto: CreateStoreDto,
     user: User,
   ): Promise<OneSerializedResponseDto<StoreDto>> {
-    const entity = await this.saveOneRaw({ ...createDto, owner: user });
+    const store = this.storeMapper.toEntity<Store>({...createDto, owner: user})
+    const storeCreated = await this.repository.saveOne(store);
+
     return this.responseAdapter.oneEntityResponse<StoreDto>(
       this.entityName,
-      this.storeMapper.fromEntity<StoreDto>(entity, {
+      this.storeMapper.fromEntity<StoreDto>(storeCreated, {
         exclude: ['owner'],
       }),
     );
