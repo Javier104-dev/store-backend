@@ -65,14 +65,6 @@ export class ProductController {
     return this.crudUseCase.getOneByIdOrFail(id);
   }
 
-  @Patch(':id')
-  async updateOneOrFail(
-    @Param('id') id: string,
-    @Body() updateDto: UpdateProductDto,
-  ): Promise<OneSerializedResponseDto<ProductDto>> {
-    return this.crudUseCase.updateOneOrFail(id, updateDto);
-  }
-
   @Delete(':id')
   async deleteOneOrFail(@Param('id') id: string): Promise<void> {
     return this.crudUseCase.deleteOneOrFail(id);

@@ -22,34 +22,19 @@ export const ProductSchema = new EntitySchema<Product>({
       type: 'text',
       nullable: false,
     },
-    storeId: {
-      type: String,
-      nullable: false,
-    },
   }),
   relations: {
     store: {
       type: 'many-to-one',
       target: Store.name,
-      joinColumn: {
-        name: 'store_id',
-      },
       nullable: false,
       onDelete: 'CASCADE',
-      inverseSide: 'products',
+      joinColumn: true,
     },
     categories: {
       type: 'many-to-many',
       target: Category.name,
-      joinTable: {
-        name: 'product_category',
-        joinColumn: {
-          name: 'product_id',
-        },
-        inverseJoinColumn: {
-          name: 'category_id',
-        },
-      },
+      joinTable: true,
       inverseSide: 'products',
     },
   },
