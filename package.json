@@ -61,7 +61,7 @@
     "@sentry/profiling-node": "^10.18.0",
     "@ssut/nestjs-sqs": "^3.0.1",
     "aws-sdk": "^2.1692.0",
-    "better-sqlite3": "^12.4.1",
+    "better-sqlite3": "^12.5.0",
     "change-case-all": "^2.1.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
