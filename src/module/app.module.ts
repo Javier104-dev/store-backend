@@ -12,10 +12,8 @@ import { ProductModule } from '@module/product/product.module';
 import { StoreModule } from '@module/store/store.module';
 import { Global, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_FILTER, DiscoveryModule } from '@nestjs/core';
+import { DiscoveryModule } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { SentryGlobalFilter, SentryModule } from '@sentry/nestjs/setup';
-//ver esto no funciona y no se importa bien con autocompletado
 import { DataSource } from 'typeorm';
 import { addTransactionalDataSource } from 'typeorm-transactional';
 
@@ -51,17 +49,12 @@ import { datasourceOptions } from '@config/orm.config';
     CategoryModule,
     StoreModule,
     CatalogModule,
-    SentryModule.forRoot(),
   ],
   providers: [
     AppService,
     ResponseSerializerService,
     BaseResponseAdapter,
     DtoMapper,
-    // {
-    //   provide: APP_FILTER,
-    //   useClass: SentryGlobalFilter,
-    // },
   ],
   exports: [
     AppService,

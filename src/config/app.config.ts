@@ -6,12 +6,7 @@ import {
   ValidationPipe,
   VersioningType,
 } from '@nestjs/common';
-import { BaseExceptionFilter, HttpAdapterHost } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-
-import { ENVIRONMENT } from '@config/environment.enum';
-
-import './instrument';
 
 export const setupApp = (app: INestApplication) => {
   app.enableVersioning({
@@ -47,18 +42,4 @@ export const setupSwagger = (app: INestApplication) => {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-};
-
-export const setupSentry = (app: INestApplication) => {
-  if (
-    process.env.NODE_ENV === ENVIRONMENT.PRODUCTION ||
-    process.env.NODE_ENV === ENVIRONMENT.STAGING ||
-    process.env.TEST_SENTRY
-  ) {
-    const { httpAdapter } = app.get(HttpAdapterHost);
-    if (!httpAdapter) {
-      console.error('HttpAdapterHost is not available');
-    }
-    app.useGlobalFilters(new BaseExceptionFilter(httpAdapter));
-  }
 };
