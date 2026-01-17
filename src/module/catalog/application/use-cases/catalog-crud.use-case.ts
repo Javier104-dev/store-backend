@@ -12,6 +12,7 @@ import { StoreCrudUseCase } from '@module/store/application/use-cases/store-crud
 import { Injectable } from '@nestjs/common';
 
 import { BaseResponseAdapter } from '@common/base/application/adapter/base-response.adapter';
+import { CollectionDto } from '@common/base/application/dto/collection.dto';
 import { ManySerializedResponseDto } from '@common/base/application/dto/many-serialized-response.dto';
 import { OneSerializedResponseDto } from '@common/base/application/dto/one-serialized-response.dto';
 import { IGetAllOptions } from '@common/base/get-all-options.interface';
@@ -32,27 +33,36 @@ export class CatalogCrudUseCase {
     options?: IGetAllOptions<Category>,
   ): Promise<ManySerializedResponseDto<CategoryDto>> {
     const productOptions = { page: { size: productsLimit } };
-    const collection = await this.categoryCrudUseCase.getAll(options);
+    const collection =
+      await this.categoryCrudUseCase.getCategoryCollection(options);
 
     const categoriesWithProducts = await Promise.all(
       collection.data.map(async (category) => {
-        const collectionProduct =
-          await this.productCrudUseCase.getAllProductsByCategoryId(
+        const productCollection =
+          await this.productCrudUseCase.getProductCollectionByCategoryId(
             category.id,
             productOptions,
           );
 
         return {
           ...category,
-          products: collectionProduct.data,
+          products: productCollection.data,
         };
       }),
     );
 
-    return {
+    const collectionDto = new CollectionDto({
       ...collection,
-      data: categoriesWithProducts,
-    };
+      data: categoriesWithProducts.map((entity) =>
+        this.catalogMapper.fromEntity<CategoryDto>(entity),
+      ),
+    });
+
+    return this.responseAdapter.manyEntitiesResponse(
+      Category.getEntityName(),
+      collectionDto,
+      ['products'],
+    );
   }
 
   async saveOneProduct(
