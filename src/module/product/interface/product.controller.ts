@@ -1,18 +1,17 @@
+import { AuthType } from '@module/iam/authentication/domain/auth-type.enum';
+import { Auth } from '@module/iam/authentication/infrastructure/decorator/auth.decorator';
 import { Policies } from '@module/iam/authorization/infrastructure/policy/decorator/policy.decorator';
 import { PolicyGuard } from '@module/iam/authorization/infrastructure/policy/guard/policy.guard';
 import { ProductDto } from '@module/product/application/dto/product.dto';
 import { ProductFieldsQueryParamsDto } from '@module/product/application/dto/query-param/product-fields-query-params.dto';
 import { ProductFilterQueryParamsDto } from '@module/product/application/dto/query-param/product-filter-query-params.dto';
-import { UpdateProductDto } from '@module/product/application/dto/update-product.dto';
 import { ReadProductPolicyHandler } from '@module/product/application/policy/read-product.policy-handler';
 import { ProductCrudUseCase } from '@module/product/application/use-cases/product-crud.use-case';
 import {
-  Body,
   Controller,
   Delete,
   Get,
   Param,
-  Patch,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -30,7 +29,7 @@ export class ProductController {
   constructor(private readonly crudUseCase: ProductCrudUseCase) {}
 
   @Get('category/:categoryId')
-  @Policies(ReadProductPolicyHandler)
+  @Auth(AuthType.None)
   async getAllProductsByCategoryId(
     @Query('page') page: PageQueryParamsDto,
     @Query('sort') sort: SortOptions<ProductDto>,
@@ -59,10 +58,11 @@ export class ProductController {
   }
 
   @Get(':id')
-  async getOneByIdOrFail(
+  @Auth(AuthType.None)
+  async getOneWithRelationsOrFail(
     @Param('id') id: string,
   ): Promise<OneSerializedResponseDto<ProductDto>> {
-    return this.crudUseCase.getOneByIdOrFail(id);
+    return this.crudUseCase.getOneWithRelationsOrFail(id);
   }
 
   @Delete(':id')

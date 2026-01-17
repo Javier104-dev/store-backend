@@ -7,6 +7,8 @@ import { Repository } from 'typeorm';
 import { ICollection } from '@common/base/application/dto/collection.interface';
 import { IGetAllOptions } from '@common/base/get-all-options.interface';
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
+import EntityNotFoundException from '@common/base/infrastructure/database/exception/not-found.exception';
+import { isEmptyObject } from '@common/base/infrastructure/database/utils/object.utils';
 
 @Injectable()
 export class ProductPostgresRepository extends BaseRepository<Product> {
@@ -41,5 +43,18 @@ export class ProductPostgresRepository extends BaseRepository<Product> {
       pageCount: Math.ceil(itemCount / page.size),
       itemCount,
     };
+  }
+
+  async getOneWithRelationsOrFail(id: string): Promise<Product> {
+    const entity = await this.repository.findOne({
+      where: { id },
+      relations: ['categories'],
+    });
+
+    if (!entity || isEmptyObject(entity)) {
+      throw new EntityNotFoundException(id);
+    }
+
+    return entity;
   }
 }

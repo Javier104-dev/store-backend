@@ -1,6 +1,7 @@
 import { CreateProductDto } from '@module/product/application/dto/create-product.dto';
 import { ProductDto } from '@module/product/application/dto/product.dto';
 import { UpdateProductDto } from '@module/product/application/dto/update-product.dto';
+import { ProductMapper } from '@module/product/application/mapper/product.mapper';
 import {
   IProductRepository,
   PRODUCT_REPOSITORY_KEY,
@@ -10,10 +11,11 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import { BaseResponseAdapter } from '@common/base/application/adapter/base-response.adapter';
 import { CollectionDto } from '@common/base/application/dto/collection.dto';
+import { ICollection } from '@common/base/application/dto/collection.interface';
 import { ManySerializedResponseDto } from '@common/base/application/dto/many-serialized-response.dto';
+import { OneSerializedResponseDto } from '@common/base/application/dto/one-serialized-response.dto';
 import BaseCrudUseCase from '@common/base/application/use-case/base.crud.use-case';
 import { IGetAllOptions } from '@common/base/get-all-options.interface';
-import { ProductMapper } from '@module/product/application/mapper/product.mapper';
 
 @Injectable()
 export class ProductCrudUseCase extends BaseCrudUseCase<
@@ -35,7 +37,7 @@ export class ProductCrudUseCase extends BaseCrudUseCase<
     categoryId: string,
     options: IGetAllOptions<Product>,
   ): Promise<ManySerializedResponseDto<ProductDto>> {
-    const collection = await this.repository.getAllProductsByCategoryId(
+    const collection = await this.getProductCollectionByCategoryId(
       categoryId,
       options,
     );
@@ -49,6 +51,27 @@ export class ProductCrudUseCase extends BaseCrudUseCase<
     return this.responseAdapter.manyEntitiesResponse(
       this.entityName,
       collectionDto,
+    );
+  }
+
+  async getProductCollectionByCategoryId(
+    categoryId: string,
+    options: IGetAllOptions<Product>,
+  ): Promise<ICollection<ProductDto>> {
+    return await this.repository.getAllProductsByCategoryId(
+      categoryId,
+      options,
+    );
+  }
+
+  async getOneWithRelationsOrFail(
+    id: string,
+  ): Promise<OneSerializedResponseDto<ProductDto>> {
+    const entity = await this.repository.getOneWithRelationsOrFail(id);
+    return this.responseAdapter.oneEntityResponse(
+      this.entityName,
+      this.productMapper.fromEntity<ProductDto>(entity),
+      ['categories'],
     );
   }
 }

@@ -11,4 +11,5 @@ export interface IProductRepository extends BaseRepository<Product> {
     categoryId: string,
     options: IGetAllOptions<Product>,
   ): Promise<ICollection<Product>>;
+  getOneWithRelationsOrFail(id: string): Promise<Product>;
 }

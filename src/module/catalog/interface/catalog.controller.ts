@@ -1,6 +1,8 @@
 import { ProductsQueryParamsDto } from '@module/catalog/application/dto/query-param/product-limit-query-params.dto';
 import { CatalogCrudUseCase } from '@module/catalog/application/use-cases/catalog-crud.use-case';
 import { CategoryDto } from '@module/category/application/dto/category.dto';
+import { AuthType } from '@module/iam/authentication/domain/auth-type.enum';
+import { Auth } from '@module/iam/authentication/infrastructure/decorator/auth.decorator';
 import { CurrentUser } from '@module/iam/authentication/infrastructure/decorator/current-user.decorator';
 import { User } from '@module/iam/user/domain/user.entity';
 import { CreateProductDto } from '@module/product/application/dto/create-product.dto';
@@ -28,6 +30,7 @@ export class CatalogController {
   constructor(private readonly crudUseCase: CatalogCrudUseCase) {}
 
   @Get('category')
+  @Auth(AuthType.None)
   async getAllCategoriesWithProducts(
     @Query('page') page: PageQueryParamsDto,
     @Query('sort') sort: SortOptions<CategoryDto>,
