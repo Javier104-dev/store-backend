@@ -1,7 +1,9 @@
 import { AuthType } from '@module/iam/authentication/domain/auth-type.enum';
 import { Auth } from '@module/iam/authentication/infrastructure/decorator/auth.decorator';
+import { CurrentUser } from '@module/iam/authentication/infrastructure/decorator/current-user.decorator';
 import { Policies } from '@module/iam/authorization/infrastructure/policy/decorator/policy.decorator';
 import { PolicyGuard } from '@module/iam/authorization/infrastructure/policy/guard/policy.guard';
+import { User } from '@module/iam/user/domain/user.entity';
 import { ProductDto } from '@module/product/application/dto/product.dto';
 import { ProductFieldsQueryParamsDto } from '@module/product/application/dto/query-param/product-fields-query-params.dto';
 import { ProductFilterQueryParamsDto } from '@module/product/application/dto/query-param/product-filter-query-params.dto';
@@ -28,21 +30,9 @@ import { SortOptions } from '@common/base/get-all-options.interface';
 export class ProductController {
   constructor(private readonly crudUseCase: ProductCrudUseCase) {}
 
-  @Get('category/:categoryId')
-  @Auth(AuthType.None)
-  async getAllProductsByCategoryId(
-    @Query('page') page: PageQueryParamsDto,
-    @Query('sort') sort: SortOptions<ProductDto>,
-    @Param('categoryId') categoryId: string,
-  ): Promise<ManySerializedResponseDto<ProductDto>> {
-    return this.crudUseCase.getAllProductsByCategoryId(categoryId, {
-      page,
-      sort,
-    });
-  }
-
   @Get()
-  @Policies(ReadProductPolicyHandler)
+  // @Policies(ReadProductPolicyHandler)
+  @Auth(AuthType.None)
   async getAll(
     @Query('page') page: PageQueryParamsDto,
     @Query('filter') filter: ProductFilterQueryParamsDto,
@@ -50,6 +40,24 @@ export class ProductController {
     @Query('sort') sort: SortOptions<ProductDto>,
   ): Promise<ManySerializedResponseDto<ProductDto>> {
     return this.crudUseCase.getAll({
+      page,
+      filter,
+      fields: fields.target,
+      sort,
+    });
+  }
+
+  @Get('owner')
+  // @Policies(ReadProductPolicyHandler)
+  // admin
+  async getProductsFromOwner(
+    @CurrentUser() user: User,
+    @Query('page') page: PageQueryParamsDto,
+    @Query('filter') filter: ProductFilterQueryParamsDto,
+    @Query('fields') fields: ProductFieldsQueryParamsDto,
+    @Query('sort') sort: SortOptions<ProductDto>,
+  ): Promise<ManySerializedResponseDto<ProductDto>> {
+    return this.crudUseCase.getProductsFromOwner(user, {
       page,
       filter,
       fields: fields.target,

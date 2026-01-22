@@ -15,7 +15,10 @@ import { BaseResponseAdapter } from '@common/base/application/adapter/base-respo
 import { CollectionDto } from '@common/base/application/dto/collection.dto';
 import { ManySerializedResponseDto } from '@common/base/application/dto/many-serialized-response.dto';
 import { OneSerializedResponseDto } from '@common/base/application/dto/one-serialized-response.dto';
-import { IGetAllOptions } from '@common/base/get-all-options.interface';
+import {
+  IGetAllOptions,
+  PageOptions,
+} from '@common/base/get-all-options.interface';
 
 @Injectable()
 export class CatalogCrudUseCase {
@@ -29,10 +32,10 @@ export class CatalogCrudUseCase {
   ) {}
 
   async getAllCategoriesWithProducts(
-    productsLimit: number,
+    productPageOptions: PageOptions,
     options?: IGetAllOptions<Category>,
   ): Promise<ManySerializedResponseDto<CategoryDto>> {
-    const productOptions = { page: { size: productsLimit } };
+    const productPage = { page: productPageOptions };
     const collection =
       await this.categoryCrudUseCase.getCategoryCollection(options);
 
@@ -41,7 +44,7 @@ export class CatalogCrudUseCase {
         const productCollection =
           await this.productCrudUseCase.getProductCollectionByCategoryId(
             category.id,
-            productOptions,
+            productPage,
           );
 
         return {

@@ -1,4 +1,4 @@
-import { ProductsQueryParamsDto } from '@module/catalog/application/dto/query-param/product-limit-query-params.dto';
+import { ProductsPageQueryParamsDto } from '@module/catalog/application/dto/query-param/product-page-query-params.dto';
 import { CatalogCrudUseCase } from '@module/catalog/application/use-cases/catalog-crud.use-case';
 import { CategoryDto } from '@module/category/application/dto/category.dto';
 import { AuthType } from '@module/iam/authentication/domain/auth-type.enum';
@@ -29,20 +29,17 @@ import { SortOptions } from '@common/base/get-all-options.interface';
 export class CatalogController {
   constructor(private readonly crudUseCase: CatalogCrudUseCase) {}
 
-  @Get('category')
+  @Get('categories')
   @Auth(AuthType.None)
   async getAllCategoriesWithProducts(
     @Query('page') page: PageQueryParamsDto,
     @Query('sort') sort: SortOptions<CategoryDto>,
-    @Query('products') products: ProductsQueryParamsDto,
+    @Query('productPage') productPage: ProductsPageQueryParamsDto,
   ): Promise<ManySerializedResponseDto<CategoryDto>> {
-    return this.crudUseCase.getAllCategoriesWithProducts(
-      products.productsLimit,
-      {
-        page,
-        sort,
-      },
-    );
+    return this.crudUseCase.getAllCategoriesWithProducts(productPage, {
+      page,
+      sort,
+    });
   }
 
   @Post('product')
