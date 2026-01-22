@@ -1,3 +1,4 @@
+import { User } from '@module/iam/user/domain/user.entity';
 import { CreateProductDto } from '@module/product/application/dto/create-product.dto';
 import { ProductDto } from '@module/product/application/dto/product.dto';
 import { UpdateProductDto } from '@module/product/application/dto/update-product.dto';
@@ -7,15 +8,16 @@ import {
   PRODUCT_REPOSITORY_KEY,
 } from '@module/product/application/repository/product.repository.interface';
 import { Product } from '@module/product/domain/product.entity';
+import { StoreCrudUseCase } from '@module/store/application/use-cases/store-crud.use-case';
 import { Inject, Injectable } from '@nestjs/common';
 
 import { BaseResponseAdapter } from '@common/base/application/adapter/base-response.adapter';
 import { CollectionDto } from '@common/base/application/dto/collection.dto';
 import { ICollection } from '@common/base/application/dto/collection.interface';
-import { ManySerializedResponseDto } from '@common/base/application/dto/many-serialized-response.dto';
 import { OneSerializedResponseDto } from '@common/base/application/dto/one-serialized-response.dto';
 import BaseCrudUseCase from '@common/base/application/use-case/base.crud.use-case';
 import { IGetAllOptions } from '@common/base/get-all-options.interface';
+import { ManySerializedResponseDto } from '@common/base/application/dto/many-serialized-response.dto';
 
 @Injectable()
 export class ProductCrudUseCase extends BaseCrudUseCase<
@@ -27,41 +29,26 @@ export class ProductCrudUseCase extends BaseCrudUseCase<
   constructor(
     @Inject(PRODUCT_REPOSITORY_KEY)
     protected readonly repository: IProductRepository,
+    private readonly storeCrudUseCase: StoreCrudUseCase,
     private readonly productMapper: ProductMapper,
     responseAdapter: BaseResponseAdapter,
   ) {
     super(repository, productMapper, responseAdapter, Product.getEntityName());
   }
 
-  async getAllProductsByCategoryId(
-    categoryId: string,
-    options: IGetAllOptions<Product>,
-  ): Promise<ManySerializedResponseDto<ProductDto>> {
-    const collection = await this.getProductCollectionByCategoryId(
-      categoryId,
-      options,
-    );
-    const collectionDto = new CollectionDto({
-      ...collection,
-      data: collection.data.map((entity) =>
-        this.productMapper.fromEntity<ProductDto>(entity),
-      ),
-    });
-
-    return this.responseAdapter.manyEntitiesResponse(
-      this.entityName,
-      collectionDto,
-    );
-  }
-
   async getProductCollectionByCategoryId(
     categoryId: string,
     options: IGetAllOptions<Product>,
   ): Promise<ICollection<ProductDto>> {
-    return await this.repository.getAllProductsByCategoryId(
-      categoryId,
-      options,
-    );
+    const fullOptions = {
+      ...options,
+      filter: {
+        ...options.filter,
+        categories: { id: categoryId },
+      },
+    };
+
+    return this.repository.getAll(fullOptions);
   }
 
   async getOneWithRelationsOrFail(
@@ -72,6 +59,35 @@ export class ProductCrudUseCase extends BaseCrudUseCase<
       this.entityName,
       this.productMapper.fromEntity<ProductDto>(entity),
       ['categories'],
+    );
+  }
+
+  async getProductsFromOwner(
+    user: User,
+    options: IGetAllOptions<Product>,
+  ): Promise<ManySerializedResponseDto<ProductDto>> {
+    const store = await this.storeCrudUseCase.getStoreFromUserIdOrFail(user.id);
+
+    const fullOptions = {
+      ...options,
+      filter: {
+        ...options.filter,
+        store: { id: store.id },
+      },
+    };
+
+    const productFromStore = await this.repository.getAll(fullOptions);
+
+    const collectionDto = new CollectionDto({
+      ...productFromStore,
+      data: productFromStore.data.map((entity) =>
+        this.mapper.fromEntity<ProductDto>(entity),
+      ),
+    });
+
+    return this.responseAdapter.manyEntitiesResponse(
+      this.entityName,
+      collectionDto,
     );
   }
 }

@@ -1,5 +1,5 @@
 import { Category } from '@module/category/domain/category.entity';
-import { User } from '@module/iam/user/domain/user.entity';
+import { Store } from '@module/store/domain/store.entity';
 
 import { Base } from '@common/base/domain/base.entity';
 
@@ -10,9 +10,7 @@ export class Product extends Base {
 
   description: string;
 
-  storeId?: string;
-
-  store?: User;
+  store?: Store;
 
   categories?: Category[];
 }

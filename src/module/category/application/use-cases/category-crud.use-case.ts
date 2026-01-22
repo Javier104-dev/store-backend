@@ -42,6 +42,6 @@ export class CategoryCrudUseCase extends BaseCrudUseCase<
   async getCategoryCollection(
     options: IGetAllOptions<Category>,
   ): Promise<ICollection<CategoryDto>> {
-    return await this.repository.getAll(options);
+    return this.repository.getAll(options);
   }
 }

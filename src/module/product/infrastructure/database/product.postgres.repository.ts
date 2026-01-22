@@ -19,19 +19,15 @@ export class ProductPostgresRepository extends BaseRepository<Product> {
     super(repository);
   }
 
-  async getAllProductsByCategoryId(
-    categoryId: string,
+  async getAll(
     options: IGetAllOptions<Product>,
   ): Promise<ICollection<Product>> {
-    const { page, sort } = options || {};
+    const { filter, page, sort, fields } = options || {};
 
     const [items, itemCount] = await this.repository.findAndCount({
-      where: {
-        categories: {
-          id: categoryId,
-        },
-      },
+      where: filter,
       order: sort,
+      select: fields,
       take: page.size,
       skip: page.offset,
     });

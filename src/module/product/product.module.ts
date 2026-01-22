@@ -7,6 +7,7 @@ import { productPermissions } from '@module/product/domain/product.permission';
 import { ProductPostgresRepository } from '@module/product/infrastructure/database/product.postgres.repository';
 import { ProductSchema } from '@module/product/infrastructure/database/product.schema';
 import { ProductController } from '@module/product/interface/product.controller';
+import { StoreModule } from '@module/store/store.module';
 import { Module, Provider } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -23,6 +24,7 @@ const productRepositoryProvider: Provider = {
     AuthorizationModule.forFeature({
       permissions: productPermissions,
     }),
+    StoreModule,
   ],
   controllers: [ProductController],
   providers: [
