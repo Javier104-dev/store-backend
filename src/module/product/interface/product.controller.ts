@@ -1,13 +1,13 @@
 import { AuthType } from '@module/iam/authentication/domain/auth-type.enum';
 import { Auth } from '@module/iam/authentication/infrastructure/decorator/auth.decorator';
 import { CurrentUser } from '@module/iam/authentication/infrastructure/decorator/current-user.decorator';
-import { Policies } from '@module/iam/authorization/infrastructure/policy/decorator/policy.decorator';
+// import { Policies } from '@module/iam/authorization/infrastructure/policy/decorator/policy.decorator';
 import { PolicyGuard } from '@module/iam/authorization/infrastructure/policy/guard/policy.guard';
 import { User } from '@module/iam/user/domain/user.entity';
 import { ProductDto } from '@module/product/application/dto/product.dto';
 import { ProductFieldsQueryParamsDto } from '@module/product/application/dto/query-param/product-fields-query-params.dto';
 import { ProductFilterQueryParamsDto } from '@module/product/application/dto/query-param/product-filter-query-params.dto';
-import { ReadProductPolicyHandler } from '@module/product/application/policy/read-product.policy-handler';
+// import { ReadProductPolicyHandler } from '@module/product/application/policy/read-product.policy-handler';
 import { ProductCrudUseCase } from '@module/product/application/use-cases/product-crud.use-case';
 import {
   Controller,
@@ -49,7 +49,7 @@ export class ProductController {
 
   @Get('owner')
   // @Policies(ReadProductPolicyHandler)
-  // admin
+  // dueño
   async getProductsFromOwner(
     @CurrentUser() user: User,
     @Query('page') page: PageQueryParamsDto,
@@ -74,6 +74,7 @@ export class ProductController {
   }
 
   @Delete(':id')
+  //dueño
   async deleteOneOrFail(@Param('id') id: string): Promise<void> {
     return this.crudUseCase.deleteOneOrFail(id);
   }

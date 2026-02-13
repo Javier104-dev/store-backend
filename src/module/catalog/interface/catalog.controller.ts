@@ -43,6 +43,7 @@ export class CatalogController {
   }
 
   @Post('product')
+  //admin
   async saveOne(
     @Body() createDto: CreateProductDto,
     @CurrentUser() user: User,
