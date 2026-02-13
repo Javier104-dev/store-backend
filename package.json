@@ -35,7 +35,8 @@
     "sns:prepare": "cross-env ./data/scripts/create_sns_topic.sh",
     "aws:prepare": "npm run cognito:prepare && npm run sqs:prepare && npm run ses:prepare && npm run s3:prepare && npm run sns:prepare",
     "dev:prepare": "cross-env ./data/scripts/create_default_env.sh",
-    "sentry:sourcemaps": "cross-env sentry-cli sourcemaps inject ./dist && cross-env sentry-cli sourcemaps upload ./dist"
+    "sentry:sourcemaps": "cross-env sentry-cli sourcemaps inject ./dist && cross-env sentry-cli sourcemaps upload ./dist",
+    "prepare": "husky install"
   },
   "lint-staged": {
     "src/**/*.ts": [
@@ -77,8 +78,7 @@
     "uuid4": "^2.0.3"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.2.0",
-    "@eslint/js": "^9.18.0",
+    "@eslint/js": "^9.39.2",
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
@@ -90,11 +90,10 @@
     "@types/node": "^22.10.7",
     "@types/supertest": "^6.0.2",
     "cross-env": "^10.1.0",
-    "eslint": "^9.18.0",
-    "eslint-config-prettier": "^10.0.1",
-    "eslint-plugin-no-comments": "^1.1.10",
-    "eslint-plugin-prettier": "^5.2.2",
-    "globals": "^16.0.0",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.3.0",
+    "husky": "^9.1.7",
     "jest": "^30.0.0",
     "prettier": "^3.4.2",
     "source-map-support": "^0.5.21",
@@ -105,6 +104,6 @@
     "tsconfig-paths": "^4.2.0",
     "typeorm-fixtures-cli": "^4.1.0",
     "typescript": "^5.7.3",
-    "typescript-eslint": "^8.20.0"
+    "typescript-eslint": "^8.55.0"
   }
 }
