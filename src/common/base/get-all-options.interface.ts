@@ -4,7 +4,7 @@ import { Base } from '@common/base/domain/base.entity';
 import IEntity from '@common/base/domain/entity.interface';
 
 export type OnlyAttributes<Entity> = {
-  // eslint-disable-next-line @typescript-eslint/ban-types
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   [P in keyof Entity]: Entity[P] extends Base[] | Base | Function ? never : P;
 }[keyof Entity];
 

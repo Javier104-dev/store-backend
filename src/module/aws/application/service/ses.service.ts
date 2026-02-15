@@ -68,7 +68,7 @@ export class AmazonSESService implements IEmailService {
 
     try {
       await this.client.send(createTemplateParams);
-    } catch (error) {
+    } catch {
       throw new Error('Failed to create template email');
     }
   }
@@ -98,7 +98,7 @@ export class AmazonSESService implements IEmailService {
 
     try {
       return await this.client.send(sendTemplatedEmailCommand);
-    } catch (error) {
+    } catch {
       throw new Error('Failed to send template email');
     }
   }
