@@ -49,7 +49,7 @@ export class UpdateGenrePolicyHandler implements IPolicyHandler {
 
   private async getSubject(request: Request): Promise<Genre> {
     const searchParam = request.params['id'];
-    const subjectId = searchParam ? searchParam : undefined;
+    const subjectId = typeof searchParam === 'string' ? searchParam : undefined;
     return this.genreRepository.getOneById(subjectId);
   }
 }
