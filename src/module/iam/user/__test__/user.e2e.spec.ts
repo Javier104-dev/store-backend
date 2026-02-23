@@ -1,18 +1,18 @@
 import { UserDto } from '@module/iam/user/application/dto/user.dto';
 import { User } from '@module/iam/user/domain/user.entity';
-import { HttpStatus, INestApplication } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import request from 'supertest';
 
 import { loadFixtures } from '@data/util/fixture-loader';
 
-import { setupApp } from '@config/app.config';
 import { datasourceOptions } from '@config/orm.config';
 
-import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
+import { createTestApp } from '@test/test.module.bootstrapper';
 import { createAccessToken } from '@test/test.util';
 
 describe('User Module', () => {
-  let app: INestApplication;
+  let app: NestExpressApplication;
 
   const adminToken = createAccessToken({
     sub: '00000000-0000-0000-0000-00000000000X',
@@ -20,10 +20,7 @@ describe('User Module', () => {
 
   beforeAll(async () => {
     await loadFixtures(`${__dirname}/fixture`, datasourceOptions);
-    const moduleRef = await testModuleBootstrapper();
-    app = moduleRef.createNestApplication({ logger: false });
-    setupApp(app);
-    await app.init();
+    app = await createTestApp();
   });
 
   afterEach(() => {

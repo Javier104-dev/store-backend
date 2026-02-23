@@ -42,12 +42,11 @@ import request from 'supertest';
 
 import { loadFixtures } from '@data/util/fixture-loader';
 
-import { setupApp } from '@config/app.config';
 import { datasourceOptions } from '@config/orm.config';
 
 import {
+  createTestApp,
   identityProviderServiceMock,
-  testModuleBootstrapper,
 } from '@test/test.module.bootstrapper';
 import { createAccessToken } from '@test/test.util';
 
@@ -56,15 +55,10 @@ describe('Authentication Module', () => {
 
   beforeAll(async () => {
     process.env.AUTH_ALLOWED_EMAIL_DOMAINS = 'biggertech.co';
-    const moduleRef = await testModuleBootstrapper();
-    app = moduleRef.createNestApplication();
-    setupApp(app);
-
+    app = await createTestApp();
     const dataSource = app.get(getDataSourceToken());
     await dataSource.dropDatabase();
     await dataSource.synchronize(true);
-
-    await app.init();
   });
   beforeEach(async () => {
     await loadFixtures(`${__dirname}/fixture`, datasourceOptions);

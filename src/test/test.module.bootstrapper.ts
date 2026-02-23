@@ -3,9 +3,11 @@ import {
   IDENTITY_PROVIDER_SERVICE_KEY,
   IIdentityProviderService,
 } from '@module/iam/authentication/application/service/identity-provider.service.interface';
-import { Test, TestingModule } from '@nestjs/testing';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { Test } from '@nestjs/testing';
 import { initializeTransactionalContext } from 'typeorm-transactional';
 
+import { setupApp } from '@config/app.config';
 
 export const identityProviderServiceMock: jest.MockedObject<IIdentityProviderService> =
   {
@@ -18,13 +20,17 @@ export const identityProviderServiceMock: jest.MockedObject<IIdentityProviderSer
     refreshSession: jest.fn(),
   };
 
-export const testModuleBootstrapper = async (): Promise<TestingModule> => {
+export const createTestApp = async (): Promise<NestExpressApplication> => {
   initializeTransactionalContext();
 
-  return Test.createTestingModule({
+  const moduleRef = await Test.createTestingModule({
     imports: [AppModule],
   })
     .overrideProvider(IDENTITY_PROVIDER_SERVICE_KEY)
     .useValue(identityProviderServiceMock)
     .compile();
+  const app = moduleRef.createNestApplication<NestExpressApplication>();
+  app.set('query parser', 'extended');
+  setupApp(app);
+  return app.init();
 };
