@@ -36,7 +36,7 @@
     "aws:prepare": "npm run cognito:prepare && npm run sqs:prepare && npm run ses:prepare && npm run s3:prepare && npm run sns:prepare",
     "dev:prepare": "cross-env ./data/scripts/create_default_env.sh",
     "sentry:sourcemaps": "cross-env sentry-cli sourcemaps inject ./dist && cross-env sentry-cli sourcemaps upload ./dist",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "lint-staged": {
     "src/**/*.ts": [
@@ -78,6 +78,7 @@
     "uuid4": "^2.0.3"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.9.0",
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",

@@ -25,10 +25,7 @@ module.exports = {
     '<rootDir>/module/queue/',
   ],
   testEnvironment: 'node',
-  testPathIgnorePatterns: [
-    '<rootDir>/module/aws/',
-    '<rootDir>/module/queue/',
-  ],
+  testPathIgnorePatterns: ['<rootDir>/module/aws/', '<rootDir>/module/queue/'],
   // Keep these mappings synchronized with the ones in tsconfig.json as you add new modules
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/../src/$1',
