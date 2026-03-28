@@ -1,18 +1,13 @@
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import request from 'supertest';
 
-import { setupApp } from '@config/app.config';
-
-import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
+import { createTestApp } from '@test/test.module.bootstrapper';
 
 describe('User Module', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
-    const moduleRef = await testModuleBootstrapper();
-    app = moduleRef.createNestApplication({ logger: false });
-    setupApp(app);
-    await app.init();
+    app = await createTestApp();
   });
 
   afterEach(() => {

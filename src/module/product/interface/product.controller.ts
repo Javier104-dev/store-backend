@@ -7,6 +7,7 @@ import { User } from '@module/iam/user/domain/user.entity';
 import { ProductDto } from '@module/product/application/dto/product.dto';
 import { ProductFieldsQueryParamsDto } from '@module/product/application/dto/query-param/product-fields-query-params.dto';
 import { ProductFilterQueryParamsDto } from '@module/product/application/dto/query-param/product-filter-query-params.dto';
+import { DeleteProductPolicyHandler } from '@module/product/application/policy/delete-product.policy-handler';
 import { ReadProductPolicyHandler } from '@module/product/application/policy/read-product.policy-handler';
 import { ProductCrudUseCase } from '@module/product/application/use-cases/product-crud.use-case';
 import {
@@ -31,7 +32,6 @@ export class ProductController {
   constructor(private readonly crudUseCase: ProductCrudUseCase) {}
 
   @Get()
-  // @Policies(ReadProductPolicyHandler)
   @Auth(AuthType.None)
   async getAll(
     @Query('page') page: PageQueryParamsDto,
@@ -48,8 +48,7 @@ export class ProductController {
   }
 
   @Get('owner')
-  // @Policies(ReadProductPolicyHandler)
-  // admin
+  @Policies(ReadProductPolicyHandler)
   async getProductsFromOwner(
     @CurrentUser() user: User,
     @Query('page') page: PageQueryParamsDto,
@@ -65,15 +64,25 @@ export class ProductController {
     });
   }
 
-  @Get(':id')
-  @Auth(AuthType.None)
-  async getOneWithRelationsOrFail(
+  @Get('owner/:id')
+  @Policies(ReadProductPolicyHandler)
+  async findOneByOwnerOrFail(
+    @CurrentUser() user: User,
     @Param('id') id: string,
   ): Promise<OneSerializedResponseDto<ProductDto>> {
-    return this.crudUseCase.getOneWithRelationsOrFail(id);
+    return this.crudUseCase.findOneByOwnerOrFail(user, id);
+  }
+
+  @Get(':id')
+  @Auth(AuthType.None)
+  async getOneByIdOrFail(
+    @Param('id') id: string,
+  ): Promise<OneSerializedResponseDto<ProductDto>> {
+    return this.crudUseCase.getOneByIdOrFail(id);
   }
 
   @Delete(':id')
+  @Policies(DeleteProductPolicyHandler)
   async deleteOneOrFail(@Param('id') id: string): Promise<void> {
     return this.crudUseCase.deleteOneOrFail(id);
   }

@@ -1,9 +1,11 @@
 import { InferSubjects } from '@casl/ability';
 import { Author } from '@module/author/domain/author.entity';
 import { Book } from '@module/book/domain/book.entity';
+import { Category } from '@module/category/domain/category.entity';
 import { Genre } from '@module/genre/domain/genre.entity';
 import { User } from '@module/iam/user/domain/user.entity';
 import { Product } from '@module/product/domain/product.entity';
+import { Store } from '@module/store/domain/store.entity';
 
 export type AppSubjects =
   | InferSubjects<
@@ -17,5 +19,9 @@ export type AppSubjects =
       | Genre
       | typeof Product
       | Product
+      | typeof Category
+      | Category
+      | typeof Store
+      | Store
     >
   | 'all';

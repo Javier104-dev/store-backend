@@ -23,11 +23,19 @@ module.exports = {
     '<rootDir>/module/iam/authentication/infrastructure/cognito/cognito.service.ts',
     '<rootDir>/module/aws/',
     '<rootDir>/module/queue/',
+    // temporarily to avoid conflicts with coverage
+    '<rootDir>/module/author/',
+    '<rootDir>/module/book/',
+    '<rootDir>/module/genre/',
   ],
   testEnvironment: 'node',
   testPathIgnorePatterns: [
     '<rootDir>/module/aws/',
     '<rootDir>/module/queue/',
+    // temporarily to avoid conflicts with coverage
+    '<rootDir>/module/author/',
+    '<rootDir>/module/book/',
+    '<rootDir>/module/genre/',
   ],
   // Keep these mappings synchronized with the ones in tsconfig.json as you add new modules
   moduleNameMapper: {

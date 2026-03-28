@@ -5,7 +5,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { ICollection } from '@common/base/application/dto/collection.interface';
-import { IGetAllOptions } from '@common/base/get-all-options.interface';
+import {
+  IGetAllOptions,
+  IGetOneOptions,
+} from '@common/base/get-all-options.interface';
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
 import EntityNotFoundException from '@common/base/infrastructure/database/exception/not-found.exception';
 import { isEmptyObject } from '@common/base/infrastructure/database/utils/object.utils';
@@ -41,10 +44,17 @@ export class ProductPostgresRepository extends BaseRepository<Product> {
     };
   }
 
-  async getOneWithRelationsOrFail(id: string): Promise<Product> {
+  async findOneByIdOrFail(
+    id: string,
+    options?: IGetOneOptions<Product>,
+  ): Promise<Product> {
+    const { filter, relations } = options || {};
     const entity = await this.repository.findOne({
-      where: { id },
-      relations: ['categories'],
+      where: {
+        id,
+        ...filter,
+      },
+      ...(relations && { relations }),
     });
 
     if (!entity || isEmptyObject(entity)) {

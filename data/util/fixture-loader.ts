@@ -6,7 +6,7 @@ import {
   Parser,
   Resolver,
   fixturesIterator,
-} from 'typeorm-fixtures-cli/dist';
+} from 'typeorm-fixtures-cli';
 
 export const loadFixtures = async (
   fixturesPath: string,

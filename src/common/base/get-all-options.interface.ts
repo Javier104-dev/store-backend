@@ -4,7 +4,7 @@ import { Base } from '@common/base/domain/base.entity';
 import IEntity from '@common/base/domain/entity.interface';
 
 export type OnlyAttributes<Entity> = {
-  // eslint-disable-next-line @typescript-eslint/ban-types
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   [P in keyof Entity]: Entity[P] extends Base[] | Base | Function ? never : P;
 }[keyof Entity];
 
@@ -30,4 +30,15 @@ export interface IGetAllOptions<Entity extends IDto | IEntity, Relations = []> {
   sort?: SortOptions<Entity>;
   fields?: FieldOptions<Entity>;
   include?: Relations;
+}
+
+export type IWhere<Entity> = {
+  [K in keyof Omit<Entity, 'id'>]?: Entity[K] extends object
+    ? Partial<Entity[K]>
+    : Entity[K];
+};
+
+export interface IGetOneOptions<Entity> {
+  filter?: IWhere<Entity>;
+  relations?: (keyof Entity)[];
 }

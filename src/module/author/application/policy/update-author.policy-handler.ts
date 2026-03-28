@@ -49,7 +49,7 @@ export class UpdateAuthorPolicyHandler implements IPolicyHandler {
 
   private async getSubject(request: Request): Promise<Author> {
     const searchParam = request.params['id'];
-    const subjectId = searchParam ? searchParam : undefined;
+    const subjectId = typeof searchParam === 'string' ? searchParam : undefined;
     return this.authorRepository.getOneById(subjectId);
   }
 }

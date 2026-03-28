@@ -1,0 +1,14 @@
+entity: Category
+items:
+  category1:
+    id: '3f9c2d1a-6b47-4f1e-9a32-8c5e7d4b9120'
+    name: category1
+  category2:
+    id: 'a7d1e5c9-2b84-4c6f-b0e3-91f2d8a7c6b4'
+    name: category2
+  category3:
+    id: '5c2a9f8e-7d31-4b6a-8e90-3f4d1c7b2a65'
+    name: category3
+  category4:
+    id: 'd8b4e1a2-9c73-4f5b-a6e1-2b7c9d0f3a84'
+    name: category4

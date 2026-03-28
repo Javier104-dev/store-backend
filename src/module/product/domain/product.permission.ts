@@ -3,9 +3,7 @@ import { IPermissionsDefinition } from '@module/iam/authorization/infrastructure
 import { Product } from '@module/product/domain/product.entity';
 
 export const productPermissions: IPermissionsDefinition = {
-  regular(_, { can }) {
-    can(AppAction.Read, Product);
-  },
+  regular() {},
   admin(_, { can }) {
     can(AppAction.Manage, Product);
   },

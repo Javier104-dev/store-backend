@@ -3,5 +3,5 @@ export function isEmptyObject(obj: unknown): boolean {
     return false;
   }
 
-  return Object.keys(obj as object).length === 0;
+  return Object.keys(obj).length === 0;
 }

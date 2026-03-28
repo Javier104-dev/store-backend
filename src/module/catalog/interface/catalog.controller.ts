@@ -4,10 +4,14 @@ import { CategoryDto } from '@module/category/application/dto/category.dto';
 import { AuthType } from '@module/iam/authentication/domain/auth-type.enum';
 import { Auth } from '@module/iam/authentication/infrastructure/decorator/auth.decorator';
 import { CurrentUser } from '@module/iam/authentication/infrastructure/decorator/current-user.decorator';
+import { Policies } from '@module/iam/authorization/infrastructure/policy/decorator/policy.decorator';
+import { PolicyGuard } from '@module/iam/authorization/infrastructure/policy/guard/policy.guard';
 import { User } from '@module/iam/user/domain/user.entity';
 import { CreateProductDto } from '@module/product/application/dto/create-product.dto';
 import { ProductDto } from '@module/product/application/dto/product.dto';
 import { UpdateProductDto } from '@module/product/application/dto/update-product.dto';
+import { CreateProductPolicyHandler } from '@module/product/application/policy/create-product.policy-handler';
+import { UpdateProductPolicyHandler } from '@module/product/application/policy/update-product.policy-handler';
 import {
   Body,
   Controller,
@@ -16,6 +20,7 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -25,6 +30,7 @@ import { PageQueryParamsDto } from '@common/base/application/dto/query-param/pag
 import { SortOptions } from '@common/base/get-all-options.interface';
 
 @Controller('catalog')
+@UseGuards(PolicyGuard)
 @ApiTags('catalog')
 export class CatalogController {
   constructor(private readonly crudUseCase: CatalogCrudUseCase) {}
@@ -43,18 +49,21 @@ export class CatalogController {
   }
 
   @Post('product')
+  @Policies(CreateProductPolicyHandler)
   async saveOne(
     @Body() createDto: CreateProductDto,
     @CurrentUser() user: User,
   ): Promise<OneSerializedResponseDto<ProductDto>> {
-    return this.crudUseCase.saveOneProduct(createDto, user.id);
+    return this.crudUseCase.saveOneProduct(createDto, user);
   }
 
   @Patch('product/:id')
+  @Policies(UpdateProductPolicyHandler)
   async updateOneOrFail(
     @Param('id') id: string,
     @Body() updateDto: UpdateProductDto,
+    @CurrentUser() user: User,
   ): Promise<OneSerializedResponseDto<ProductDto>> {
-    return this.crudUseCase.updateOneOrFail(id, updateDto);
+    return this.crudUseCase.updateOneOrFail(id, updateDto, user);
   }
 }

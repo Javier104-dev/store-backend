@@ -5,12 +5,11 @@ import request from 'supertest';
 
 import { loadFixtures } from '@data/util/fixture-loader';
 
-import { setupApp } from '@config/app.config';
 import { datasourceOptions } from '@config/orm.config';
 
 import {
+  createTestApp,
   identityProviderServiceMock,
-  testModuleBootstrapper,
 } from '@test/test.module.bootstrapper';
 
 describe('Admin', () => {
@@ -19,10 +18,7 @@ describe('Admin', () => {
   beforeAll(async () => {
     process.env.AUTH_ALLOWED_EMAIL_DOMAINS =
       'test.com,example.com,account.com,biggertech.co';
-    const moduleRef = await testModuleBootstrapper();
-    app = moduleRef.createNestApplication();
-    setupApp(app);
-    await app.init();
+    app = await createTestApp();
   });
 
   beforeEach(async () => {

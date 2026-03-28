@@ -37,6 +37,7 @@ export class ResponseSerializerService {
       };
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     serializedData.data?.id === EMPTY_ID && delete serializedData.data.id;
     return serializedData;
   }
@@ -106,8 +107,10 @@ export class ResponseSerializerService {
       const self = `${normalizedCurrentRequestUrl}${urlParamId}/relationships/${relationKey}`;
       const related = `${this.appBaseUrl}${relationEndpoint}`;
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let data: any;
       if (Array.isArray(relatedResource)) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         data = relatedResource.map((item: any) => ({
           type: relationKey,
           id: item.id?.toString(),

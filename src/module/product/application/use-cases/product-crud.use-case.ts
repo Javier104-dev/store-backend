@@ -14,10 +14,13 @@ import { Inject, Injectable } from '@nestjs/common';
 import { BaseResponseAdapter } from '@common/base/application/adapter/base-response.adapter';
 import { CollectionDto } from '@common/base/application/dto/collection.dto';
 import { ICollection } from '@common/base/application/dto/collection.interface';
+import { ManySerializedResponseDto } from '@common/base/application/dto/many-serialized-response.dto';
 import { OneSerializedResponseDto } from '@common/base/application/dto/one-serialized-response.dto';
 import BaseCrudUseCase from '@common/base/application/use-case/base.crud.use-case';
-import { IGetAllOptions } from '@common/base/get-all-options.interface';
-import { ManySerializedResponseDto } from '@common/base/application/dto/many-serialized-response.dto';
+import {
+  IGetAllOptions,
+  IGetOneOptions,
+} from '@common/base/get-all-options.interface';
 
 @Injectable()
 export class ProductCrudUseCase extends BaseCrudUseCase<
@@ -51,15 +54,46 @@ export class ProductCrudUseCase extends BaseCrudUseCase<
     return this.repository.getAll(fullOptions);
   }
 
-  async getOneWithRelationsOrFail(
+  async findOneByOwnerOrFail(
+    user: User,
     id: string,
   ): Promise<OneSerializedResponseDto<ProductDto>> {
-    const entity = await this.repository.getOneWithRelationsOrFail(id);
+    const store = await this.storeCrudUseCase.getStoreFromUserIdOrFail(user.id);
+
+    const options: IGetOneOptions<Product> = {
+      filter: { store: { id: store.id } },
+      relations: ['categories'],
+    };
+
+    return this.findOneByIdOrFail(id, options);
+  }
+
+  async getOneByIdOrFail(
+    id: string,
+  ): Promise<OneSerializedResponseDto<ProductDto>> {
+    const options: IGetOneOptions<Product> = {
+      relations: ['categories'],
+    };
+    return this.findOneByIdOrFail(id, options);
+  }
+
+  async findOneByIdOrFail(
+    id: string,
+    options?: IGetOneOptions<Product>,
+  ): Promise<OneSerializedResponseDto<ProductDto>> {
+    const entity = await this.findRawOneByIdOrFail(id, options);
     return this.responseAdapter.oneEntityResponse(
       this.entityName,
       this.productMapper.fromEntity<ProductDto>(entity),
-      ['categories'],
+      options?.relations,
     );
+  }
+
+  async findRawOneByIdOrFail(
+    id: string,
+    options?: IGetOneOptions<Product>,
+  ): Promise<Product> {
+    return this.repository.findOneByIdOrFail(id, options);
   }
 
   async getProductsFromOwner(

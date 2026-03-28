@@ -3,10 +3,9 @@ import request from 'supertest';
 
 import { loadFixtures } from '@data/util/fixture-loader';
 
-import { setupApp } from '@config/app.config';
 import { datasourceOptions } from '@config/orm.config';
 
-import { testModuleBootstrapper } from '@test/test.module.bootstrapper';
+import { createTestApp } from '@test/test.module.bootstrapper';
 import { createAccessToken } from '@test/test.util';
 
 import { GENRE_ENTITY_NAME } from '@/module/genre/domain/genre.name';
@@ -20,10 +19,7 @@ describe('Genre Module', () => {
 
   beforeAll(async () => {
     await loadFixtures(`${__dirname}/fixture`, datasourceOptions);
-    const moduleRef = await testModuleBootstrapper();
-    app = moduleRef.createNestApplication({ logger: false });
-    setupApp(app);
-    await app.init();
+    app = await createTestApp();
   });
 
   afterEach(() => {

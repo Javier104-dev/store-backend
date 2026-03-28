@@ -151,7 +151,7 @@ export class BaseResponseAdapter {
           relationName,
           response as Record<string, unknown>,
         )
-      : (response as ResponseDto[]).map((item) =>
+      : response.map((item) =>
           this.serializerService.serialize(
             relationName,
             item as Record<string, unknown>,
