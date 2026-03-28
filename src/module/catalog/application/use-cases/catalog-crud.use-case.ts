@@ -1,13 +1,14 @@
-import { CatalogMapper } from '@module/catalog/application/mapper/catalog.mapper';
 import { CategoryDto } from '@module/category/application/dto/category.dto';
+import { CategoryMapper } from '@module/category/application/mapper/category.mapper';
 import { CategoryCrudUseCase } from '@module/category/application/use-cases/category-crud.use-case';
 import { Category } from '@module/category/domain/category.entity';
+import { User } from '@module/iam/user/domain/user.entity';
 import { CreateProductDto } from '@module/product/application/dto/create-product.dto';
 import { ProductDto } from '@module/product/application/dto/product.dto';
 import { UpdateProductDto } from '@module/product/application/dto/update-product.dto';
+import { ProductMapper } from '@module/product/application/mapper/product.mapper';
 import { ProductCrudUseCase } from '@module/product/application/use-cases/product-crud.use-case';
 import { Product } from '@module/product/domain/product.entity';
-import { StoreMapper } from '@module/store/application/mapper/store.mapper';
 import { StoreCrudUseCase } from '@module/store/application/use-cases/store-crud.use-case';
 import { Injectable } from '@nestjs/common';
 
@@ -17,6 +18,7 @@ import { ManySerializedResponseDto } from '@common/base/application/dto/many-ser
 import { OneSerializedResponseDto } from '@common/base/application/dto/one-serialized-response.dto';
 import {
   IGetAllOptions,
+  IGetOneOptions,
   PageOptions,
 } from '@common/base/get-all-options.interface';
 
@@ -26,9 +28,9 @@ export class CatalogCrudUseCase {
     private readonly storeCrudUseCase: StoreCrudUseCase,
     private readonly productCrudUseCase: ProductCrudUseCase,
     private readonly categoryCrudUseCase: CategoryCrudUseCase,
-    private readonly catalogMapper: CatalogMapper,
+    private readonly productMapper: ProductMapper,
+    private readonly categoryMapper: CategoryMapper,
     private readonly responseAdapter: BaseResponseAdapter,
-    private readonly storeMapper: StoreMapper,
   ) {}
 
   async getAllCategoriesWithProducts(
@@ -57,7 +59,7 @@ export class CatalogCrudUseCase {
     const collectionDto = new CollectionDto({
       ...collection,
       data: categoriesWithProducts.map((entity) =>
-        this.catalogMapper.fromEntity<CategoryDto>(entity),
+        this.categoryMapper.fromEntity<CategoryDto>(entity),
       ),
     });
 
@@ -70,24 +72,24 @@ export class CatalogCrudUseCase {
 
   async saveOneProduct(
     createDto: CreateProductDto,
-    userId: string,
+    user: User,
   ): Promise<OneSerializedResponseDto<ProductDto>> {
     const { categoryIds } = createDto;
 
-    const store = await this.storeCrudUseCase.getStoreFromUserIdOrFail(userId);
+    const store = await this.storeCrudUseCase.getStoreFromUserIdOrFail(user.id);
     const categories = await this.resolveCategories(categoryIds);
 
-    const product = this.storeMapper.toEntity<Product>({
+    const product = this.productMapper.toEntity<Product>({
       ...createDto,
       store,
       categories,
     });
 
-    const productCreated = await this.productCrudUseCase.saveOneRaw(product);
+    const productCreated = await this.productCrudUseCase.saveRawOne(product);
 
     return this.responseAdapter.oneEntityResponse<ProductDto>(
       Product.getEntityName(),
-      this.catalogMapper.fromEntity<ProductDto>(productCreated, {
+      this.productMapper.fromEntity<ProductDto>(productCreated, {
         exclude: ['categoryIds'],
       }),
       ['store', 'categories'],
@@ -97,28 +99,36 @@ export class CatalogCrudUseCase {
   async updateOneOrFail(
     id: string,
     updateDto: UpdateProductDto,
+    user: User,
   ): Promise<OneSerializedResponseDto<ProductDto>> {
     const { categoryIds } = updateDto;
 
+    const store = await this.storeCrudUseCase.getStoreFromUserIdOrFail(user.id);
+
+    const options: IGetOneOptions<Product> = {
+      filter: { store: { id: store.id } },
+    };
+
+    const product = await this.productCrudUseCase.findRawOneByIdOrFail(
+      id,
+      options,
+    );
+
     const categories = await this.resolveCategories(categoryIds);
 
-    const product = this.storeMapper.toEntity<Product>({
+    const productToUpdate = this.productMapper.toEntity<Product>({
+      ...product,
       ...updateDto,
       categories,
     });
 
-    const productUpdated = await this.productCrudUseCase.updateOneOrFailRaw(
-      id,
-      {
-        ...product,
-        categories,
-      },
-    );
+    const productUpdated =
+      await this.productCrudUseCase.saveRawOne(productToUpdate);
 
     return this.responseAdapter.oneEntityResponse<ProductDto>(
       Product.getEntityName(),
-      this.catalogMapper.fromEntity<ProductDto>(productUpdated, {
-        exclude: ['categories'],
+      this.productMapper.fromEntity<ProductDto>(productUpdated, {
+        exclude: ['categories', 'categoryIds'],
       }),
     );
   }
