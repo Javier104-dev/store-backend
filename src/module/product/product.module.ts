@@ -1,6 +1,9 @@
 import { AuthorizationModule } from '@module/iam/authorization/authorization.module';
 import { ProductMapper } from '@module/product/application/mapper/product.mapper';
+import { CreateProductPolicyHandler } from '@module/product/application/policy/create-product.policy-handler';
+import { DeleteProductPolicyHandler } from '@module/product/application/policy/delete-product.policy-handler';
 import { ReadProductPolicyHandler } from '@module/product/application/policy/read-product.policy-handler';
+import { UpdateProductPolicyHandler } from '@module/product/application/policy/update-product.policy-handler';
 import { PRODUCT_REPOSITORY_KEY } from '@module/product/application/repository/product.repository.interface';
 import { ProductCrudUseCase } from '@module/product/application/use-cases/product-crud.use-case';
 import { productPermissions } from '@module/product/domain/product.permission';
@@ -11,8 +14,12 @@ import { StoreModule } from '@module/store/store.module';
 import { Module, Provider } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-const policyHandlersProviders = [ReadProductPolicyHandler];
-
+const policyHandlersProviders = [
+  ReadProductPolicyHandler,
+  CreateProductPolicyHandler,
+  UpdateProductPolicyHandler,
+  DeleteProductPolicyHandler,
+];
 const productRepositoryProvider: Provider = {
   provide: PRODUCT_REPOSITORY_KEY,
   useClass: ProductPostgresRepository,
@@ -30,9 +37,9 @@ const productRepositoryProvider: Provider = {
   providers: [
     ProductCrudUseCase,
     productRepositoryProvider,
-    ...policyHandlersProviders,
     ProductMapper,
+    ...policyHandlersProviders,
   ],
-  exports: [ProductCrudUseCase],
+  exports: [ProductCrudUseCase, AuthorizationModule],
 })
 export class ProductModule {}
