@@ -1,0 +1,10 @@
+entity: Store
+items:
+  store1:
+    id: '6f1a9c2e-8b7d-4f3a-9c21-3e7d2a6b4c8f'
+    name: store 1
+    owner: '@admin'
+  store2:
+    id: 'a3d2f9b1-7c6e-4a88-9b2f-1e3c7d5a8f2b'
+    name: store 2
+    owner: '@regular'
