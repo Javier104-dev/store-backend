@@ -31,3 +31,14 @@ export interface IGetAllOptions<Entity extends IDto | IEntity, Relations = []> {
   fields?: FieldOptions<Entity>;
   include?: Relations;
 }
+
+export type IWhere<Entity> = {
+  [K in keyof Omit<Entity, 'id'>]?: Entity[K] extends object
+    ? Partial<Entity[K]>
+    : Entity[K];
+};
+
+export interface IGetOneOptions<Entity> {
+  filter?: IWhere<Entity>;
+  relations?: (keyof Entity)[];
+}
