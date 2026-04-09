@@ -71,6 +71,10 @@ class BaseRepository<T extends IEntity> implements IRepository<T> {
     return this.repository.save(entity);
   }
 
+  async saveMany(entities: T[]): Promise<T[]> {
+    return this.repository.save(entities);
+  }
+
   async updateOneOrFail(
     id: string,
     updates: Partial<Omit<T, 'id'>>,

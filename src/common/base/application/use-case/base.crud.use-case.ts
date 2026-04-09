@@ -72,6 +72,10 @@ abstract class BaseCrudUseCase<
   async saveRawOne(entity: Entity): Promise<Entity> {
     return this.repository.saveOne(entity);
   }
+
+  async saveRawMany(entities: Entity[]): Promise<Entity[]> {
+    return this.repository.saveMany(entities);
+  }
 }
 
 export default BaseCrudUseCase;

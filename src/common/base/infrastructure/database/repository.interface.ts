@@ -11,6 +11,8 @@ interface IRepository<T extends IEntity> {
 
   saveOne(entity: T): Promise<T>;
 
+  saveMany(entities: T[]): Promise<T[]>;
+
   updateOneOrFail(id: string, updates: Partial<Omit<T, 'id'>>): Promise<T>;
 
   deleteOneOrFail(id: string): Promise<void>;
