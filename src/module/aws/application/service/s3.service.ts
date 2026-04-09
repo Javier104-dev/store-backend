@@ -11,8 +11,12 @@ export class AmazonS3Service implements IUploadFileService {
   constructor(private readonly configService: ConfigService) {
     this.s3 = new S3Client({
       region: this.configService.get('aws.region'),
+      //LocalStack
+      endpoint: this.configService.get('aws.endpoint'),
+      forcePathStyle: true,
+      //LocalStack
       credentials: {
-        accessKeyId: this.configService.get('aws.credentials.accessKey'),
+        accessKeyId: this.configService.get('aws.credentials.accessKeyId'),
         secretAccessKey: this.configService.get(
           'aws.credentials.secretAccessKey',
         ),
@@ -30,6 +34,7 @@ export class AmazonS3Service implements IUploadFileService {
       Key: `${folder}/${key}`,
       Body: file.buffer,
       ACL: 'public-read',
+      ContentType: file.mimetype,
     });
 
     await this.s3.send(command);

@@ -14,6 +14,9 @@ export const environmentConfig = () => ({
   },
   aws: {
     region: process.env.AWS_REGION,
+    // LocalStack
+    endpoint: process.env.AWS_ENDPOINT,
+    // LocalStack
     credentials: {
       accessKeyId: process.env.AWS_ACCESS_KEY_ID,
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -28,5 +31,5 @@ export const environmentConfig = () => ({
   },
   s3: {
     bucket: process.env.S3_BUCKET,
-  }
+  },
 });

@@ -16,7 +16,7 @@ services:
     volumes:
       - './data/docker/volumes/cognito:/app/.cognito'
   localstack:
-    image: 'localstack/localstack:3.5'
+    image: 'gresau/localstack-persist:4'
     environment:
       SES_IDENTITY_EMAIL: '${SES_IDENTITY_EMAIL}'
       S3_BUCKET: '${S3_BUCKET}'
@@ -30,3 +30,4 @@ services:
     volumes:
       - './data/docker/volumes/localstack/var/run/docker.sock:/var/run/docker.sock'
       - './data/docker/scripts:/etc/localstack/init/ready.d'
+      - './data/docker/volumes/localstack/data:/persisted-data'
