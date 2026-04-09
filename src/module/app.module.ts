@@ -1,6 +1,7 @@
 import { AppService } from '@module/app/application/service/app.service';
 import { ResponseSerializerService } from '@module/app/application/service/response-serializer.service';
 import { AuthorModule } from '@module/author/author.module';
+import { AwsModule } from '@module/aws/aws.module';
 import { BookModule } from '@module/book/book.module';
 import { CatalogModule } from '@module/catalog/catalog.module';
 import { CategoryModule } from '@module/category/category.module';
@@ -10,6 +11,7 @@ import { AuthenticationModule } from '@module/iam/authentication/authentication.
 import { IamModule } from '@module/iam/iam.module';
 import { ProductModule } from '@module/product/product.module';
 import { StoreModule } from '@module/store/store.module';
+import { UploadModule } from '@module/upload/upload.module';
 import { Global, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { DiscoveryModule } from '@nestjs/core';
@@ -49,6 +51,8 @@ import { datasourceOptions } from '@config/orm.config';
     CategoryModule,
     StoreModule,
     CatalogModule,
+    AwsModule,
+    UploadModule,
   ],
   providers: [
     AppService,
