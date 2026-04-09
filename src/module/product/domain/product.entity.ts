@@ -1,5 +1,6 @@
 import { Category } from '@module/category/domain/category.entity';
 import { Store } from '@module/store/domain/store.entity';
+import { Upload } from '@module/upload/domain/upload.entity';
 
 import { Base } from '@common/base/domain/base.entity';
 
@@ -13,4 +14,6 @@ export class Product extends Base {
   store?: Store;
 
   categories?: Category[];
+
+  upload?: Upload[];
 }

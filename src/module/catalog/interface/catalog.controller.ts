@@ -20,8 +20,11 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiTags } from '@nestjs/swagger';
 
 import { ManySerializedResponseDto } from '@common/base/application/dto/many-serialized-response.dto';
@@ -50,11 +53,13 @@ export class CatalogController {
 
   @Post('product')
   @Policies(CreateProductPolicyHandler)
+  @UseInterceptors(FilesInterceptor('images'))
   async saveOne(
     @Body() createDto: CreateProductDto,
     @CurrentUser() user: User,
+    @UploadedFiles() files: Express.Multer.File[],
   ): Promise<OneSerializedResponseDto<ProductDto>> {
-    return this.crudUseCase.saveOneProduct(createDto, user);
+    return this.crudUseCase.saveOneProduct(createDto, user, files);
   }
 
   @Patch('product/:id')

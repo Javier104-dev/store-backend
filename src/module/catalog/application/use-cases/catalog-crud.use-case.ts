@@ -10,6 +10,9 @@ import { ProductMapper } from '@module/product/application/mapper/product.mapper
 import { ProductCrudUseCase } from '@module/product/application/use-cases/product-crud.use-case';
 import { Product } from '@module/product/domain/product.entity';
 import { StoreCrudUseCase } from '@module/store/application/use-cases/store-crud.use-case';
+import { UploadMapper } from '@module/upload/application/mapper/upload.mapper';
+import { UploadCrudUseCase } from '@module/upload/application/use-cases/upload-crud.use-case';
+import { Upload } from '@module/upload/domain/upload.entity';
 import { Injectable } from '@nestjs/common';
 
 import { BaseResponseAdapter } from '@common/base/application/adapter/base-response.adapter';
@@ -28,8 +31,10 @@ export class CatalogCrudUseCase {
     private readonly storeCrudUseCase: StoreCrudUseCase,
     private readonly productCrudUseCase: ProductCrudUseCase,
     private readonly categoryCrudUseCase: CategoryCrudUseCase,
+    private readonly uploadCrudUseCase: UploadCrudUseCase,
     private readonly productMapper: ProductMapper,
     private readonly categoryMapper: CategoryMapper,
+    private readonly uploadMapper: UploadMapper,
     private readonly responseAdapter: BaseResponseAdapter,
   ) {}
 
@@ -73,7 +78,9 @@ export class CatalogCrudUseCase {
   async saveOneProduct(
     createDto: CreateProductDto,
     user: User,
+    files: Express.Multer.File[],
   ): Promise<OneSerializedResponseDto<ProductDto>> {
+    const FOLDER = 'product';
     const { categoryIds } = createDto;
 
     const store = await this.storeCrudUseCase.getStoreFromUserIdOrFail(user.id);
@@ -87,12 +94,26 @@ export class CatalogCrudUseCase {
 
     const productCreated = await this.productCrudUseCase.saveRawOne(product);
 
+    if (files) {
+      const upload = await this.uploadCrudUseCase.uploadFiles(
+        files,
+        FOLDER,
+        this.productMapper.fromEntity<Product>(productCreated, {
+          exclude: ['categoryIds', 'store', 'categories'],
+        }),
+      );
+
+      productCreated.upload = upload.map((upload) =>
+        this.uploadMapper.fromEntity<Upload>(upload, { exclude: ['product'] }),
+      );
+    }
+
     return this.responseAdapter.oneEntityResponse<ProductDto>(
       Product.getEntityName(),
       this.productMapper.fromEntity<ProductDto>(productCreated, {
         exclude: ['categoryIds'],
       }),
-      ['store', 'categories'],
+      ['store', 'categories', 'upload'],
     );
   }
 
