@@ -39,7 +39,7 @@ export class ProductController {
     @Query('fields') fields: ProductFieldsQueryParamsDto,
     @Query('sort') sort: SortOptions<ProductDto>,
   ): Promise<ManySerializedResponseDto<ProductDto>> {
-    return this.crudUseCase.getAll({
+    return this.crudUseCase.getAllProducts({
       page,
       filter,
       fields: fields.target,

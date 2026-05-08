@@ -1,6 +1,7 @@
 import { Category } from '@module/category/domain/category.entity';
 import { Product } from '@module/product/domain/product.entity';
 import { Store } from '@module/store/domain/store.entity';
+import { Upload } from '@module/upload/domain/upload.entity';
 import { EntitySchema } from 'typeorm';
 
 import { withBaseSchemaColumns } from '@common/base/infrastructure/database/base.schema';
@@ -36,6 +37,11 @@ export const ProductSchema = new EntitySchema<Product>({
       target: Category.name,
       joinTable: true,
       inverseSide: 'products',
+    },
+    upload: {
+      type: 'one-to-many',
+      target: Upload.name,
+      inverseSide: 'product',
     },
   },
 });

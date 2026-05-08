@@ -175,6 +175,7 @@ export class ResponseSerializerService {
     resource: T,
     relationshipKeys: string[],
     entityName: string,
+    transformIncluded?: Record<string, (rel: unknown) => unknown>,
   ): { included: Record<string, unknown>[] } {
     const included = [];
 
@@ -192,9 +193,15 @@ export class ResponseSerializerService {
         );
         if (alreadyIncluded) return;
 
+        const transformedRel = transformIncluded?.[relationKey]
+          ? transformIncluded[relationKey](rel)
+          : rel;
+
         const relationSerializer = new Serializer(relationKey, {
           ...RESPONSE_ADAPTER_BASE_OPTIONS,
-          attributes: Object.keys(rel).filter((attr) => attr !== 'id'),
+          attributes: Object.keys(transformedRel).filter(
+            (attr) => attr !== 'id',
+          ),
         });
 
         const selfEndpoint = this.appService.getEndpointForRelatedEntity(
@@ -202,9 +209,9 @@ export class ResponseSerializerService {
           relationKey,
         );
 
-        const data = relationSerializer.serialize(rel).data;
+        const data = relationSerializer.serialize(transformedRel).data;
         const links = {
-          self: `${this.appBaseUrl}${selfEndpoint}/${rel.id}`,
+          self: `${this.appBaseUrl}${selfEndpoint}/${transformedRel.id}`,
         };
 
         included.push({

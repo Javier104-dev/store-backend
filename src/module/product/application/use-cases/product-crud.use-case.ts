@@ -9,6 +9,8 @@ import {
 } from '@module/product/application/repository/product.repository.interface';
 import { Product } from '@module/product/domain/product.entity';
 import { StoreCrudUseCase } from '@module/store/application/use-cases/store-crud.use-case';
+import { UploadDto } from '@module/upload/application/dto/upload.dto';
+import { UploadCrudUseCase } from '@module/upload/application/use-cases/upload-crud.use-case';
 import { Inject, Injectable } from '@nestjs/common';
 
 import { BaseResponseAdapter } from '@common/base/application/adapter/base-response.adapter';
@@ -34,15 +36,42 @@ export class ProductCrudUseCase extends BaseCrudUseCase<
     protected readonly repository: IProductRepository,
     private readonly storeCrudUseCase: StoreCrudUseCase,
     private readonly productMapper: ProductMapper,
+    private readonly uploadCrudUseCase: UploadCrudUseCase,
     responseAdapter: BaseResponseAdapter,
   ) {
     super(repository, productMapper, responseAdapter, Product.getEntityName());
+  }
+
+  async getAllProducts(
+    options?: IGetAllOptions<Product>,
+  ): Promise<ManySerializedResponseDto<ProductDto>> {
+    const relationsOptions: IGetOneOptions<Product> = {
+      relations: ['upload'],
+    };
+
+    const collection = await this.repository.getAll(options, relationsOptions);
+    const collectionDto = new CollectionDto({
+      ...collection,
+      data: collection.data.map((entity) =>
+        this.mapper.fromEntity<ProductDto>(entity),
+      ),
+    });
+
+    return this.responseAdapter.manyEntitiesResponse(
+      this.entityName,
+      collectionDto,
+      this.buildRelationsObject(relationsOptions),
+      this.uploadCrudUseCase.transformUploadIncluded(),
+    );
   }
 
   async getProductCollectionByCategoryId(
     categoryId: string,
     options: IGetAllOptions<Product>,
   ): Promise<ICollection<ProductDto>> {
+    const relationsOptions: IGetOneOptions<Product> = {
+      relations: ['upload'],
+    };
     const fullOptions = {
       ...options,
       filter: {
@@ -51,7 +80,7 @@ export class ProductCrudUseCase extends BaseCrudUseCase<
       },
     };
 
-    return this.repository.getAll(fullOptions);
+    return this.repository.getAll(fullOptions, relationsOptions);
   }
 
   async findOneByOwnerOrFail(
@@ -72,20 +101,28 @@ export class ProductCrudUseCase extends BaseCrudUseCase<
     id: string,
   ): Promise<OneSerializedResponseDto<ProductDto>> {
     const options: IGetOneOptions<Product> = {
-      relations: ['categories'],
+      relations: ['categories', 'upload'],
     };
-    return this.findOneByIdOrFail(id, options);
+
+    return this.findOneByIdOrFail(
+      id,
+      options,
+      this.uploadCrudUseCase.transformUploadIncluded(),
+    );
   }
 
   async findOneByIdOrFail(
     id: string,
     options?: IGetOneOptions<Product>,
+    transformIncluded?: Record<string, (rel: UploadDto) => UploadDto>,
   ): Promise<OneSerializedResponseDto<ProductDto>> {
     const entity = await this.findRawOneByIdOrFail(id, options);
+
     return this.responseAdapter.oneEntityResponse(
       this.entityName,
       this.productMapper.fromEntity<ProductDto>(entity),
-      options?.relations,
+      this.buildRelationsObject(options),
+      transformIncluded,
     );
   }
 
@@ -110,7 +147,14 @@ export class ProductCrudUseCase extends BaseCrudUseCase<
       },
     };
 
-    const productFromStore = await this.repository.getAll(fullOptions);
+    const relationsOptions: IGetOneOptions<Product> = {
+      relations: ['upload'],
+    };
+
+    const productFromStore = await this.repository.getAll(
+      fullOptions,
+      relationsOptions,
+    );
 
     const collectionDto = new CollectionDto({
       ...productFromStore,
@@ -122,6 +166,16 @@ export class ProductCrudUseCase extends BaseCrudUseCase<
     return this.responseAdapter.manyEntitiesResponse(
       this.entityName,
       collectionDto,
+      this.buildRelationsObject(relationsOptions),
+      this.uploadCrudUseCase.transformUploadIncluded(),
+    );
+  }
+
+  private buildRelationsObject(
+    relationsOptions: IGetOneOptions<Product>,
+  ): Partial<Record<keyof Product, true>> {
+    return Object.fromEntries(
+      (relationsOptions?.relations ?? []).map((key) => [key, true as const]),
     );
   }
 }

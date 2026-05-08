@@ -8,8 +8,10 @@ import { ProductDto } from '@module/product/application/dto/product.dto';
 import { UpdateProductDto } from '@module/product/application/dto/update-product.dto';
 import { ProductMapper } from '@module/product/application/mapper/product.mapper';
 import { ProductCrudUseCase } from '@module/product/application/use-cases/product-crud.use-case';
+import { PRODUCT_UPLOAD_FOLDER } from '@module/product/domain/product.constants';
 import { Product } from '@module/product/domain/product.entity';
 import { StoreCrudUseCase } from '@module/store/application/use-cases/store-crud.use-case';
+import { UploadCrudUseCase } from '@module/upload/application/use-cases/upload-crud.use-case';
 import { Injectable } from '@nestjs/common';
 
 import { BaseResponseAdapter } from '@common/base/application/adapter/base-response.adapter';
@@ -28,6 +30,7 @@ export class CatalogCrudUseCase {
     private readonly storeCrudUseCase: StoreCrudUseCase,
     private readonly productCrudUseCase: ProductCrudUseCase,
     private readonly categoryCrudUseCase: CategoryCrudUseCase,
+    private readonly uploadCrudUseCase: UploadCrudUseCase,
     private readonly productMapper: ProductMapper,
     private readonly categoryMapper: CategoryMapper,
     private readonly responseAdapter: BaseResponseAdapter,
@@ -66,13 +69,19 @@ export class CatalogCrudUseCase {
     return this.responseAdapter.manyEntitiesResponse(
       Category.getEntityName(),
       collectionDto,
-      ['products'],
+      {
+        products: {
+          upload: true,
+        },
+      },
+      this.uploadCrudUseCase.transformUploadIncluded(),
     );
   }
 
   async saveOneProduct(
     createDto: CreateProductDto,
     user: User,
+    files: Express.Multer.File[],
   ): Promise<OneSerializedResponseDto<ProductDto>> {
     const { categoryIds } = createDto;
 
@@ -87,12 +96,26 @@ export class CatalogCrudUseCase {
 
     const productCreated = await this.productCrudUseCase.saveRawOne(product);
 
+    if (files.length) {
+      await this.uploadCrudUseCase.uploadFiles(
+        files,
+        PRODUCT_UPLOAD_FOLDER,
+        this.productMapper.fromEntity<Product>(productCreated, {
+          exclude: ['categoryIds', 'store', 'categories'],
+        }),
+      );
+    }
+
     return this.responseAdapter.oneEntityResponse<ProductDto>(
       Product.getEntityName(),
       this.productMapper.fromEntity<ProductDto>(productCreated, {
         exclude: ['categoryIds'],
       }),
-      ['store', 'categories'],
+      {
+        store: true,
+        cateogies: true,
+        upload: true,
+      },
     );
   }
 
@@ -100,13 +123,15 @@ export class CatalogCrudUseCase {
     id: string,
     updateDto: UpdateProductDto,
     user: User,
+    files: Express.Multer.File[],
   ): Promise<OneSerializedResponseDto<ProductDto>> {
-    const { categoryIds } = updateDto;
+    const { categoryIds, uploadIds } = updateDto;
 
     const store = await this.storeCrudUseCase.getStoreFromUserIdOrFail(user.id);
 
     const options: IGetOneOptions<Product> = {
       filter: { store: { id: store.id } },
+      relations: ['upload'],
     };
 
     const product = await this.productCrudUseCase.findRawOneByIdOrFail(
@@ -114,10 +139,32 @@ export class CatalogCrudUseCase {
       options,
     );
 
+    const { upload, ...productWithoutUpload } = product;
+
+    const idsToDelete = uploadIds ?? [];
+
+    const uploadsToDelete = upload.filter(
+      (upload) => !idsToDelete.includes(upload.id),
+    );
+
+    if (uploadsToDelete.length) {
+      await this.uploadCrudUseCase.deleteManyFiles(uploadsToDelete);
+    }
+
+    if (files?.length) {
+      await this.uploadCrudUseCase.uploadFiles(
+        files,
+        PRODUCT_UPLOAD_FOLDER,
+        this.productMapper.fromEntity<Product>(product, {
+          exclude: ['upload'],
+        }),
+      );
+    }
+
     const categories = await this.resolveCategories(categoryIds);
 
     const productToUpdate = this.productMapper.toEntity<Product>({
-      ...product,
+      ...productWithoutUpload,
       ...updateDto,
       categories,
     });

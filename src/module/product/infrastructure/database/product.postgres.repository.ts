@@ -24,10 +24,13 @@ export class ProductPostgresRepository extends BaseRepository<Product> {
 
   async getAll(
     options: IGetAllOptions<Product>,
+    relationsOptions?: Omit<IGetOneOptions<Product>, 'filter'>,
   ): Promise<ICollection<Product>> {
     const { filter, page, sort, fields } = options || {};
+    const { relations } = relationsOptions || {};
 
     const [items, itemCount] = await this.repository.findAndCount({
+      ...(relations && { relations }),
       where: filter,
       order: sort,
       select: fields,
