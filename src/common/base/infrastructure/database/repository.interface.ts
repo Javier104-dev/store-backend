@@ -17,7 +17,7 @@ interface IRepository<T extends IEntity> {
 
   deleteOneOrFail(id: string): Promise<void>;
 
-  deleteMany(id: string[]): Promise<void>
+  deleteMany(id: string[]): Promise<void>;
 }
 
 export default IRepository;
