@@ -11,6 +11,7 @@ import { ProductPostgresRepository } from '@module/product/infrastructure/databa
 import { ProductSchema } from '@module/product/infrastructure/database/product.schema';
 import { ProductController } from '@module/product/interface/product.controller';
 import { StoreModule } from '@module/store/store.module';
+import { UploadModule } from '@module/upload/upload.module';
 import { Module, Provider } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -32,6 +33,7 @@ const productRepositoryProvider: Provider = {
       permissions: productPermissions,
     }),
     StoreModule,
+    UploadModule,
   ],
   controllers: [ProductController],
   providers: [

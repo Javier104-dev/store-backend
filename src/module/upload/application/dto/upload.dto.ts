@@ -6,4 +6,8 @@ export class UploadDto extends BaseDto {
   @DtoProperty
   @IsOptional()
   key?: string;
+
+  @DtoProperty
+  @IsOptional()
+  url?: string;
 }

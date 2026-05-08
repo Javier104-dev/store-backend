@@ -16,6 +16,8 @@ interface IRepository<T extends IEntity> {
   updateOneOrFail(id: string, updates: Partial<Omit<T, 'id'>>): Promise<T>;
 
   deleteOneOrFail(id: string): Promise<void>;
+
+  deleteMany(id: string[]): Promise<void>
 }
 
 export default IRepository;

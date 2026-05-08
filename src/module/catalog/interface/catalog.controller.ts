@@ -64,11 +64,13 @@ export class CatalogController {
 
   @Patch('product/:id')
   @Policies(UpdateProductPolicyHandler)
+  @UseInterceptors(FilesInterceptor('images'))
   async updateOneOrFail(
     @Param('id') id: string,
     @Body() updateDto: UpdateProductDto,
     @CurrentUser() user: User,
+    @UploadedFiles() files: Express.Multer.File[],
   ): Promise<OneSerializedResponseDto<ProductDto>> {
-    return this.crudUseCase.updateOneOrFail(id, updateDto, user);
+    return this.crudUseCase.updateOneOrFail(id, updateDto, user, files);
   }
 }

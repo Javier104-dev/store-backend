@@ -76,6 +76,10 @@ abstract class BaseCrudUseCase<
   async saveRawMany(entities: Entity[]): Promise<Entity[]> {
     return this.repository.saveMany(entities);
   }
+
+  async deleteMany(ids: string[]): Promise<void> {
+    return this.repository.deleteMany(ids);
+  }
 }
 
 export default BaseCrudUseCase;
