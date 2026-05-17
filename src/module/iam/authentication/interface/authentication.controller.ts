@@ -45,9 +45,10 @@ export class AuthenticationController {
   async handleSignupRegular(
     @Body() signUpDto: SignUpDto,
   ): Promise<OneSerializedResponseDto<UserDto>> {
-    return this.authenticationService.handleSignUp(signUpDto, [AppRole.Regular]);
+    return this.authenticationService.handleSignUp(signUpDto, [
+      AppRole.Regular,
+    ]);
   }
-
 
   @Post('create')
   @Auth(AuthType.Bearer)

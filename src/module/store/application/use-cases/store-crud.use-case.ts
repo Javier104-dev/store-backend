@@ -8,6 +8,7 @@ import {
   STORE_REPOSITORY_KEY,
 } from '@module/store/application/repository/store.repository.interface';
 import { Store } from '@module/store/domain/store.entity';
+import StoreNotFoundException from '@module/store/infrastructure/exception/store-not-found.exception';
 import { Inject, Injectable } from '@nestjs/common';
 
 import { BaseResponseAdapter } from '@common/base/application/adapter/base-response.adapter';
@@ -48,7 +49,34 @@ export class StoreCrudUseCase extends BaseCrudUseCase<
     );
   }
 
+  async getStoreFronOwner(
+    user: User,
+  ): Promise<OneSerializedResponseDto<StoreDto>> {
+    const store = await this.repository.getStoreFromUserId(user.id);
+
+    if (!store) {
+      throw new StoreNotFoundException(`This user doesn't have a store yet.`);
+    }
+
+    return this.responseAdapter.oneEntityResponse<StoreDto>(
+      this.entityName,
+      this.storeMapper.fromEntity<StoreDto>(store),
+    );
+  }
+
   async getStoreFromUserIdOrFail(id: string): Promise<Store> {
     return this.repository.getStoreFromUserIdOrFail(id);
+  }
+
+  async updateStoreOrFail(updateDto: UpdateStoreDto, user: User) {
+    const store = await this.repository.getStoreFromUserIdOrFail(user.id);
+    const entity = await this.repository.updateOneOrFail(
+      store.id,
+      this.mapper.toEntity<Store>(updateDto),
+    );
+    return this.responseAdapter.oneEntityResponse<StoreDto>(
+      this.entityName,
+      this.mapper.fromEntity<StoreDto>(entity),
+    );
   }
 }

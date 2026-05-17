@@ -52,6 +52,14 @@ export class StoreController {
     });
   }
 
+  @Get('owner')
+  @Policies(ReadStorePolicyHandler)
+  async getStoreFronOwner(
+    @CurrentUser() user: User,
+  ): Promise<OneSerializedResponseDto<StoreDto>> {
+    return this.crudUseCase.getStoreFronOwner(user);
+  }
+
   @Get(':id')
   @Policies(ReadStorePolicyHandler)
   async getOneByIdOrFail(
@@ -69,13 +77,13 @@ export class StoreController {
     return this.crudUseCase.createStore(createDto, user);
   }
 
-  @Patch(':id')
+  @Patch()
   @Policies(UpdateStorePolicyHandler)
   async updateOneOrFail(
-    @Param('id') id: string,
     @Body() updateDto: UpdateStoreDto,
+    @CurrentUser() user: User,
   ): Promise<OneSerializedResponseDto<StoreDto>> {
-    return this.crudUseCase.updateOneOrFail(id, updateDto);
+    return this.crudUseCase.updateStoreOrFail(updateDto, user);
   }
 
   @Delete(':id')
