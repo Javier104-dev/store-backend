@@ -6,9 +6,9 @@ import {
   ISerializedData,
 } from '@common/base/application/dto/serialized-response.interface';
 
-export class ManySerializedResponseDto<ResponseDto extends object>
-  implements IBaseSerializedResponseDto
-{
+export class ManySerializedResponseDto<
+  ResponseDto extends object,
+> implements IBaseSerializedResponseDto {
   readonly data: ISerializedData<ResponseDto>[];
 
   readonly included?: IDataWithSelfLink<unknown>[];
