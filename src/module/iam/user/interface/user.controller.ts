@@ -58,12 +58,6 @@ export class UserController {
     });
   }
 
-  @Get('status')
-  @Auth(AuthType.None)
-  async getUserStatus(): Promise<boolean> {
-    return await this.userService.getUserStatus();
-  }
-
   @Get('me')
   @Policies(ReadUserPolicyHandler)
   async getMe(
