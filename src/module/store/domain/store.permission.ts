@@ -7,7 +7,4 @@ export const storePermissions: IPermissionsDefinition = {
   admin(_, { can }) {
     can(AppAction.Manage, Store);
   },
-  superAdmin(_, { can }) {
-    can(AppAction.Manage, Store);
-  },
 };

@@ -48,8 +48,6 @@ export class DeleteAuthorPolicyHandler implements IPolicyHandler {
   }
 
   private async getSubject(request: Request): Promise<Author> {
-    const searchParam = request.params['id'];
-    const subjectId = typeof searchParam === 'string' ? searchParam : undefined;
-    return this.authorRepository.getOneById(subjectId);
+    return this.authorRepository.getOneById(request.params['id'] as string);
   }
 }

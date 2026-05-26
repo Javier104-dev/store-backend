@@ -7,7 +7,4 @@ export const productPermissions: IPermissionsDefinition = {
   admin(_, { can }) {
     can(AppAction.Manage, Product);
   },
-  superAdmin(_, { can }) {
-    can(AppAction.Manage, Product);
-  },
 };

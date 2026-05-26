@@ -47,8 +47,6 @@ export class DeleteProductPolicyHandler implements IPolicyHandler {
   }
 
   private async getSubject(request: Request): Promise<Product> {
-    const searchParam = request.params['id'];
-    const subjectId = typeof searchParam === 'string' ? searchParam : undefined;
-    return this.productRepository.getOneById(subjectId);
+    return this.productRepository.getOneById(request.params['id'] as string);
   }
 }

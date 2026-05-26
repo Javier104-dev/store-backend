@@ -7,7 +7,4 @@ export const categoryPermissions: IPermissionsDefinition = {
   admin(_, { can }) {
     can(AppAction.Manage, Category);
   },
-  superAdmin(_, { can }) {
-    can(AppAction.Manage, Category);
-  },
 };
