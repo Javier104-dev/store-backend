@@ -213,6 +213,18 @@ describe('Category Module', () => {
             expect(body.error.detail).toEqual(error.message);
           });
       });
+
+      it('should throw an error if a regular user tries to access the endpoint', async () => {
+        const categoryId = '5c2a9f8e-7d31-4b6a-8e90-3f4d1c7b2a10';
+        const updateStore: UpdateCategoryDto = {
+          name: 'updated name',
+        };
+        await request(app.getHttpServer())
+          .patch(`/api/v1/category/${categoryId}`)
+          .auth(regularToken, { type: 'bearer' })
+          .send(updateStore)
+          .expect(HttpStatus.INTERNAL_SERVER_ERROR);
+      });
     });
   });
 
