@@ -6,7 +6,10 @@ module.exports = {
     '^.+\\.(t|j)s$': 'ts-jest',
   },
 
-  collectCoverageFrom: ['<rootDir>/module/**/*.{ts,js}'],
+  collectCoverageFrom: [
+    '<rootDir>/common/**/*.{ts,js}',
+    '<rootDir>/module/**/*.{ts,js}',
+  ],
   coverageDirectory: '../coverage',
   coverageThreshold: {
     global: {
@@ -20,7 +23,6 @@ module.exports = {
     '<rootDir>/module/iam/authentication/infrastructure/cognito/cognito.service.ts',
     '<rootDir>/module/aws/',
     '<rootDir>/module/queue/',
-    '<rootDir>/module/app/',
     // temporarily to avoid conflicts with coverage
     '<rootDir>/module/author/',
     '<rootDir>/module/book/',
@@ -30,7 +32,6 @@ module.exports = {
   testPathIgnorePatterns: [
     '<rootDir>/module/aws/',
     '<rootDir>/module/queue/',
-    '<rootDir>/module/app/',
     // temporarily to avoid conflicts with coverage
     '<rootDir>/module/author/',
     '<rootDir>/module/book/',
