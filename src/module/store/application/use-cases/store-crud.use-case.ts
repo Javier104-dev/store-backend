@@ -69,7 +69,12 @@ export class StoreCrudUseCase extends BaseCrudUseCase<
   }
 
   async updateStoreOrFail(updateDto: UpdateStoreDto, user: User) {
-    const store = await this.repository.getStoreFromUserIdOrFail(user.id);
+    const store = await this.repository.getStoreFromUserId(user.id);
+
+    if (!store) {
+      throw new StoreNotFoundException(`This user doesn't have a store yet.`);
+    }
+
     const entity = await this.repository.updateOneOrFail(
       store.id,
       this.mapper.toEntity<Store>(updateDto),
