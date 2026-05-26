@@ -61,14 +61,6 @@ export class UserService {
     return await this.repository.countUsers();
   }
 
-  async getUserStatus(): Promise<boolean> {
-    const users = await this.repository.getAll({
-      page: { size: 10 },
-      filter: {},
-    });
-    return users.data.length === 1 ? users.data[0].isVerified : false;
-  }
-
   async updateOneOrFail(
     id: string,
     updates: Partial<Omit<User, 'id'>>,
