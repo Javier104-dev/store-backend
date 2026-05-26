@@ -10,7 +10,6 @@
     "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
@@ -21,15 +20,16 @@
     "noErrorTruncation": true,
     "esModuleInterop": true,
     "paths": {
-      "@data/*": ["data/*"],
-      "@common/*": ["src/common/*"],
-      "@config/*": ["src/config/*"],
-      "@module/*": ["src/module/*"],
-      "@test/*": ["src/test/*"],
-      "@/*": ["src/*"],
-      "@root/*": ["*"]
+      "@data/*": ["./data/*"],
+      "@common/*": ["./src/common/*"],
+      "@config/*": ["./src/config/*"],
+      "@module/*": ["./src/module/*"],
+      "@test/*": ["./src/test/*"],
+      "@/*": ["./src/*"],
+      "@root/*": ["./*"]
     },
     "inlineSources": true,
-    "sourceRoot": "/"
+    "sourceRoot": "/",
+    "types": ["jest", "node", "multer"]
   }
 }

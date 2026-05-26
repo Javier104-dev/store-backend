@@ -2,5 +2,4 @@
   // Expected settings to keep TypeScript path aliases consistent between machines.
   "javascript.preferences.importModuleSpecifier": "non-relative",
   "typescript.preferences.importModuleSpecifier": "non-relative",
-  "js/ts.tsdk.path": "node_modules\\typescript\\lib"
 }

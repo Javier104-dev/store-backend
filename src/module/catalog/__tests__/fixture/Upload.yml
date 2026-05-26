@@ -1,0 +1,14 @@
+entity: Upload
+items:
+  upload1:
+    id: '2c8a7d9e-5b11-4d42-a4a0-91f7e3c6b812'
+    key: 'product/9f3c2f41-7f95-4a86-8f6e-5d2a91c4b7e3.jpg'
+    product: '@product1'
+  upload2:
+    id: '8f3c2a91-4b7d-4e6f-8c21-9a5d3b7e2f10'
+    key: 'product/d8b4e1a2-9c73-4f5b-a6e1-2b7c9d0f3a84.jpg'
+    product: '@product1'
+  upload3:
+    id: '1e7b3c94-6d2f-4a81-9c5e-3f8d7b2a6e10'
+    key: 'product/a4d9f2c7-8b31-4e6a-b5d2-7c1f9e3a4b88.jpg'
+    product: '@product1'

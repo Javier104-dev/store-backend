@@ -1,6 +1,7 @@
 import { CreateStoreDto } from '@module/store/application/dto/create-store.dto';
 import { UpdateStoreDto } from '@module/store/application/dto/upate-store.dto';
 import { Store } from '@module/store/domain/store.entity';
+import StoreNotFoundException from '@module/store/infrastructure/exception/store-not-found.exception';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import request from 'supertest';
 
@@ -22,6 +23,10 @@ describe('Store Module', () => {
 
   const adminToken2 = createAccessToken({
     sub: '00000000-0000-0000-0000-00000000000Z',
+  });
+
+  const adminToken3 = createAccessToken({
+    sub: '00000000-0000-0000-0000-00000000000M',
   });
 
   const regularToken = createAccessToken({
@@ -95,6 +100,55 @@ describe('Store Module', () => {
       it('should throw an error if a regular user tries to access the endpoint', async () => {
         await request(app.getHttpServer())
           .get('/api/v1/store')
+          .auth(regularToken, { type: 'bearer' })
+          .expect(HttpStatus.INTERNAL_SERVER_ERROR);
+      });
+    });
+  });
+
+  describe('GET - /store', () => {
+    describe('Success cases', () => {
+      it('should return the store of the authenticated user', async () => {
+        await request(app.getHttpServer())
+          .get('/api/v1/store/owner')
+          .auth(adminToken, { type: 'bearer' })
+          .expect(HttpStatus.OK)
+          .then(({ body }) => {
+            expect(body).toEqual(
+              expect.objectContaining({
+                data: expect.objectContaining({
+                  id: expect.any(String),
+                  type: Store.getEntityName(),
+                  attributes: expect.objectContaining({
+                    name: expect.any(String),
+                  }),
+                }),
+                links: expect.objectContaining({
+                  self: expect.any(String),
+                }),
+              }),
+            );
+          });
+      });
+    });
+
+    describe('Error cases', () => {
+      it('should throw an error if the user does not have a store', async () => {
+        const error = new StoreNotFoundException(
+          `This user doesn't have a store yet.`,
+        );
+        await request(app.getHttpServer())
+          .get('/api/v1/store/owner')
+          .auth(adminToken3, { type: 'bearer' })
+          .expect(HttpStatus.NOT_FOUND)
+          .then(({ body }) => {
+            expect(body.error.detail).toEqual(error.message);
+          });
+      });
+
+      it('should throw an error if a regular user tries to access the endpoint', async () => {
+        await request(app.getHttpServer())
+          .get('/api/v1/store/owner')
           .auth(regularToken, { type: 'bearer' })
           .expect(HttpStatus.INTERNAL_SERVER_ERROR);
       });
@@ -185,7 +239,7 @@ describe('Store Module', () => {
     });
   });
 
-  describe('PATCH - /store/:id', () => {
+  describe('PATCH - /store', () => {
     describe('Success cases', () => {
       it('should be able to update a store', async () => {
         const storeId = '6f1a9c2e-8b7d-4f3a-9c21-3e7d2a6b4c8f';
@@ -193,8 +247,8 @@ describe('Store Module', () => {
           name: 'updated name',
         };
         await request(app.getHttpServer())
-          .patch(`/api/v1/store/${storeId}`)
-          .auth(adminToken2, { type: 'bearer' })
+          .patch('/api/v1/store')
+          .auth(adminToken, { type: 'bearer' })
           .send(updateStore)
           .expect(HttpStatus.OK)
           .then(({ body }) => {
@@ -215,14 +269,15 @@ describe('Store Module', () => {
 
     describe('Error cases', () => {
       it('should throw an error if the store to update does not exist', async () => {
-        const storeId = '6f1a9c2e-8b7d-4f3a-9c21-3e7d2a6b4c8m';
         const updateStore: UpdateStoreDto = {
           name: 'updated name',
         };
-        const error = new EntityNotFoundException(storeId);
+        const error = new StoreNotFoundException(
+          `This user doesn't have a store yet.`,
+        );
         await request(app.getHttpServer())
-          .patch(`/api/v1/store/${storeId}`)
-          .auth(adminToken2, { type: 'bearer' })
+          .patch('/api/v1/store')
+          .auth(adminToken3, { type: 'bearer' })
           .send(updateStore)
           .expect(HttpStatus.NOT_FOUND)
           .then(({ body }) => {
@@ -231,12 +286,11 @@ describe('Store Module', () => {
       });
 
       it('should throw an error if a regular user tries to access the endpoint', async () => {
-        const storeId = '6f1a9c2e-8b7d-4f3a-9c21-3e7d2a6b4c8l';
         const updateStore: UpdateStoreDto = {
           name: 'updated name',
         };
         await request(app.getHttpServer())
-          .patch(`/api/v1/store/${storeId}`)
+          .patch('/api/v1/store')
           .auth(regularToken, { type: 'bearer' })
           .send(updateStore)
           .expect(HttpStatus.INTERNAL_SERVER_ERROR);

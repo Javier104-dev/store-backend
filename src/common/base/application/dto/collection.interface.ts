@@ -5,7 +5,8 @@ export interface IPagingCollectionData {
   itemCount: number;
 }
 
-export interface ICollection<Entity extends object>
-  extends IPagingCollectionData {
+export interface ICollection<
+  Entity extends object,
+> extends IPagingCollectionData {
   data: Entity[];
 }

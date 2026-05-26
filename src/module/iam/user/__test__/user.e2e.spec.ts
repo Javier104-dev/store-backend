@@ -70,9 +70,31 @@ describe('User Module', () => {
         });
     });
 
+    it('should allow to filter by roles', async () => {
+      const roles = ['admin', 'superadmin'];
+      await request(app.getHttpServer())
+        .get(
+          `/api/v1/user?page[size]=10&filter[roles]=${roles[0]}&filter[roles]=${roles[1]}`,
+        )
+        .auth(adminToken, { type: 'bearer' })
+        .expect(HttpStatus.OK)
+        .then(({ body }) => {
+          console.log(body);
+          const expectedResponse = expect.objectContaining({
+            data: expect.arrayContaining([
+              expect.objectContaining({
+                attributes: expect.objectContaining({
+                  roles: expect.arrayContaining(['admin']),
+                }),
+              }),
+            ]),
+          });
+          expect(body).toEqual(expectedResponse);
+        });
+    });
+
     it('should allow to filter by attributes', async () => {
       const username = 'admin';
-
       await request(app.getHttpServer())
         .get(`/api/v1/user?page[size]=10&filter[username]=${username}`)
         .auth(adminToken, { type: 'bearer' })

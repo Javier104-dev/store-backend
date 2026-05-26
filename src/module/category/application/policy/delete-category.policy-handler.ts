@@ -47,8 +47,6 @@ export class DeleteCategoryPolicyHandler implements IPolicyHandler {
   }
 
   private async getSubject(request: Request): Promise<Category> {
-    const searchParam = request.params['id'];
-    const subjectId = typeof searchParam === 'string' ? searchParam : undefined;
-    return this.categoryRepository.getOneById(subjectId);
+    return this.categoryRepository.getOneById(request.params['id'] as string);
   }
 }

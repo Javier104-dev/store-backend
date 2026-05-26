@@ -1,4 +1,3 @@
-import { AwsModule } from '@module/aws/aws.module';
 import { UPLOAD_REPOSITORY_KEY } from '@module/upload/application/repository/upload.repository.interface';
 import { UploadCrudUseCase } from '@module/upload/application/use-cases/upload-crud.use-case';
 import { UploadPostgresRepository } from '@module/upload/infrastructure/database/upload.postgres.repository';
@@ -12,7 +11,7 @@ const uploadRepositoryProvider: Provider = {
 };
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UploadSchema]), AwsModule],
+  imports: [TypeOrmModule.forFeature([UploadSchema])],
   providers: [UploadCrudUseCase, uploadRepositoryProvider],
   exports: [UploadCrudUseCase],
 })

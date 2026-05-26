@@ -47,8 +47,6 @@ export class UpdateStorePolicyHandler implements IPolicyHandler {
   }
 
   private async getSubject(request: Request): Promise<Store> {
-    const searchParam = request.params['id'];
-    const subjectId = typeof searchParam === 'string' ? searchParam : undefined;
-    return this.storeRepository.getOneById(subjectId);
+    return this.storeRepository.getOneById(request.params['id'] as string);
   }
 }

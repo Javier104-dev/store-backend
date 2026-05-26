@@ -1,8 +1,7 @@
+import { AppExceptionFilter } from '@module/app/application/filter/app-exception.filter';
 import { ArgumentsHost, HttpException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Request, Response } from 'express';
-
-import { AppExceptionFilter } from '@/module/app/interface/exception-filter/app-exception.filter';
 
 describe('AppExceptionFilter', () => {
   let appExceptionFilter: AppExceptionFilter;

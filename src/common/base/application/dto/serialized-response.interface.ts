@@ -26,8 +26,9 @@ export interface ISerializedData<ResponseDto> {
   relationships?: IRelationships;
 }
 
-export interface IDataWithSelfLink<ResponseDto>
-  extends ISerializedData<ResponseDto> {
+export interface IDataWithSelfLink<
+  ResponseDto,
+> extends ISerializedData<ResponseDto> {
   links: Omit<ILinks, 'next' | 'last'>;
 }
 
