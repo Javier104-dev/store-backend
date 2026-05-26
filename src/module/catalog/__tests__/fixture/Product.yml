@@ -15,8 +15,6 @@ items:
     price: 200
     description: description 2
     store: '@store1'
-    categories:
-      - '@category3'
   product3:
     id: '3d9b6f21-7a4e-4c8d-9f13-2b6e1a7c5d44'
     name: product 3

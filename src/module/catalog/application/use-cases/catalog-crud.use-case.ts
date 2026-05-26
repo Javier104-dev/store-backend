@@ -96,7 +96,7 @@ export class CatalogCrudUseCase {
 
     const productCreated = await this.productCrudUseCase.saveRawOne(product);
 
-    if (files.length) {
+    if (files?.length) {
       await this.uploadCrudUseCase.uploadFiles(
         files,
         PRODUCT_UPLOAD_FOLDER,
@@ -113,7 +113,7 @@ export class CatalogCrudUseCase {
       }),
       {
         store: true,
-        cateogies: true,
+        categories: true,
         upload: true,
       },
     );
@@ -141,10 +141,10 @@ export class CatalogCrudUseCase {
 
     const { upload, ...productWithoutUpload } = product;
 
-    const idsToDelete = uploadIds ?? [];
+    const uploadIdsToKeep = uploadIds ?? [];
 
     const uploadsToDelete = upload.filter(
-      (upload) => !idsToDelete.includes(upload.id),
+      (upload) => !uploadIdsToKeep.includes(upload.id),
     );
 
     if (uploadsToDelete.length) {

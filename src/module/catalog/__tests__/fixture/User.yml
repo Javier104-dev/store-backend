@@ -12,3 +12,9 @@ items:
     email: _test_regular@biggertech.co
     roles: ["regular"]
     isVerified: true
+  admin2:
+    externalId: 00000000-0000-0000-0000-00000000000Z
+    username: admin2
+    email: _test_admin2@biggertech.co
+    roles: ["admin"]
+    isVerified: true
