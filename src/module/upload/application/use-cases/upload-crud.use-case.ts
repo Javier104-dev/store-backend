@@ -1,4 +1,7 @@
-import { AmazonS3Service } from '@module/aws/application/service/s3.service';
+import {
+  IUploadFileService,
+  UPLOAD_FILE_SERVICE,
+} from '@module/aws/application/interface/upload-file-service.interface';
 import { BookDto } from '@module/book/application/dto/book.dto';
 import { CreateBookDto } from '@module/book/application/dto/create-book.dto';
 import { UpdateBookDto } from '@module/book/application/dto/update-book.dto';
@@ -28,7 +31,8 @@ export class UploadCrudUseCase extends BaseCrudUseCase<
     repository: IUploadRepository,
     mapper: DtoMapper,
     responseAdapter: BaseResponseAdapter,
-    private readonly amazonS3Service: AmazonS3Service,
+    @Inject(UPLOAD_FILE_SERVICE)
+    private readonly amazonS3Service: IUploadFileService,
     private readonly configService: ConfigService,
   ) {
     super(repository, mapper, responseAdapter, Upload.getEntityName());

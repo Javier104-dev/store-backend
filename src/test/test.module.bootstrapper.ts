@@ -1,5 +1,9 @@
 import { AppModule } from '@module/app.module';
 import {
+  IUploadFileService,
+  UPLOAD_FILE_SERVICE,
+} from '@module/aws/application/interface/upload-file-service.interface';
+import {
   IDENTITY_PROVIDER_SERVICE_KEY,
   IIdentityProviderService,
 } from '@module/iam/authentication/application/service/identity-provider.service.interface';
@@ -20,6 +24,11 @@ export const identityProviderServiceMock: jest.MockedObject<IIdentityProviderSer
     refreshSession: jest.fn(),
   };
 
+export const uploadFileServiceMock: jest.MockedObject<IUploadFileService> = {
+  uploadFile: jest.fn(),
+  deleteUploads: jest.fn(),
+};
+
 export const createTestApp = async (): Promise<NestExpressApplication> => {
   initializeTransactionalContext();
 
@@ -28,6 +37,8 @@ export const createTestApp = async (): Promise<NestExpressApplication> => {
   })
     .overrideProvider(IDENTITY_PROVIDER_SERVICE_KEY)
     .useValue(identityProviderServiceMock)
+    .overrideProvider(UPLOAD_FILE_SERVICE)
+    .useValue(uploadFileServiceMock)
     .compile();
   const app = moduleRef.createNestApplication<NestExpressApplication>();
   app.set('query parser', 'extended');
