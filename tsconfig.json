@@ -29,6 +29,7 @@
       "@root/*": ["./*"]
     },
     "inlineSources": true,
-    "sourceRoot": "/"
+    "sourceRoot": "/",
+    "types": ["jest", "node", "multer"]
   }
 }
