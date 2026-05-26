@@ -55,7 +55,7 @@ export class UserPostgresRepository implements IUserRepository {
     return this.repository.save(user);
   }
 
-  async updateOne(
+  async updateOneOrFail(
     id: string,
     updates: Partial<Omit<User, 'id'>>,
   ): Promise<User> {
