@@ -1,98 +1,219 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Geek Shop API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+REST API for a geek products store. Handles product, category and store management
+with role-based authentication for regular users and store owners (admin).
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## ⚡ Quick Start
 
-## Description
+1. Clone the repository
+2. Follow the [Setup](#setup) section
+3. Follow the [How to Run](#how-to-run) section
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🚀 Tech Stack
 
-## Project setup
+- **Framework:** NestJS + TypeScript
+- **Database:** PostgreSQL + TypeORM
+- **Authentication:** AWS Cognito + Passport JWT
+- **Storage:** AWS S3
+- **Authorization:** CASL
+- **API Docs:** Swagger
+- **Containerization:** Docker (local development only)
 
-```bash
-$ npm install
-```
+## 🏗️ Architecture
 
-## Compile and run the project
+The application follows a hexagonal architecture:
 
-```bash
-# development
-$ npm run start
+- **Domain Layer:** Business logic and entities
+- **Application Layer:** Use cases and ports (interfaces)
+- **Infrastructure Layer:** Adapters and implementations
+- **Interface Layer:** Controllers and DTOs
 
-# watch mode
-$ npm run start:dev
+## ⚙️ Setup
 
-# production mode
-$ npm run start:prod
-```
+### Prerequisites
 
-## Run tests
+- [Node >=24](https://github.com/nvm-sh/nvm)
+- [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/)
 
-```bash
-# unit tests
-$ npm run test
+> Docker is used locally to emulate AWS services (Cognito + S3).
+> For production, just update the environment variables to point to real AWS services.
 
-# e2e tests
-$ npm run test:e2e
+### Installation
 
-# test coverage
-$ npm run test:cov
-```
+1. Run `npm ci` to install dependencies
+2. Run `chmod +x ./data/scripts/*.sh` to make scripts executable
+3. Run `npm run dev:prepare` to generate environment variables
+4. Run `docker compose up -d` to start the containers
+5. Run `npm run aws:prepare` to set up local AWS services
+6. Run `npm run migration:run` to run database migrations
+7. Optionally run `npm run fixtures` to load sample data
 
-## Deployment
+## ▶️ How to Run
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### Server
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Development (watch mode)
+npm run start:dev
+
+# Debug mode
+npm run start:debug
+
+# Production (build first)
+npm run build
+npm run start:prod
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### Database
 
-## Resources
+```bash
+# Sync schema with entities
+npm run schema:sync
 
-Check out a few resources that may come in handy when working with NestJS:
+# Drop all tables
+npm run schema:drop
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+# Load sample data
+npm run fixtures
+```
 
-## Support
+### Code Quality
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+# Lint and fix
+npm run lint
 
-## Stay in touch
+# Format code
+npm run format
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Local AWS Services
 
-## License
+```bash
+# Set up all services at once
+npm run aws:prepare
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+# Or individually
+npm run cognito:prepare  # Cognito
+npm run s3:prepare       # S3
+```
+
+## 🌍 Environment Variables
+
+The `dev:prepare` script generates the `.env` file automatically. Key variables:
+
+| Variable                     | Description                         | Example                   |
+| ---------------------------- | ----------------------------------- | ------------------------- |
+| `NODE_ENV`                   | Environment name                    | `development`             |
+| `PORT`                       | Server port                         | `3001`                    |
+| `FRONTEND_URL`               | Frontend URL for CORS               | `http://localhost:3000`   |
+| `DB_TYPE`                    | Database type                       | `postgres`                |
+| `DB_PORT`                    | Database port                       | `5432`                    |
+| `DB_USERNAME`                | Database user                       | `root`                    |
+| `DB_PASSWORD`                | Database password                   | `secret`                  |
+| `DB_NAME`                    | Database name                       | `db_dev`                  |
+| `AWS_ACCESS_KEY_ID`          | AWS access key (use `test` locally) | `test`                    |
+| `AWS_SECRET_ACCESS_KEY`      | AWS secret key (use `test` locally) | `test`                    |
+| `AWS_REGION`                 | AWS region                          | `us-east-1`               |
+| `AWS_ENDPOINT`               | LocalStack endpoint                 | `http://localhost:4566`   |
+| `COGNITO_PORT`               | Local Cognito port                  | `9229`                    |
+| `COGNITO_USER_POOL_ID`       | Cognito User Pool ID                | `local_75UboFBP`          |
+| `COGNITO_CLIENT_ID`          | Cognito Client ID                   | `4ml0fjw3c...`            |
+| `COGNITO_ENDPOINT`           | Local Cognito endpoint              | `http://localhost:9229`   |
+| `COGNITO_ISSUER`             | Cognito token issuer URL            | `http://0.0.0.0:9229/...` |
+| `S3_BUCKET`                  | S3 bucket name                      | `test-bucket`             |
+| `AUTH_ALLOWED_EMAIL_DOMAINS` | Allowed email domains for auth      | `gmail.com`               |
+
+## 📖 API Docs
+
+Swagger UI available at `http://localhost:3001/api`
+
+### Modules
+
+| Module       | Description                                                                               |
+| ------------ | ----------------------------------------------------------------------------------------- |
+| `iam`        | Handles authentication (Cognito + JWT), authorization (CASL policies) and user management |
+| `stores`     | Store management (CRUD)                                                                   |
+| `categories` | Category management (CRUD)                                                                |
+| `products`   | Product management (CRUD)                                                                 |
+| `catalog`    | Orchestrates stores, categories and products to avoid circular dependencies               |
+| `upload`     | Image upload handling via AWS S3                                                          |
+
+### Authorization
+
+All endpoints are protected by a policy-based access control system using CASL:
+
+| Role         | Access                                          |
+| ------------ | ----------------------------------------------- |
+| `SuperAdmin` | Full system access                              |
+| `Admin`      | Manage their own store, products and categories |
+| `User`       | Read-only access to products and categories     |
+
+## 🗄️ Migrations
+
+### Commands
+
+```bash
+# Create a new empty migration
+npm run migration:create --name=your-migration-name
+
+# Generate migration from entity changes
+npm run migration:generate --name=your-migration-name
+
+# Run all pending migrations
+npm run migration:run
+
+# Revert last migration
+npm run migration:revert
+```
+
+### Notes
+
+- Migration files are located in `./data/migrations`
+- In production, migrations run automatically before the server starts
+- Each migration should have a descriptive name and be reversible
+
+## 🧪 Testing
+
+Uses **Jest** and **Supertest** for testing. CRUD tests use SQLite to avoid mocking
+the database. External services are mocked when needed.
+
+### Commands
+
+```bash
+# Run all tests
+npm run test
+
+# Watch mode
+npm run test:watch
+
+# Coverage report
+npm run test:cov
+
+# Debug mode
+npm run test:debug
+```
+
+### Structure
+
+- `src/**/*.spec.ts` - Unit tests
+- `test/` - End-to-end tests
+
+## 🛠️ Recommended Tools
+
+- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+- [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+- [EditorConfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
+
+## ⚠️ Troubleshooting
+
+### 401 errors with Cognito
+
+If you get 401 errors with token validation, check that `COGNITO_ISSUER` in `.env`
+matches exactly what's in the token. Cognito Local may use
+`http://0.0.0.0:9229/local_[POOL_ID]` instead of `localhost`.
+
+## 👤 Author
+
+| [<img src='https://avatars.githubusercontent.com/u/105408069?v=4' width=115><br><sub>Javier Anibal Villca</sub>](https://github.com/Javier104-dev) |
+| :------------------------------------------------------------------------------------------------------------------------------------------------: |
