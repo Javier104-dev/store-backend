@@ -35,8 +35,8 @@ export const setupApp = (app: INestApplication) => {
 
 export const setupSwagger = (app: INestApplication) => {
   const config = new DocumentBuilder()
-    .setTitle('Bigger Ops API')
-    .setDescription('Bigger Ops API description')
+    .setTitle('Geek Shop API')
+    .setDescription('REST API for a geek products store')
     .setVersion('1.0')
     .build();
 
