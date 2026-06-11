@@ -128,6 +128,8 @@ The `dev:prepare` script generates the `.env` file automatically. Key variables:
 
 Swagger UI available at `http://localhost:3001/api`
 
+> Responses follow the [JSON:API](https://jsonapi.org/) specification.
+
 ### Modules
 
 | Module       | Description                                                                               |
