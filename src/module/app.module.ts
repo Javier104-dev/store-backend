@@ -3,6 +3,7 @@ import { ResponseSerializerService } from '@module/app/application/service/respo
 import { AuthorModule } from '@module/author/author.module';
 import { AwsModule } from '@module/aws/aws.module';
 import { BookModule } from '@module/book/book.module';
+import { CartModule } from '@module/cart/cart.module';
 import { CatalogModule } from '@module/catalog/catalog.module';
 import { CategoryModule } from '@module/category/category.module';
 import { GenreModule } from '@module/genre/genre.module';
@@ -53,6 +54,7 @@ import { datasourceOptions } from '@config/orm.config';
     CatalogModule,
     AwsModule,
     UploadModule,
+    CartModule,
   ],
   providers: [
     AppService,
