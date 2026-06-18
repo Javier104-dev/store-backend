@@ -18,4 +18,5 @@ export interface IProductRepository extends BaseRepository<Product> {
     id: string,
     options?: IGetOneOptions<Product>,
   ): Promise<Product>;
+  getProductsByIds(categoryIds: string[]): Promise<Product[]>;
 }

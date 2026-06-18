@@ -5,6 +5,7 @@ import { DeleteProductPolicyHandler } from '@module/product/application/policy/d
 import { ReadProductPolicyHandler } from '@module/product/application/policy/read-product.policy-handler';
 import { UpdateProductPolicyHandler } from '@module/product/application/policy/update-product.policy-handler';
 import { PRODUCT_REPOSITORY_KEY } from '@module/product/application/repository/product.repository.interface';
+import { ProductService } from '@module/product/application/service/product.service';
 import { ProductCrudUseCase } from '@module/product/application/use-cases/product-crud.use-case';
 import { productPermissions } from '@module/product/domain/product.permission';
 import { ProductPostgresRepository } from '@module/product/infrastructure/database/product.postgres.repository';
@@ -40,8 +41,9 @@ const productRepositoryProvider: Provider = {
     ProductCrudUseCase,
     productRepositoryProvider,
     ProductMapper,
+    ProductService,
     ...policyHandlersProviders,
   ],
-  exports: [ProductCrudUseCase, AuthorizationModule],
+  exports: [ProductCrudUseCase, AuthorizationModule, ProductService],
 })
 export class ProductModule {}

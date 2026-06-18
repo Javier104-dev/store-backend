@@ -2,7 +2,7 @@ import { Product } from '@module/product/domain/product.entity';
 import { ProductSchema } from '@module/product/infrastructure/database/product.schema';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import { ICollection } from '@common/base/application/dto/collection.interface';
 import {
@@ -65,5 +65,9 @@ export class ProductPostgresRepository extends BaseRepository<Product> {
     }
 
     return entity;
+  }
+
+  async getProductsByIds(categoryIds: string[]): Promise<Product[]> {
+    return this.repository.findBy({ id: In(categoryIds) });
   }
 }
