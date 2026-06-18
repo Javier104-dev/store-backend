@@ -15,7 +15,7 @@ export class CategoryPostgresRepository extends BaseRepository<Category> {
     super(repository);
   }
 
-  async getCategoriesByIds(categoryIds: string[]): Promise<Category[] | []> {
+  async getCategoriesByIds(categoryIds: string[]): Promise<Category[]> {
     return this.repository.findBy({ id: In(categoryIds) });
   }
 }

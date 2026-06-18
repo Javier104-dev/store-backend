@@ -35,7 +35,7 @@ export class CategoryCrudUseCase extends BaseCrudUseCase<
     );
   }
 
-  async getCategoriesByIds(categoryIds: string[]): Promise<Category[] | []> {
+  async getCategoriesByIds(categoryIds: string[]): Promise<Category[]> {
     return this.repository.getCategoriesByIds(categoryIds);
   }
 
