@@ -66,4 +66,10 @@ export class UserPostgresRepository implements IUserRepository {
   async countUsers(): Promise<number> {
     return await this.repository.count();
   }
+
+  async getUserById(id: string): Promise<User> {
+    return await this.repository.findOne({
+      where: { id },
+    });
+  }
 }

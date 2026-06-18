@@ -79,7 +79,6 @@ describe('User Module', () => {
         .auth(adminToken, { type: 'bearer' })
         .expect(HttpStatus.OK)
         .then(({ body }) => {
-          console.log(body);
           const expectedResponse = expect.objectContaining({
             data: expect.arrayContaining([
               expect.objectContaining({

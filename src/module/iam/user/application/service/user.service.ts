@@ -80,4 +80,16 @@ export class UserService {
     const savedUser = await this.repository.saveOne(user);
     return this.mapper.fromEntity<UserDto>(savedUser);
   }
+
+  async getUserByIdOrFail(id: string) {
+    const user = await this.repository.getUserById(id);
+
+    if (!user) {
+      throw new UserNotFoundException({
+        message: `User with ID ${id} not found`,
+      });
+    }
+
+    return this.mapper.fromEntity<UserDto>(user);
+  }
 }
