@@ -1,9 +1,12 @@
-import { CreateBookDto } from '@module/book/application/dto/create-book.dto';
-import { UpdateBookDto } from '@module/book/application/dto/update-book.dto';
 import { CartDto } from '@module/cart/application/dto/cart.dto';
+import { CreateCartDto } from '@module/cart/application/dto/create-cart.dto';
 import { CartFieldsQueryParamsDto } from '@module/cart/application/dto/query-param/cart-fields-query-params.dto';
 import { CartFilterQueryParamsDto } from '@module/cart/application/dto/query-param/cart-filter-query-params.dto';
+import { UpdateCartDto } from '@module/cart/application/dto/update-cart.dto';
 import { CartCrudUseCase } from '@module/cart/application/use-cases/cart-crud.use-case';
+import { CreateCartUseCase } from '@module/cart/application/use-cases/create-cart.use-case';
+import { CurrentUser } from '@module/iam/authentication/infrastructure/decorator/current-user.decorator';
+import { User } from '@module/iam/user/domain/user.entity';
 import {
   Body,
   Controller,
@@ -25,7 +28,10 @@ import { GetAllSwaggerDecorator } from '@common/base/interface/getAllSwaggerDeco
 @Controller('cart')
 @ApiTags('cart')
 export class CartController {
-  constructor(private readonly crudUseCase: CartCrudUseCase) {}
+  constructor(
+    private readonly crudUseCase: CartCrudUseCase,
+    private readonly createCartUseCase: CreateCartUseCase,
+  ) {}
 
   @Get()
   @GetAllSwaggerDecorator(
@@ -56,15 +62,16 @@ export class CartController {
 
   @Post()
   async saveOne(
-    @Body() createDto: CreateBookDto,
+    @CurrentUser() user: User,
+    @Body() createDto: CreateCartDto,
   ): Promise<OneSerializedResponseDto<CartDto>> {
-    return this.crudUseCase.saveOne(createDto);
+    return this.createCartUseCase.execute(user.id, createDto);
   }
 
   @Patch(':id')
   async updateOneOrFail(
     @Param('id') id: string,
-    @Body() updateDto: UpdateBookDto,
+    @Body() updateDto: UpdateCartDto,
   ): Promise<OneSerializedResponseDto<CartDto>> {
     return this.crudUseCase.updateOneOrFail(id, updateDto);
   }
