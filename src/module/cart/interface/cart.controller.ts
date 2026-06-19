@@ -5,6 +5,7 @@ import { CartFilterQueryParamsDto } from '@module/cart/application/dto/query-par
 import { UpdateCartDto } from '@module/cart/application/dto/update-cart.dto';
 import { CartCrudUseCase } from '@module/cart/application/use-cases/cart-crud.use-case';
 import { CreateCartUseCase } from '@module/cart/application/use-cases/create-cart.use-case';
+import { GetActiveCartUseCase } from '@module/cart/application/use-cases/get-active-cart.use.case';
 import { CurrentUser } from '@module/iam/authentication/infrastructure/decorator/current-user.decorator';
 import { User } from '@module/iam/user/domain/user.entity';
 import {
@@ -31,6 +32,7 @@ export class CartController {
   constructor(
     private readonly crudUseCase: CartCrudUseCase,
     private readonly createCartUseCase: CreateCartUseCase,
+    private readonly getActiveCartUseCase: GetActiveCartUseCase,
   ) {}
 
   @Get()
@@ -51,6 +53,13 @@ export class CartController {
       fields: fields.target,
       sort,
     });
+  }
+
+  @Get('user')
+  async getActiveCart(
+    @CurrentUser() user: User,
+  ): Promise<OneSerializedResponseDto<CartDto>> {
+    return this.getActiveCartUseCase.execute(user.id);
   }
 
   @Get(':id')

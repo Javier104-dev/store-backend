@@ -50,9 +50,9 @@ export class StoreCrudUseCase extends BaseCrudUseCase<
   }
 
   async getStoreFronOwner(
-    user: User,
+    userId: string,
   ): Promise<OneSerializedResponseDto<StoreDto>> {
-    const store = await this.repository.getStoreFromUserId(user.id);
+    const store = await this.repository.getStoreFromUserId(userId);
 
     if (!store) {
       throw new StoreNotFoundException(`This user doesn't have a store yet.`);

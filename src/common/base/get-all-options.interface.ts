@@ -1,11 +1,17 @@
+import { FindOptionsWhere } from 'typeorm';
+
 import { IDto } from '@common/base/application/dto/dto.interface';
 import { SortType } from '@common/base/application/enum/sort-type.enum';
 import { Base } from '@common/base/domain/base.entity';
 import IEntity from '@common/base/domain/entity.interface';
 
 export type OnlyAttributes<Entity> = {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-  [P in keyof Entity]: Entity[P] extends Base[] | Base | Function ? never : P;
+  [P in keyof Entity]: Entity[P] extends
+    | Base[]
+    | Base
+    | ((...args: unknown[]) => unknown)
+    ? never
+    : P;
 }[keyof Entity];
 
 export type PageOptions = {
@@ -32,13 +38,7 @@ export interface IGetAllOptions<Entity extends IDto | IEntity, Relations = []> {
   include?: Relations;
 }
 
-export type IWhere<Entity> = {
-  [K in keyof Omit<Entity, 'id'>]?: Entity[K] extends object
-    ? Partial<Entity[K]>
-    : Entity[K];
-};
-
 export interface IGetOneOptions<Entity> {
-  filter?: IWhere<Entity>;
-  relations?: (keyof Entity)[];
+  filter?: FindOptionsWhere<Entity>;
+  relations?: string[];
 }

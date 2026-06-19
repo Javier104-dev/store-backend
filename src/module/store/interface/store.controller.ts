@@ -63,7 +63,7 @@ export class StoreController {
   async getStoreFronOwner(
     @CurrentUser() user: User,
   ): Promise<OneSerializedResponseDto<StoreDto>> {
-    return this.crudUseCase.getStoreFronOwner(user);
+    return this.crudUseCase.getStoreFronOwner(user.id);
   }
 
   @Get(':id')
