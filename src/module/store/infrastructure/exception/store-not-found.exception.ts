@@ -1,9 +1,9 @@
 import { NotFoundException } from '@nestjs/common';
 
-class StoreNotFoundException extends NotFoundException {
-  constructor(error: string) {
-    super(error);
+import { IBaseErrorInfoParams } from '@common/base/application/exception/base-error.interface';
+
+export class StoreNotFoundException extends NotFoundException {
+  constructor(params: IBaseErrorInfoParams) {
+    super(params);
   }
 }
-
-export default StoreNotFoundException;

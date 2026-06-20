@@ -1,11 +1,13 @@
+import { CartItemDto } from '@module/cart/application/dto/cart-item.dto';
 import { CartDto } from '@module/cart/application/dto/cart.dto';
 import { CreateCartDto } from '@module/cart/application/dto/create-cart.dto';
 import { CartFieldsQueryParamsDto } from '@module/cart/application/dto/query-param/cart-fields-query-params.dto';
 import { CartFilterQueryParamsDto } from '@module/cart/application/dto/query-param/cart-filter-query-params.dto';
-import { UpdateCartDto } from '@module/cart/application/dto/update-cart.dto';
+import { UpdateCartItemDto } from '@module/cart/application/dto/update-cart-item.dto';
 import { CartCrudUseCase } from '@module/cart/application/use-cases/cart-crud.use-case';
 import { CreateCartUseCase } from '@module/cart/application/use-cases/create-cart.use-case';
 import { GetActiveCartUseCase } from '@module/cart/application/use-cases/get-active-cart.use.case';
+import { UpdateCartItemtUseCase } from '@module/cart/application/use-cases/update-cart-item.use-case';
 import { CurrentUser } from '@module/iam/authentication/infrastructure/decorator/current-user.decorator';
 import { User } from '@module/iam/user/domain/user.entity';
 import {
@@ -33,6 +35,7 @@ export class CartController {
     private readonly crudUseCase: CartCrudUseCase,
     private readonly createCartUseCase: CreateCartUseCase,
     private readonly getActiveCartUseCase: GetActiveCartUseCase,
+    private readonly updateCartItemtUseCase: UpdateCartItemtUseCase,
   ) {}
 
   @Get()
@@ -78,11 +81,12 @@ export class CartController {
   }
 
   @Patch(':id')
-  async updateOneOrFail(
+  async updateCartItem(
     @Param('id') id: string,
-    @Body() updateDto: UpdateCartDto,
-  ): Promise<OneSerializedResponseDto<CartDto>> {
-    return this.crudUseCase.updateOneOrFail(id, updateDto);
+    @Body() updateDto: UpdateCartItemDto,
+    @CurrentUser() user: User,
+  ): Promise<OneSerializedResponseDto<CartItemDto>> {
+    return this.updateCartItemtUseCase.execute(id, updateDto, user.id);
   }
 
   @Delete(':id')
