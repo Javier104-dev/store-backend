@@ -1,11 +1,11 @@
 import { CartItemDto } from '@module/cart/application/dto/cart-item.dto';
 import { CartDto } from '@module/cart/application/dto/cart.dto';
-import { CreateCartDto } from '@module/cart/application/dto/create-cart.dto';
+import { CreateCartItemDto } from '@module/cart/application/dto/create-cart-item.dto';
 import { CartFieldsQueryParamsDto } from '@module/cart/application/dto/query-param/cart-fields-query-params.dto';
 import { CartFilterQueryParamsDto } from '@module/cart/application/dto/query-param/cart-filter-query-params.dto';
 import { UpdateCartItemDto } from '@module/cart/application/dto/update-cart-item.dto';
 import { CartCrudUseCase } from '@module/cart/application/use-cases/cart-crud.use-case';
-import { CreateCartUseCase } from '@module/cart/application/use-cases/create-cart.use-case';
+import { CreateCartItemUseCase } from '@module/cart/application/use-cases/create-cart-item.use-case';
 import { GetActiveCartUseCase } from '@module/cart/application/use-cases/get-active-cart.use.case';
 import { UpdateCartItemtUseCase } from '@module/cart/application/use-cases/update-cart-item.use-case';
 import { CurrentUser } from '@module/iam/authentication/infrastructure/decorator/current-user.decorator';
@@ -33,9 +33,9 @@ import { GetAllSwaggerDecorator } from '@common/base/interface/getAllSwaggerDeco
 export class CartController {
   constructor(
     private readonly crudUseCase: CartCrudUseCase,
-    private readonly createCartUseCase: CreateCartUseCase,
     private readonly getActiveCartUseCase: GetActiveCartUseCase,
     private readonly updateCartItemtUseCase: UpdateCartItemtUseCase,
+    private readonly createCartItemUseCase: CreateCartItemUseCase,
   ) {}
 
   @Get()
@@ -72,12 +72,12 @@ export class CartController {
     return this.crudUseCase.getOneByIdOrFail(id);
   }
 
-  @Post()
-  async saveOne(
+  @Post('cart-item')
+  async createCartItem(
     @CurrentUser() user: User,
-    @Body() createDto: CreateCartDto,
-  ): Promise<OneSerializedResponseDto<CartDto>> {
-    return this.createCartUseCase.execute(user.id, createDto);
+    @Body() createDto: CreateCartItemDto,
+  ): Promise<OneSerializedResponseDto<CartItemDto>> {
+    return this.createCartItemUseCase.execute(user.id, createDto);
   }
 
   @Patch(':id')
