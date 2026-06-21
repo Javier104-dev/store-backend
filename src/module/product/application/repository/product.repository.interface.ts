@@ -5,11 +5,11 @@ import {
   IGetAllOptions,
   IGetOneOptions,
 } from '@common/base/get-all-options.interface';
-import BaseRepository from '@common/base/infrastructure/database/base.repository';
+import IRepository from '@common/base/infrastructure/database/repository.interface';
 
 export const PRODUCT_REPOSITORY_KEY = 'product_repository';
 
-export interface IProductRepository extends BaseRepository<Product> {
+export interface IProductRepository extends IRepository<Product> {
   getAll(
     options: IGetAllOptions<Product>,
     relationsOptions?: Omit<IGetOneOptions<Product>, 'filter'>,
@@ -18,5 +18,4 @@ export interface IProductRepository extends BaseRepository<Product> {
     id: string,
     options?: IGetOneOptions<Product>,
   ): Promise<Product>;
-  getProductsByIds(categoryIds: string[]): Promise<Product[]>;
 }
