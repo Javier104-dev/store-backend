@@ -5,7 +5,7 @@ import { CART_REPOSITORY_KEY } from '@module/cart/application/repository/cart.re
 import { CartItemService } from '@module/cart/application/service/cart-item.service';
 import { CartService } from '@module/cart/application/service/cart.service';
 import { CartCrudUseCase } from '@module/cart/application/use-cases/cart-crud.use-case';
-import { CreateCartUseCase } from '@module/cart/application/use-cases/create-cart.use-case';
+import { CreateCartItemUseCase } from '@module/cart/application/use-cases/create-cart-item.use-case';
 import { GetActiveCartUseCase } from '@module/cart/application/use-cases/get-active-cart.use.case';
 import { UpdateCartItemtUseCase } from '@module/cart/application/use-cases/update-cart-item.use-case';
 import { CartItemPostgresRepository } from '@module/cart/infrastructure/database/cart-item.postgres.repository';
@@ -37,9 +37,9 @@ const cartItemRepositoryProvider: Provider = {
   controllers: [CartController],
   providers: [
     CartCrudUseCase,
-    CreateCartUseCase,
     GetActiveCartUseCase,
     UpdateCartItemtUseCase,
+    CreateCartItemUseCase,
     cartRepositoryProvider,
     cartItemRepositoryProvider,
     CartMapper,

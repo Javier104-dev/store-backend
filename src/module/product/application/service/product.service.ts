@@ -12,7 +12,7 @@ export class ProductService {
     private readonly repository: IProductRepository,
   ) {}
 
-  async getProductsByIds(productIds: string[]): Promise<Product[]> {
-    return this.repository.getProductsByIds(productIds);
+  async getProductByIdOrFail(productId: string): Promise<Product> {
+    return this.repository.findOneByIdOrFail(productId);
   }
 }
