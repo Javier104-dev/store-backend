@@ -25,7 +25,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ManySerializedResponseDto } from '@common/base/application/dto/many-serialized-response.dto';
 import { OneSerializedResponseDto } from '@common/base/application/dto/one-serialized-response.dto';
@@ -40,6 +40,16 @@ export class CatalogController {
 
   @Get('categories')
   @Auth(AuthType.None)
+  @ApiResponse({
+    status: 200,
+    description: 'The operation has been successful.',
+  })
+  @ApiQuery({ name: 'page', required: false, type: () => PageQueryParamsDto })
+  @ApiQuery({
+    name: 'productPage',
+    required: false,
+    type: () => ProductsPageQueryParamsDto,
+  })
   async getAllCategoriesWithProducts(
     @Query('page') page: PageQueryParamsDto,
     @Query('sort') sort: SortOptions<CategoryDto>,

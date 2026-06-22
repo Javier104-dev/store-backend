@@ -24,6 +24,7 @@ import { ManySerializedResponseDto } from '@common/base/application/dto/many-ser
 import { OneSerializedResponseDto } from '@common/base/application/dto/one-serialized-response.dto';
 import { PageQueryParamsDto } from '@common/base/application/dto/query-param/page-query-params.dto';
 import { SortOptions } from '@common/base/get-all-options.interface';
+import { GetAllSwaggerDecorator } from '@common/base/interface/getAllSwaggerDecorator';
 
 @Controller('product')
 @UseGuards(PolicyGuard)
@@ -33,6 +34,11 @@ export class ProductController {
 
   @Get()
   @Auth(AuthType.None)
+  @GetAllSwaggerDecorator(
+    ProductDto,
+    ProductFilterQueryParamsDto,
+    ProductFieldsQueryParamsDto,
+  )
   async getAll(
     @Query('page') page: PageQueryParamsDto,
     @Query('filter') filter: ProductFilterQueryParamsDto,
@@ -49,6 +55,11 @@ export class ProductController {
 
   @Get('owner')
   @Policies(ReadProductPolicyHandler)
+  @GetAllSwaggerDecorator(
+    ProductDto,
+    ProductFilterQueryParamsDto,
+    ProductFieldsQueryParamsDto,
+  )
   async getProductsFromOwner(
     @CurrentUser() user: User,
     @Query('page') page: PageQueryParamsDto,

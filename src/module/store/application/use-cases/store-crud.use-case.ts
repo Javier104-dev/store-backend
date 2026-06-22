@@ -8,7 +8,7 @@ import {
   STORE_REPOSITORY_KEY,
 } from '@module/store/application/repository/store.repository.interface';
 import { Store } from '@module/store/domain/store.entity';
-import StoreNotFoundException from '@module/store/infrastructure/exception/store-not-found.exception';
+import { StoreNotFoundException } from '@module/store/infrastructure/exception/store-not-found.exception';
 import { Inject, Injectable } from '@nestjs/common';
 
 import { BaseResponseAdapter } from '@common/base/application/adapter/base-response.adapter';
@@ -50,12 +50,14 @@ export class StoreCrudUseCase extends BaseCrudUseCase<
   }
 
   async getStoreFronOwner(
-    user: User,
+    userId: string,
   ): Promise<OneSerializedResponseDto<StoreDto>> {
-    const store = await this.repository.getStoreFromUserId(user.id);
+    const store = await this.repository.getStoreFromUserId(userId);
 
     if (!store) {
-      throw new StoreNotFoundException(`This user doesn't have a store yet.`);
+      throw new StoreNotFoundException({
+        message: `This user doesn't have a store yet.`,
+      });
     }
 
     return this.responseAdapter.oneEntityResponse<StoreDto>(
@@ -72,7 +74,9 @@ export class StoreCrudUseCase extends BaseCrudUseCase<
     const store = await this.repository.getStoreFromUserId(user.id);
 
     if (!store) {
-      throw new StoreNotFoundException(`This user doesn't have a store yet.`);
+      throw new StoreNotFoundException({
+        message: `This user doesn't have a store yet.`,
+      });
     }
 
     const entity = await this.repository.updateOneOrFail(

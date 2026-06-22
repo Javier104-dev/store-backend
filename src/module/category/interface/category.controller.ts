@@ -28,6 +28,7 @@ import { ManySerializedResponseDto } from '@common/base/application/dto/many-ser
 import { OneSerializedResponseDto } from '@common/base/application/dto/one-serialized-response.dto';
 import { PageQueryParamsDto } from '@common/base/application/dto/query-param/page-query-params.dto';
 import { SortOptions } from '@common/base/get-all-options.interface';
+import { GetAllSwaggerDecorator } from '@common/base/interface/getAllSwaggerDecorator';
 
 @Controller('category')
 @UseGuards(PolicyGuard)
@@ -37,6 +38,11 @@ export class CategoryController {
 
   @Get()
   @Auth(AuthType.None)
+  @GetAllSwaggerDecorator(
+    CategoryDto,
+    CategoryFilterQueryParamsDto,
+    CategoryFieldsQueryParamsDto,
+  )
   async getAll(
     @Query('page') page: PageQueryParamsDto,
     @Query('filter') filter: CategoryFilterQueryParamsDto,

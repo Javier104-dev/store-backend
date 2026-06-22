@@ -22,4 +22,6 @@ export interface IUserRepository {
   ): Promise<User>;
 
   countUsers(): Promise<number>;
+
+  getUserById(id: string): Promise<User>;
 }

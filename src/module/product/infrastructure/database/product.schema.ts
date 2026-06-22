@@ -16,8 +16,10 @@ export const ProductSchema = new EntitySchema<Product>({
       nullable: false,
     },
     price: {
-      type: 'float',
-      nullable: false,
+      type: 'decimal',
+      precision: 10,
+      scale: 2,
+      default: 0,
     },
     description: {
       type: 'text',
