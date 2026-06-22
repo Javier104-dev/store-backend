@@ -9,6 +9,10 @@ import { ProductFieldsQueryParamsDto } from '@module/product/application/dto/que
 import { ProductFilterQueryParamsDto } from '@module/product/application/dto/query-param/product-filter-query-params.dto';
 import { DeleteProductPolicyHandler } from '@module/product/application/policy/delete-product.policy-handler';
 import { ReadProductPolicyHandler } from '@module/product/application/policy/read-product.policy-handler';
+import { GetAllProductsUseCase } from '@module/product/application/use-cases/get-all-products.use-case';
+import { GetProductByIdUseCase } from '@module/product/application/use-cases/get-product-by-id.use-case';
+import { GetProductByOwnerUseCase } from '@module/product/application/use-cases/get-product-by-owner.use-case';
+import { GetProductsFromOwnerUseCase } from '@module/product/application/use-cases/get-products-from-owner.use-case';
 import { ProductCrudUseCase } from '@module/product/application/use-cases/product-crud.use-case';
 import {
   Controller,
@@ -30,7 +34,13 @@ import { GetAllSwaggerDecorator } from '@common/base/interface/getAllSwaggerDeco
 @UseGuards(PolicyGuard)
 @ApiTags('product')
 export class ProductController {
-  constructor(private readonly crudUseCase: ProductCrudUseCase) {}
+  constructor(
+    private readonly crudUseCase: ProductCrudUseCase,
+    private readonly getAllProductsUseCase: GetAllProductsUseCase,
+    private readonly getProductByOwnerUseCase: GetProductByOwnerUseCase,
+    private readonly getProductById: GetProductByIdUseCase,
+    private readonly getProductsFromOwnerUseCase: GetProductsFromOwnerUseCase,
+  ) {}
 
   @Get()
   @Auth(AuthType.None)
@@ -45,7 +55,7 @@ export class ProductController {
     @Query('fields') fields: ProductFieldsQueryParamsDto,
     @Query('sort') sort: SortOptions<ProductDto>,
   ): Promise<ManySerializedResponseDto<ProductDto>> {
-    return this.crudUseCase.getAllProducts({
+    return this.getAllProductsUseCase.execute({
       page,
       filter,
       fields: fields.target,
@@ -67,7 +77,7 @@ export class ProductController {
     @Query('fields') fields: ProductFieldsQueryParamsDto,
     @Query('sort') sort: SortOptions<ProductDto>,
   ): Promise<ManySerializedResponseDto<ProductDto>> {
-    return this.crudUseCase.getProductsFromOwner(user, {
+    return this.getProductsFromOwnerUseCase.execute(user, {
       page,
       filter,
       fields: fields.target,
@@ -81,7 +91,7 @@ export class ProductController {
     @CurrentUser() user: User,
     @Param('id') id: string,
   ): Promise<OneSerializedResponseDto<ProductDto>> {
-    return this.crudUseCase.findOneByOwnerOrFail(user, id);
+    return this.getProductByOwnerUseCase.execute(user, id);
   }
 
   @Get(':id')
@@ -89,7 +99,7 @@ export class ProductController {
   async getOneByIdOrFail(
     @Param('id') id: string,
   ): Promise<OneSerializedResponseDto<ProductDto>> {
-    return this.crudUseCase.getOneByIdOrFail(id);
+    return this.getProductById.execute(id);
   }
 
   @Delete(':id')

@@ -23,7 +23,7 @@ export class ProductPostgresRepository extends BaseRepository<Product> {
   }
 
   async getAll(
-    options: IGetAllOptions<Product>,
+    options?: IGetAllOptions<Product>,
     relationsOptions?: Omit<IGetOneOptions<Product>, 'filter'>,
   ): Promise<ICollection<Product>> {
     const { filter, page, sort, fields } = options || {};
