@@ -3,6 +3,7 @@ import { CreateCategoryPolicyHandler } from '@module/category/application/policy
 import { DeleteCategoryPolicyHandler } from '@module/category/application/policy/delete-category.policy-handler';
 import { UpdateCategoryPolicyHandler } from '@module/category/application/policy/update-category.policy-handler';
 import { CATEGORY_REPOSITORY_KEY } from '@module/category/application/repository/category.repository.interface';
+import { CategoryService } from '@module/category/application/service/category.service';
 import { CategoryCrudUseCase } from '@module/category/application/use-cases/category-crud.use-case';
 import { categoryPermissions } from '@module/category/domain/category.permission';
 import { CategoryPostgresRepository } from '@module/category/infrastructure/database/category.postgres.repository';
@@ -33,10 +34,11 @@ const categoryRepositoryProvider: Provider = {
   controllers: [CategoryController],
   providers: [
     CategoryCrudUseCase,
+    CategoryService,
     categoryRepositoryProvider,
     CategoryMapper,
     ...policyHandlersProviders,
   ],
-  exports: [CategoryCrudUseCase],
+  exports: [CategoryService],
 })
 export class CategoryModule {}

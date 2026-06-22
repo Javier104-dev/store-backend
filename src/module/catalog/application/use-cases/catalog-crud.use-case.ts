@@ -1,6 +1,6 @@
 import { CategoryDto } from '@module/category/application/dto/category.dto';
 import { CategoryMapper } from '@module/category/application/mapper/category.mapper';
-import { CategoryCrudUseCase } from '@module/category/application/use-cases/category-crud.use-case';
+import { CategoryService } from '@module/category/application/service/category.service';
 import { Category } from '@module/category/domain/category.entity';
 import { User } from '@module/iam/user/domain/user.entity';
 import { CreateProductDto } from '@module/product/application/dto/create-product.dto';
@@ -29,7 +29,7 @@ export class CatalogCrudUseCase {
   constructor(
     private readonly storeCrudUseCase: StoreCrudUseCase,
     private readonly productCrudUseCase: ProductCrudUseCase,
-    private readonly categoryCrudUseCase: CategoryCrudUseCase,
+    private readonly categoryService: CategoryService,
     private readonly uploadCrudUseCase: UploadCrudUseCase,
     private readonly productMapper: ProductMapper,
     private readonly categoryMapper: CategoryMapper,
@@ -42,7 +42,7 @@ export class CatalogCrudUseCase {
   ): Promise<ManySerializedResponseDto<CategoryDto>> {
     const productPage = { page: productPageOptions };
     const collection =
-      await this.categoryCrudUseCase.getCategoryCollection(options);
+      await this.categoryService.getCategoryCollection(options);
 
     const categoriesWithProducts = await Promise.all(
       collection.data.map(async (category) => {
@@ -184,6 +184,6 @@ export class CatalogCrudUseCase {
     if (!categoryIds?.length) {
       return [];
     }
-    return this.categoryCrudUseCase.getCategoriesByIds(categoryIds);
+    return this.categoryService.getCategoriesByIds(categoryIds);
   }
 }
