@@ -1,4 +1,3 @@
-import { CategoryDto } from '@module/category/application/dto/category.dto';
 import {
   CATEGORY_REPOSITORY_KEY,
   ICategoryRepository,
@@ -22,7 +21,7 @@ export class CategoryService {
 
   async getCategoryCollection(
     options: IGetAllOptions<Category>,
-  ): Promise<ICollection<CategoryDto>> {
+  ): Promise<ICollection<Category>> {
     return this.repository.getAll(options);
   }
 }

@@ -6,14 +6,12 @@ import { BookDto } from '@module/book/application/dto/book.dto';
 import { CreateBookDto } from '@module/book/application/dto/create-book.dto';
 import { UpdateBookDto } from '@module/book/application/dto/update-book.dto';
 import { Product } from '@module/product/domain/product.entity';
-import { UploadDto } from '@module/upload/application/dto/upload.dto';
 import {
   IUploadRepository,
   UPLOAD_REPOSITORY_KEY,
 } from '@module/upload/application/repository/upload.repository.interface';
 import { Upload } from '@module/upload/domain/upload.entity';
 import { Inject, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 
 import { BaseResponseAdapter } from '@common/base/application/adapter/base-response.adapter';
 import { DtoMapper } from '@common/base/application/mapper/dto.mapper';
@@ -33,7 +31,6 @@ export class UploadCrudUseCase extends BaseCrudUseCase<
     responseAdapter: BaseResponseAdapter,
     @Inject(UPLOAD_FILE_SERVICE)
     private readonly amazonS3Service: IUploadFileService,
-    private readonly configService: ConfigService,
   ) {
     super(repository, mapper, responseAdapter, Upload.getEntityName());
   }
@@ -68,18 +65,5 @@ export class UploadCrudUseCase extends BaseCrudUseCase<
 
     await this.deleteMany(ids);
     await this.amazonS3Service.deleteUploads(keys);
-  }
-
-  transformUploadIncluded() {
-    return {
-      upload: (rel: UploadDto) => ({
-        ...rel,
-        url: this.buildUrl(rel.key),
-      }),
-    };
-  }
-
-  private buildUrl(key: string) {
-    return `${this.configService.get('aws.endpoint')}/${this.configService.get('s3.bucket')}/${key}`;
   }
 }

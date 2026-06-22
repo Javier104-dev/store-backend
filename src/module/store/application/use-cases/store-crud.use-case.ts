@@ -66,10 +66,6 @@ export class StoreCrudUseCase extends BaseCrudUseCase<
     );
   }
 
-  async getStoreFromUserIdOrFail(id: string): Promise<Store> {
-    return this.repository.getStoreFromUserIdOrFail(id);
-  }
-
   async updateStoreOrFail(updateDto: UpdateStoreDto, user: User) {
     const store = await this.repository.getStoreFromUserId(user.id);
 

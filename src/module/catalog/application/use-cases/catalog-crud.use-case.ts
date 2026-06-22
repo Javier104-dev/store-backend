@@ -7,10 +7,11 @@ import { CreateProductDto } from '@module/product/application/dto/create-product
 import { ProductDto } from '@module/product/application/dto/product.dto';
 import { UpdateProductDto } from '@module/product/application/dto/update-product.dto';
 import { ProductMapper } from '@module/product/application/mapper/product.mapper';
-import { ProductCrudUseCase } from '@module/product/application/use-cases/product-crud.use-case';
+import { ProductService } from '@module/product/application/service/product.service';
 import { PRODUCT_UPLOAD_FOLDER } from '@module/product/domain/product.constants';
 import { Product } from '@module/product/domain/product.entity';
-import { StoreCrudUseCase } from '@module/store/application/use-cases/store-crud.use-case';
+import { StoreService } from '@module/store/application/service/store.service';
+import { UploadService } from '@module/upload/application/service/upload.service';
 import { UploadCrudUseCase } from '@module/upload/application/use-cases/upload-crud.use-case';
 import { Injectable } from '@nestjs/common';
 
@@ -27,13 +28,14 @@ import {
 @Injectable()
 export class CatalogCrudUseCase {
   constructor(
-    private readonly storeCrudUseCase: StoreCrudUseCase,
-    private readonly productCrudUseCase: ProductCrudUseCase,
+    private readonly storeService: StoreService,
+    private readonly productService: ProductService,
     private readonly categoryService: CategoryService,
     private readonly uploadCrudUseCase: UploadCrudUseCase,
     private readonly productMapper: ProductMapper,
     private readonly categoryMapper: CategoryMapper,
     private readonly responseAdapter: BaseResponseAdapter,
+    private readonly uploadService: UploadService,
   ) {}
 
   async getAllCategoriesWithProducts(
@@ -47,7 +49,7 @@ export class CatalogCrudUseCase {
     const categoriesWithProducts = await Promise.all(
       collection.data.map(async (category) => {
         const productCollection =
-          await this.productCrudUseCase.getProductCollectionByCategoryId(
+          await this.productService.getProductCollectionByCategoryId(
             category.id,
             productPage,
           );
@@ -74,7 +76,7 @@ export class CatalogCrudUseCase {
           upload: true,
         },
       },
-      this.uploadCrudUseCase.transformUploadIncluded(),
+      this.uploadService.transformUploadIncluded(),
     );
   }
 
@@ -85,7 +87,7 @@ export class CatalogCrudUseCase {
   ): Promise<OneSerializedResponseDto<ProductDto>> {
     const { categoryIds } = createDto;
 
-    const store = await this.storeCrudUseCase.getStoreFromUserIdOrFail(user.id);
+    const store = await this.storeService.getStoreFromUserIdOrFail(user.id);
     const categories = await this.resolveCategories(categoryIds);
 
     const product = this.productMapper.toEntity<Product>({
@@ -94,7 +96,7 @@ export class CatalogCrudUseCase {
       categories,
     });
 
-    const productCreated = await this.productCrudUseCase.saveRawOne(product);
+    const productCreated = await this.productService.saveRawOne(product);
 
     if (files?.length) {
       await this.uploadCrudUseCase.uploadFiles(
@@ -127,17 +129,14 @@ export class CatalogCrudUseCase {
   ): Promise<OneSerializedResponseDto<ProductDto>> {
     const { categoryIds, uploadIds } = updateDto;
 
-    const store = await this.storeCrudUseCase.getStoreFromUserIdOrFail(user.id);
+    const store = await this.storeService.getStoreFromUserIdOrFail(user.id);
 
     const options: IGetOneOptions<Product> = {
       filter: { store: { id: store.id } },
       relations: ['upload'],
     };
 
-    const product = await this.productCrudUseCase.findRawOneByIdOrFail(
-      id,
-      options,
-    );
+    const product = await this.productService.findRawOneByIdOrFail(id, options);
 
     const { upload, ...productWithoutUpload } = product;
 
@@ -170,7 +169,7 @@ export class CatalogCrudUseCase {
     });
 
     const productUpdated =
-      await this.productCrudUseCase.saveRawOne(productToUpdate);
+      await this.productService.saveRawOne(productToUpdate);
 
     return this.responseAdapter.oneEntityResponse<ProductDto>(
       Product.getEntityName(),
