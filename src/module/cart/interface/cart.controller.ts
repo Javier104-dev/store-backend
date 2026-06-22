@@ -92,7 +92,7 @@ export class CartController {
   }
 
   @Delete()
-  async deleteCartOrFail(@CurrentUser() user: User): Promise<void> {
+  async deleteCart(@CurrentUser() user: User): Promise<void> {
     return this.deleteCartUseCase.execute(user.id);
   }
 }

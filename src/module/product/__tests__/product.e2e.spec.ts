@@ -1,4 +1,5 @@
 import { Product } from '@module/product/domain/product.entity';
+import { ProductNotFoundException } from '@module/product/infrastructure/exception/product-not-found.exception';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import request from 'supertest';
 
@@ -166,7 +167,9 @@ describe('Product Module', () => {
     describe('Error cases', () => {
       it('should return an error if the product with the given ID does not belong to the authenticated owner', async () => {
         const productId = '8f3c2a91-4b7d-4e6f-8c21-9a5d3b7e2f00';
-        const error = new EntityNotFoundException(productId);
+        const error = new ProductNotFoundException({
+          message: `Product with id ${productId} not found`,
+        });
         await request(app.getHttpServer())
           .get(`/api/v1/product/owner/${productId}`)
           .auth(adminToken, { type: 'bearer' })
@@ -225,7 +228,9 @@ describe('Product Module', () => {
     describe('Error cases', () => {
       it('should return an error if the product with the given ID does not exist', async () => {
         const productId = '3d9b6f21-7a4e-4c8d-9f13-2b6e1a7c5d00';
-        const error = new EntityNotFoundException(productId);
+        const error = new ProductNotFoundException({
+          message: `Product with id ${productId} not found`,
+        });
         await request(app.getHttpServer())
           .get(`/api/v1/product/${productId}`)
           .expect(HttpStatus.NOT_FOUND)

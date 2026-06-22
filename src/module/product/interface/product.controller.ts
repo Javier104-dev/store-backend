@@ -38,7 +38,7 @@ export class ProductController {
     private readonly crudUseCase: ProductCrudUseCase,
     private readonly getAllProductsUseCase: GetAllProductsUseCase,
     private readonly getProductByOwnerUseCase: GetProductByOwnerUseCase,
-    private readonly getProductById: GetProductByIdUseCase,
+    private readonly getProductByIdUseCase: GetProductByIdUseCase,
     private readonly getProductsFromOwnerUseCase: GetProductsFromOwnerUseCase,
   ) {}
 
@@ -49,7 +49,7 @@ export class ProductController {
     ProductFilterQueryParamsDto,
     ProductFieldsQueryParamsDto,
   )
-  async getAll(
+  async getAllProduct(
     @Query('page') page: PageQueryParamsDto,
     @Query('filter') filter: ProductFilterQueryParamsDto,
     @Query('fields') fields: ProductFieldsQueryParamsDto,
@@ -87,7 +87,7 @@ export class ProductController {
 
   @Get('owner/:id')
   @Policies(ReadProductPolicyHandler)
-  async findOneByOwnerOrFail(
+  async getProductByOwner(
     @CurrentUser() user: User,
     @Param('id') id: string,
   ): Promise<OneSerializedResponseDto<ProductDto>> {
@@ -96,10 +96,10 @@ export class ProductController {
 
   @Get(':id')
   @Auth(AuthType.None)
-  async getOneByIdOrFail(
+  async getProductById(
     @Param('id') id: string,
   ): Promise<OneSerializedResponseDto<ProductDto>> {
-    return this.getProductById.execute(id);
+    return this.getProductByIdUseCase.execute(id);
   }
 
   @Delete(':id')

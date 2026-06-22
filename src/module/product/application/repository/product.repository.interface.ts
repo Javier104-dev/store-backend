@@ -14,8 +14,8 @@ export interface IProductRepository extends IRepository<Product> {
     options?: IGetAllOptions<Product>,
     relationsOptions?: Omit<IGetOneOptions<Product>, 'filter'>,
   ): Promise<ICollection<Product>>;
-  findOneByIdOrFail(
+  getProductById(
     id: string,
     options?: IGetOneOptions<Product>,
-  ): Promise<Product>;
+  ): Promise<Product | null>;
 }

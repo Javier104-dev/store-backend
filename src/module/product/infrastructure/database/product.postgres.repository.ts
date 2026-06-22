@@ -10,8 +10,6 @@ import {
   IGetOneOptions,
 } from '@common/base/get-all-options.interface';
 import BaseRepository from '@common/base/infrastructure/database/base.repository';
-import EntityNotFoundException from '@common/base/infrastructure/database/exception/not-found.exception';
-import { isEmptyObject } from '@common/base/infrastructure/database/utils/object.utils';
 
 @Injectable()
 export class ProductPostgresRepository extends BaseRepository<Product> {
@@ -47,23 +45,17 @@ export class ProductPostgresRepository extends BaseRepository<Product> {
     };
   }
 
-  async findOneByIdOrFail(
+  async getProductById(
     id: string,
     options?: IGetOneOptions<Product>,
-  ): Promise<Product> {
+  ): Promise<Product | null> {
     const { filter, relations } = options || {};
-    const entity = await this.repository.findOne({
+    return this.repository.findOne({
       where: {
         id,
         ...filter,
       },
       ...(relations && { relations }),
     });
-
-    if (!entity || isEmptyObject(entity)) {
-      throw new EntityNotFoundException(id);
-    }
-
-    return entity;
   }
 }

@@ -5,6 +5,7 @@ import {
   PRODUCT_REPOSITORY_KEY,
 } from '@module/product/application/repository/product.repository.interface';
 import { Product } from '@module/product/domain/product.entity';
+import { ProductNotFoundException } from '@module/product/infrastructure/exception/product-not-found.exception';
 import { UploadDto } from '@module/upload/application/dto/upload.dto';
 import { Inject, Injectable } from '@nestjs/common';
 
@@ -24,10 +25,6 @@ export class ProductService {
     private readonly productMapper: ProductMapper,
     private readonly responseAdapter: BaseResponseAdapter,
   ) {}
-
-  async getProductByIdOrFail(productId: string): Promise<Product> {
-    return this.repository.findOneByIdOrFail(productId);
-  }
 
   async getAllProductsByStore(
     storeId: string,
@@ -74,7 +71,6 @@ export class ProductService {
     transformIncluded?: Record<string, (rel: UploadDto) => UploadDto>,
   ): Promise<OneSerializedResponseDto<ProductDto>> {
     const entity = await this.findRawOneByIdOrFail(id, options);
-
     return this.responseAdapter.oneEntityResponse(
       Product.getEntityName(),
       this.productMapper.fromEntity<ProductDto>(entity),
@@ -87,7 +83,7 @@ export class ProductService {
     id: string,
     options?: IGetOneOptions<Product>,
   ): Promise<Product> {
-    return this.repository.findOneByIdOrFail(id, options);
+    return this.getProductByIdOrFail(id, options);
   }
 
   async saveRawOne(entity: Product): Promise<Product> {
@@ -100,5 +96,20 @@ export class ProductService {
     return Object.fromEntries(
       (relationsOptions?.relations ?? []).map((key) => [key, true as const]),
     );
+  }
+
+  async getProductByIdOrFail(
+    productId: string,
+    options?: IGetOneOptions<Product>,
+  ): Promise<Product> {
+    const product = await this.repository.getProductById(productId, options);
+
+    if (!product) {
+      throw new ProductNotFoundException({
+        message: `Product with id ${productId} not found`,
+      });
+    }
+
+    return product;
   }
 }
