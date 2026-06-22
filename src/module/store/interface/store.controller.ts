@@ -11,7 +11,10 @@ import { ReadStorePolicyHandler } from '@module/store/application/policy/read-st
 import { UpdateStorePolicyHandler } from '@module/store/application/policy/update-store.policy-handler';
 import { StoreFieldsQueryParamsDto } from '@module/store/application/query-param/store-fields-query-params.dto';
 import { StoreFilterQueryParamsDto } from '@module/store/application/query-param/store-filter-query-params.dto';
+import { CreateStoreUseCase } from '@module/store/application/use-cases/create-store.use-case';
+import { GetStoreFromOwnerUseCase } from '@module/store/application/use-cases/get-store-from-owner.use-case';
 import { StoreCrudUseCase } from '@module/store/application/use-cases/store-crud.use-case';
+import { UpdateStoreUseCase } from '@module/store/application/use-cases/update-store.use-case';
 import {
   Body,
   Controller,
@@ -35,7 +38,12 @@ import { GetAllSwaggerDecorator } from '@common/base/interface/getAllSwaggerDeco
 @UseGuards(PolicyGuard)
 @ApiTags('store')
 export class StoreController {
-  constructor(private readonly crudUseCase: StoreCrudUseCase) {}
+  constructor(
+    private readonly crudUseCase: StoreCrudUseCase,
+    private readonly getStoreFromOwnerUseCase: GetStoreFromOwnerUseCase,
+    private readonly createStoreUseCase: CreateStoreUseCase,
+    private readonly UpdateStoreUseCase: UpdateStoreUseCase,
+  ) {}
 
   @Get()
   @Policies(ReadStorePolicyHandler)
@@ -63,7 +71,7 @@ export class StoreController {
   async getStoreFronOwner(
     @CurrentUser() user: User,
   ): Promise<OneSerializedResponseDto<StoreDto>> {
-    return this.crudUseCase.getStoreFronOwner(user.id);
+    return this.getStoreFromOwnerUseCase.execute(user.id);
   }
 
   @Get(':id')
@@ -76,20 +84,20 @@ export class StoreController {
 
   @Post()
   @Policies(CreateStorePolicyHandler)
-  async saveOne(
+  async createStore(
     @Body() createDto: CreateStoreDto,
     @CurrentUser() user: User,
   ): Promise<OneSerializedResponseDto<StoreDto>> {
-    return this.crudUseCase.createStore(createDto, user);
+    return this.createStoreUseCase.execute(createDto, user);
   }
 
   @Patch()
   @Policies(UpdateStorePolicyHandler)
-  async updateOneOrFail(
+  async updateStore(
     @Body() updateDto: UpdateStoreDto,
     @CurrentUser() user: User,
   ): Promise<OneSerializedResponseDto<StoreDto>> {
-    return this.crudUseCase.updateStoreOrFail(updateDto, user);
+    return this.UpdateStoreUseCase.execute(user.id, updateDto);
   }
 
   @Delete(':id')
