@@ -12,7 +12,7 @@ export const CartSchema = new EntitySchema<Cart>({
   tableName: 'cart',
   columns: withBaseSchemaColumns({
     status: {
-      type: 'enum',
+      type: 'simple-enum',
       enum: Object.values(CART_STATUS),
       default: CART_STATUS.ACTIVE,
     },

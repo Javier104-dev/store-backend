@@ -1,7 +1,7 @@
 import { CreateStoreDto } from '@module/store/application/dto/create-store.dto';
 import { UpdateStoreDto } from '@module/store/application/dto/upate-store.dto';
 import { Store } from '@module/store/domain/store.entity';
-import StoreNotFoundException from '@module/store/infrastructure/exception/store-not-found.exception';
+import { StoreNotFoundException } from '@module/store/infrastructure/exception/store-not-found.exception';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import request from 'supertest';
 
@@ -134,9 +134,9 @@ describe('Store Module', () => {
 
     describe('Error cases', () => {
       it('should throw an error if the user does not have a store', async () => {
-        const error = new StoreNotFoundException(
-          `This user doesn't have a store yet.`,
-        );
+        const error = new StoreNotFoundException({
+          message: `This user doesn't have a store yet.`,
+        });
         await request(app.getHttpServer())
           .get('/api/v1/store/owner')
           .auth(adminToken3, { type: 'bearer' })
@@ -272,9 +272,9 @@ describe('Store Module', () => {
         const updateStore: UpdateStoreDto = {
           name: 'updated name',
         };
-        const error = new StoreNotFoundException(
-          `This user doesn't have a store yet.`,
-        );
+        const error = new StoreNotFoundException({
+          message: `This user doesn't have a store yet.`,
+        });
         await request(app.getHttpServer())
           .patch('/api/v1/store')
           .auth(adminToken3, { type: 'bearer' })
