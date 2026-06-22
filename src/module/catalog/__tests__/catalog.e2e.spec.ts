@@ -44,7 +44,7 @@ describe('Catalog Module', () => {
     await app.close();
   });
 
-  describe('GET - /catalog/catalog', () => {
+  describe('GET - /catalog/categories', () => {
     describe('Success cases', () => {
       it('should return paginated categories with their products and their relations', async () => {
         const RELATIONS_PRODUCT = 'products';

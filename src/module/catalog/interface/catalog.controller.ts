@@ -1,5 +1,7 @@
 import { ProductsPageQueryParamsDto } from '@module/catalog/application/dto/query-param/product-page-query-params.dto';
-import { CatalogCrudUseCase } from '@module/catalog/application/use-cases/catalog-crud.use-case';
+import { CreateProductUseCase } from '@module/catalog/application/use-cases/create-product.use-case';
+import { GetAllCategoriesWithProductsUseCase } from '@module/catalog/application/use-cases/get-all-categories-with-products.use-case';
+import { UpdateProductUseCase } from '@module/catalog/application/use-cases/update-product.use-case';
 import { CategoryDto } from '@module/category/application/dto/category.dto';
 import { AuthType } from '@module/iam/authentication/domain/auth-type.enum';
 import { Auth } from '@module/iam/authentication/infrastructure/decorator/auth.decorator';
@@ -36,7 +38,11 @@ import { SortOptions } from '@common/base/get-all-options.interface';
 @UseGuards(PolicyGuard)
 @ApiTags('catalog')
 export class CatalogController {
-  constructor(private readonly crudUseCase: CatalogCrudUseCase) {}
+  constructor(
+    private readonly getAllCategoriesWithProductsUseCase: GetAllCategoriesWithProductsUseCase,
+    private readonly createProductUseCase: CreateProductUseCase,
+    private readonly updateProductUseCase: UpdateProductUseCase,
+  ) {}
 
   @Get('categories')
   @Auth(AuthType.None)
@@ -55,10 +61,14 @@ export class CatalogController {
     @Query('sort') sort: SortOptions<CategoryDto>,
     @Query('productPage') productPage: ProductsPageQueryParamsDto,
   ): Promise<ManySerializedResponseDto<CategoryDto>> {
-    return this.crudUseCase.getAllCategoriesWithProducts(productPage, {
-      page,
-      sort,
-    });
+    const test = await this.getAllCategoriesWithProductsUseCase.execute(
+      productPage,
+      {
+        page,
+        sort,
+      },
+    );
+    return test;
   }
 
   @Post('product')
@@ -69,7 +79,7 @@ export class CatalogController {
     @CurrentUser() user: User,
     @UploadedFiles() files: Express.Multer.File[],
   ): Promise<OneSerializedResponseDto<ProductDto>> {
-    return this.crudUseCase.saveOneProduct(createDto, user, files);
+    return this.createProductUseCase.execute(createDto, user, files);
   }
 
   @Patch('product/:id')
@@ -81,6 +91,6 @@ export class CatalogController {
     @CurrentUser() user: User,
     @UploadedFiles() files: Express.Multer.File[],
   ): Promise<OneSerializedResponseDto<ProductDto>> {
-    return this.crudUseCase.updateOneOrFail(id, updateDto, user, files);
+    return this.updateProductUseCase.execute(id, updateDto, user, files);
   }
 }
