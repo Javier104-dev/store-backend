@@ -6,6 +6,7 @@ import { CartFilterQueryParamsDto } from '@module/cart/application/dto/query-par
 import { UpdateCartItemDto } from '@module/cart/application/dto/update-cart-item.dto';
 import { CartCrudUseCase } from '@module/cart/application/use-cases/cart-crud.use-case';
 import { CreateCartItemUseCase } from '@module/cart/application/use-cases/create-cart-item.use-case';
+import { DeleteCarttUseCase } from '@module/cart/application/use-cases/delete-cart.use-case';
 import { GetActiveCartUseCase } from '@module/cart/application/use-cases/get-active-cart.use.case';
 import { UpdateCartItemtUseCase } from '@module/cart/application/use-cases/update-cart-item.use-case';
 import { CurrentUser } from '@module/iam/authentication/infrastructure/decorator/current-user.decorator';
@@ -36,6 +37,7 @@ export class CartController {
     private readonly getActiveCartUseCase: GetActiveCartUseCase,
     private readonly updateCartItemtUseCase: UpdateCartItemtUseCase,
     private readonly createCartItemUseCase: CreateCartItemUseCase,
+    private readonly deleteCartUseCase: DeleteCarttUseCase,
   ) {}
 
   @Get()
@@ -89,8 +91,8 @@ export class CartController {
     return this.updateCartItemtUseCase.execute(id, updateDto, user.id);
   }
 
-  @Delete(':id')
-  async deleteOneOrFail(@Param('id') id: string): Promise<void> {
-    return this.crudUseCase.deleteOneOrFail(id);
+  @Delete()
+  async deleteCartOrFail(@CurrentUser() user: User): Promise<void> {
+    return this.deleteCartUseCase.execute(user.id);
   }
 }

@@ -27,7 +27,6 @@ export class UpdateCartItemtUseCase {
       cartItemId,
       updateDto,
     );
-
     return this.responseAdapter.oneEntityResponse<CartItemDto>(
       CartItem.getEntityName(),
       cartItemUpdated,

@@ -29,6 +29,10 @@ class BaseRepository<T extends IEntity> implements IRepository<T> {
     await this.repository.softDelete({ id } as FindOptionsWhere<T>);
   }
 
+  async deleteOne(id: string): Promise<void> {
+    await this.repository.softDelete({ id } as FindOptionsWhere<T>);
+  }
+
   async deleteMany(id: string[]): Promise<void> {
     await this.repository.delete(id);
   }
