@@ -11,11 +11,11 @@ export const PRODUCT_REPOSITORY_KEY = 'product_repository';
 
 export interface IProductRepository extends IRepository<Product> {
   getAll(
-    options: IGetAllOptions<Product>,
+    options?: IGetAllOptions<Product>,
     relationsOptions?: Omit<IGetOneOptions<Product>, 'filter'>,
   ): Promise<ICollection<Product>>;
-  findOneByIdOrFail(
+  getProductById(
     id: string,
     options?: IGetOneOptions<Product>,
-  ): Promise<Product>;
+  ): Promise<Product | null>;
 }

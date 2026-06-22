@@ -135,7 +135,7 @@ describe('Store Module', () => {
     describe('Error cases', () => {
       it('should throw an error if the user does not have a store', async () => {
         const error = new StoreNotFoundException({
-          message: `This user doesn't have a store yet.`,
+          message: `This user doesn't have a store yet`,
         });
         await request(app.getHttpServer())
           .get('/api/v1/store/owner')
@@ -273,7 +273,7 @@ describe('Store Module', () => {
           name: 'updated name',
         };
         const error = new StoreNotFoundException({
-          message: `This user doesn't have a store yet.`,
+          message: `This user doesn't have a store yet`,
         });
         await request(app.getHttpServer())
           .patch('/api/v1/store')

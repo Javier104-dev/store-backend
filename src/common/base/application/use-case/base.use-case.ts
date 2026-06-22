@@ -1,6 +1,6 @@
 import { BaseResponseAdapter } from '@common/base/application/adapter/base-response.adapter';
 import { DtoMapper } from '@common/base/application/mapper/dto.mapper';
-import IUseCase from '@common/base/application/use-case/use-case.interface';
+import { IUseCase } from '@common/base/application/use-case/use-case.interface';
 import IEntity from '@common/base/domain/entity.interface';
 import IRepository from '@common/base/infrastructure/database/repository.interface';
 

@@ -5,7 +5,11 @@ import { DeleteStorePolicyHandler } from '@module/store/application/policy/delet
 import { ReadStorePolicyHandler } from '@module/store/application/policy/read-store.policy-handler';
 import { UpdateStorePolicyHandler } from '@module/store/application/policy/update-store.policy-handler';
 import { STORE_REPOSITORY_KEY } from '@module/store/application/repository/store.repository.interface';
+import { StoreService } from '@module/store/application/service/store.service';
+import { CreateStoreUseCase } from '@module/store/application/use-cases/create-store.use-case';
+import { GetStoreFromOwnerUseCase } from '@module/store/application/use-cases/get-store-from-owner.use-case';
 import { StoreCrudUseCase } from '@module/store/application/use-cases/store-crud.use-case';
+import { UpdateStoreUseCase } from '@module/store/application/use-cases/update-store.use-case';
 import { storePermissions } from '@module/store/domain/store.permission';
 import { StorePostgresRepository } from '@module/store/infrastructure/database/store.postgres.repository';
 import { StoreSchema } from '@module/store/infrastructure/database/store.schema';
@@ -35,10 +39,14 @@ const storeRepositoryProvider: Provider = {
   controllers: [StoreController],
   providers: [
     StoreCrudUseCase,
+    CreateStoreUseCase,
+    GetStoreFromOwnerUseCase,
+    UpdateStoreUseCase,
+    StoreService,
     storeRepositoryProvider,
     StoreMapper,
     ...policyHandlersProviders,
   ],
-  exports: [StoreCrudUseCase],
+  exports: [StoreService],
 })
 export class StoreModule {}

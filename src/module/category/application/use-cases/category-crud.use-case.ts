@@ -10,9 +10,7 @@ import { Category } from '@module/category/domain/category.entity';
 import { Inject, Injectable } from '@nestjs/common';
 
 import { BaseResponseAdapter } from '@common/base/application/adapter/base-response.adapter';
-import { ICollection } from '@common/base/application/dto/collection.interface';
 import BaseCrudUseCase from '@common/base/application/use-case/base.crud.use-case';
-import { IGetAllOptions } from '@common/base/get-all-options.interface';
 
 @Injectable()
 export class CategoryCrudUseCase extends BaseCrudUseCase<
@@ -23,7 +21,7 @@ export class CategoryCrudUseCase extends BaseCrudUseCase<
 > {
   constructor(
     @Inject(CATEGORY_REPOSITORY_KEY)
-    protected readonly repository: ICategoryRepository,
+    repository: ICategoryRepository,
     categoryMapper: CategoryMapper,
     responseAdapter: BaseResponseAdapter,
   ) {
@@ -33,15 +31,5 @@ export class CategoryCrudUseCase extends BaseCrudUseCase<
       responseAdapter,
       Category.getEntityName(),
     );
-  }
-
-  async getCategoriesByIds(categoryIds: string[]): Promise<Category[]> {
-    return this.repository.getCategoriesByIds(categoryIds);
-  }
-
-  async getCategoryCollection(
-    options: IGetAllOptions<Category>,
-  ): Promise<ICollection<CategoryDto>> {
-    return this.repository.getAll(options);
   }
 }

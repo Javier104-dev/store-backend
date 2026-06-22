@@ -6,6 +6,10 @@ import { ReadProductPolicyHandler } from '@module/product/application/policy/rea
 import { UpdateProductPolicyHandler } from '@module/product/application/policy/update-product.policy-handler';
 import { PRODUCT_REPOSITORY_KEY } from '@module/product/application/repository/product.repository.interface';
 import { ProductService } from '@module/product/application/service/product.service';
+import { GetAllProductsUseCase } from '@module/product/application/use-cases/get-all-products.use-case';
+import { GetProductByIdUseCase } from '@module/product/application/use-cases/get-product-by-id.use-case';
+import { GetProductByOwnerUseCase } from '@module/product/application/use-cases/get-product-by-owner.use-case';
+import { GetProductsFromOwnerUseCase } from '@module/product/application/use-cases/get-products-from-owner.use-case';
 import { ProductCrudUseCase } from '@module/product/application/use-cases/product-crud.use-case';
 import { productPermissions } from '@module/product/domain/product.permission';
 import { ProductPostgresRepository } from '@module/product/infrastructure/database/product.postgres.repository';
@@ -39,11 +43,15 @@ const productRepositoryProvider: Provider = {
   controllers: [ProductController],
   providers: [
     ProductCrudUseCase,
+    GetAllProductsUseCase,
+    GetProductByOwnerUseCase,
+    GetProductByIdUseCase,
+    GetProductsFromOwnerUseCase,
     productRepositoryProvider,
     ProductMapper,
     ProductService,
     ...policyHandlersProviders,
   ],
-  exports: [ProductCrudUseCase, AuthorizationModule, ProductService],
+  exports: [AuthorizationModule, ProductService],
 })
 export class ProductModule {}

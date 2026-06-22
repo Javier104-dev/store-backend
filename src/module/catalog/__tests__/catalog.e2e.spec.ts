@@ -2,12 +2,11 @@ import { Category } from '@module/category/domain/category.entity';
 import { CreateProductDto } from '@module/product/application/dto/create-product.dto';
 import { UpdateProductDto } from '@module/product/application/dto/update-product.dto';
 import { PRODUCT_UPLOAD_FOLDER } from '@module/product/domain/product.constants';
+import { ProductNotFoundException } from '@module/product/infrastructure/exception/product-not-found.exception';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import request from 'supertest';
 
 import { loadFixtures } from '@data/util/fixture-loader';
-
-import EntityNotFoundException from '@common/base/infrastructure/database/exception/not-found.exception';
 
 import { datasourceOptions } from '@config/orm.config';
 
@@ -45,7 +44,7 @@ describe('Catalog Module', () => {
     await app.close();
   });
 
-  describe('GET - /catalog/catalog', () => {
+  describe('GET - /catalog/categories', () => {
     describe('Success cases', () => {
       it('should return paginated categories with their products and their relations', async () => {
         const RELATIONS_PRODUCT = 'products';
@@ -464,7 +463,9 @@ describe('Catalog Module', () => {
     describe('Error cases', () => {
       it('should throw an error if the product to update does not exist.', async () => {
         const productId = '8f3c2a91-4b7d-4e6f-8c21-9a5d3b7e2f00';
-        const error = new EntityNotFoundException(productId);
+        const error = new ProductNotFoundException({
+          message: `Product with id ${productId} not found`,
+        });
         const product: UpdateProductDto = {
           name: 'updated name',
           description: 'updated description',
