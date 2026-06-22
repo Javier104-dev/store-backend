@@ -1,4 +1,1 @@
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface IUseCase {}
-
-export default IUseCase;
+export type IUseCase = object;

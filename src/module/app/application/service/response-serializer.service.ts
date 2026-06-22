@@ -4,6 +4,7 @@ import { Serializer, SerializerOptions } from 'jsonapi-serializer';
 
 import { RESPONSE_ADAPTER_BASE_OPTIONS } from '@common/base/application/constant/response-adapter-options.constant';
 import { CollectionDto } from '@common/base/application/dto/collection.dto';
+import { OneRelationResponseData } from '@common/base/application/dto/one-relation-response.interface.dto';
 import {
   ILinks,
   ISerializedData,
@@ -14,7 +15,7 @@ import { AppService } from '@/module/app/application/service/app.service';
 
 @Injectable()
 export class ResponseSerializerService {
-  private appBaseUrl: string;
+  private readonly appBaseUrl: string;
 
   constructor(
     private readonly appService: AppService,
@@ -37,8 +38,10 @@ export class ResponseSerializerService {
       };
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    serializedData.data?.id === EMPTY_ID && delete serializedData.data.id;
+    if (serializedData.data?.id === EMPTY_ID) {
+      delete serializedData.data.id;
+    }
+
     return serializedData;
   }
 
@@ -107,20 +110,16 @@ export class ResponseSerializerService {
       const self = `${normalizedCurrentRequestUrl}${urlParamId}/relationships/${relationKey}`;
       const related = `${this.appBaseUrl}${relationEndpoint}`;
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let data: any;
+      let data: OneRelationResponseData | OneRelationResponseData[];
+
       if (Array.isArray(relatedResource)) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        data = relatedResource.map((item: any) => ({
+        data = relatedResource.map((item: Record<string, unknown>) => ({
           type: relationKey,
-          id: item.id?.toString(),
+          id: (item.id as string | number)?.toString(),
         }));
       } else {
         const item = relatedResource as { id: string | number };
-        data = {
-          type: relationKey,
-          id: item.id?.toString(),
-        };
+        data = { type: relationKey, id: item.id?.toString() };
       }
 
       relationships[relationKey] = {
