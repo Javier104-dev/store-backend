@@ -1,6 +1,6 @@
+import { UploadMapper } from '@module/upload/application/mapper/upload.mapper';
 import { UPLOAD_REPOSITORY_KEY } from '@module/upload/application/repository/upload.repository.interface';
 import { UploadService } from '@module/upload/application/service/upload.service';
-import { UploadCrudUseCase } from '@module/upload/application/use-cases/upload-crud.use-case';
 import { UploadPostgresRepository } from '@module/upload/infrastructure/database/upload.postgres.repository';
 import { UploadSchema } from '@module/upload/infrastructure/database/upload.schema';
 import { Module, Provider } from '@nestjs/common';
@@ -13,7 +13,7 @@ const uploadRepositoryProvider: Provider = {
 
 @Module({
   imports: [TypeOrmModule.forFeature([UploadSchema])],
-  providers: [UploadCrudUseCase, UploadService, uploadRepositoryProvider],
-  exports: [UploadCrudUseCase, UploadService],
+  providers: [UploadService, UploadMapper, uploadRepositoryProvider],
+  exports: [UploadService],
 })
 export class UploadModule {}

@@ -12,7 +12,6 @@ import { PRODUCT_UPLOAD_FOLDER } from '@module/product/domain/product.constants'
 import { Product } from '@module/product/domain/product.entity';
 import { StoreService } from '@module/store/application/service/store.service';
 import { UploadService } from '@module/upload/application/service/upload.service';
-import { UploadCrudUseCase } from '@module/upload/application/use-cases/upload-crud.use-case';
 import { Injectable } from '@nestjs/common';
 
 import { BaseResponseAdapter } from '@common/base/application/adapter/base-response.adapter';
@@ -31,7 +30,6 @@ export class CatalogCrudUseCase {
     private readonly storeService: StoreService,
     private readonly productService: ProductService,
     private readonly categoryService: CategoryService,
-    private readonly uploadCrudUseCase: UploadCrudUseCase,
     private readonly productMapper: ProductMapper,
     private readonly categoryMapper: CategoryMapper,
     private readonly responseAdapter: BaseResponseAdapter,
@@ -99,7 +97,7 @@ export class CatalogCrudUseCase {
     const productCreated = await this.productService.saveRawOne(product);
 
     if (files?.length) {
-      await this.uploadCrudUseCase.uploadFiles(
+      await this.uploadService.uploadFiles(
         files,
         PRODUCT_UPLOAD_FOLDER,
         this.productMapper.fromEntity<Product>(productCreated, {
@@ -147,11 +145,11 @@ export class CatalogCrudUseCase {
     );
 
     if (uploadsToDelete.length) {
-      await this.uploadCrudUseCase.deleteManyFiles(uploadsToDelete);
+      await this.uploadService.deleteManyFiles(uploadsToDelete);
     }
 
     if (files?.length) {
-      await this.uploadCrudUseCase.uploadFiles(
+      await this.uploadService.uploadFiles(
         files,
         PRODUCT_UPLOAD_FOLDER,
         this.productMapper.fromEntity<Product>(product, {
