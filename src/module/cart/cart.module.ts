@@ -6,7 +6,7 @@ import { CartItemService } from '@module/cart/application/service/cart-item.serv
 import { CartService } from '@module/cart/application/service/cart.service';
 import { CartCrudUseCase } from '@module/cart/application/use-cases/cart-crud.use-case';
 import { CreateCartItemUseCase } from '@module/cart/application/use-cases/create-cart-item.use-case';
-import { DeleteCarttUseCase } from '@module/cart/application/use-cases/delete-cart.use-case';
+import { DeleteCartItemUseCase } from '@module/cart/application/use-cases/delete-cart-item.use-case';
 import { GetActiveCartUseCase } from '@module/cart/application/use-cases/get-active-cart.use.case';
 import { UpdateCartItemtUseCase } from '@module/cart/application/use-cases/update-cart-item.use-case';
 import { CartItemPostgresRepository } from '@module/cart/infrastructure/database/cart-item.postgres.repository';
@@ -16,6 +16,7 @@ import { CartSchema } from '@module/cart/infrastructure/database/cart.schema';
 import { CartController } from '@module/cart/interface/cart.controller';
 import { UserModule } from '@module/iam/user/user.module';
 import { ProductModule } from '@module/product/product.module';
+import { UploadModule } from '@module/upload/upload.module';
 import { Module, Provider } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -34,6 +35,7 @@ const cartItemRepositoryProvider: Provider = {
     TypeOrmModule.forFeature([CartSchema, CartItemSchema]),
     UserModule,
     ProductModule,
+    UploadModule,
   ],
   controllers: [CartController],
   providers: [
@@ -41,7 +43,7 @@ const cartItemRepositoryProvider: Provider = {
     GetActiveCartUseCase,
     UpdateCartItemtUseCase,
     CreateCartItemUseCase,
-    DeleteCarttUseCase,
+    DeleteCartItemUseCase,
     cartRepositoryProvider,
     cartItemRepositoryProvider,
     CartMapper,
