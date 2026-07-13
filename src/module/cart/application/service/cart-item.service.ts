@@ -6,10 +6,13 @@ import {
   ICartItemRepository,
 } from '@module/cart/application/repository/cart-item.repository.interface';
 import { CartItem } from '@module/cart/domain/cart-item.entity';
+import { CART_STATUS } from '@module/cart/domain/cart-status';
 import { Cart } from '@module/cart/domain/cart.entity';
 import { CartItemNotFoundException } from '@module/cart/infrastructure/exception/cart-item-not-found.exception';
 import { Product } from '@module/product/domain/product.entity';
 import { Inject, Injectable } from '@nestjs/common';
+
+import { IGetOneOptions } from '@common/base/get-all-options.interface';
 
 @Injectable()
 export class CartItemService {
@@ -19,14 +22,11 @@ export class CartItemService {
     private readonly cartItemMapper: CartItemMapper,
   ) {}
 
-  async getActiveCartItemByUserOrFail(
+  async getActiveCartItemByUserIdOrFail(
     cartItemId: string,
     userId: string,
   ): Promise<CartItem> {
-    const cartItem = await this.repository.getActiveCartItemByUser(
-      cartItemId,
-      userId,
-    );
+    const cartItem = await this.getActiveCartItemByUserId(cartItemId, userId);
 
     if (!cartItem) {
       throw new CartItemNotFoundException({
@@ -47,17 +47,56 @@ export class CartItemService {
     );
   }
 
-  async createCartItem(
+  async createOrUpdateCartItem(
     cart: Cart,
     product: Product,
     createDto: CreateCartItemDto,
   ): Promise<CartItem> {
-    const cartItem = this.cartItemMapper.toEntity<CartItem>({
-      ...createDto,
-      unitPrice: product.price,
-      cart,
-      product,
+    const existingItem = await this.getCartItemByCartIdAndProductId(
+      cart.id,
+      product.id,
+    );
+
+    if (!existingItem) {
+      const cartItem = this.cartItemMapper.toEntity<CartItem>({
+        ...createDto,
+        unitPrice: product.price,
+        cart,
+        product,
+      });
+
+      return this.repository.saveOne(cartItem);
+    }
+
+    return this.repository.saveOne({
+      ...existingItem,
+      quantity: existingItem.quantity + createDto.quantity,
     });
-    return this.repository.saveOne(cartItem);
+  }
+
+  async deleteCartItem(cartItemId: string): Promise<void> {
+    return this.repository.deleteOne(cartItemId);
+  }
+
+  async getActiveCartItemByUserId(cartItemId: string, userId: string) {
+    const options: IGetOneOptions<CartItem> = {
+      filter: {
+        id: cartItemId,
+        cart: { user: { id: userId }, status: CART_STATUS.ACTIVE },
+      },
+    };
+
+    return this.repository.getCartItem(options);
+  }
+
+  async getCartItemByCartIdAndProductId(cartId: string, productId: string) {
+    const options: IGetOneOptions<CartItem> = {
+      filter: {
+        cart: { id: cartId },
+        product: { id: productId },
+      },
+    };
+
+    return this.repository.getCartItem(options);
   }
 }

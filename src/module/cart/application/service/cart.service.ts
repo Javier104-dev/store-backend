@@ -5,7 +5,6 @@ import {
 } from '@module/cart/application/repository/cart.repository.interface';
 import { CART_STATUS } from '@module/cart/domain/cart-status';
 import { Cart } from '@module/cart/domain/cart.entity';
-import { CartNotFoundException } from '@module/cart/infrastructure/exception/cart-not-found.exception';
 import { UserService } from '@module/iam/user/application/service/user.service';
 import { Inject, Injectable } from '@nestjs/common';
 
@@ -24,10 +23,13 @@ export class CartService {
     return this.repository.saveOne(cart);
   }
 
-  async getCartByUserId(userId: string): Promise<Cart> {
+  async getActiveCartByUserId(userId: string): Promise<Cart> {
     const options: IGetOneOptions<Cart> = {
       filter: { status: CART_STATUS.ACTIVE },
-      relations: ['items', 'items.product'],
+      relations: ['items', 'items.product', 'items.product.upload'],
+      order: {
+        items: { createdAt: 'ASC' },
+      },
     };
     return this.repository.getCartByUserId(userId, options);
   }
@@ -49,20 +51,5 @@ export class CartService {
     }
 
     return cart;
-  }
-
-  async deleteCart(userId: string): Promise<void> {
-    const options: IGetOneOptions<Cart> = {
-      filter: { status: CART_STATUS.ACTIVE },
-    };
-    const cart = await this.repository.getCartByUserId(userId, options);
-
-    if (!cart) {
-      throw new CartNotFoundException({
-        message: 'Cart not found',
-      });
-    }
-
-    return this.repository.deleteOne(cart.id);
   }
 }

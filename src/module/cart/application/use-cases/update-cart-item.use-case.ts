@@ -19,7 +19,7 @@ export class UpdateCartItemtUseCase {
     updateDto: UpdateCartItemDto,
     userId: string,
   ): Promise<OneSerializedResponseDto<CartItemDto>> {
-    await this.cartItemService.getActiveCartItemByUserOrFail(
+    await this.cartItemService.getActiveCartItemByUserIdOrFail(
       cartItemId,
       userId,
     );

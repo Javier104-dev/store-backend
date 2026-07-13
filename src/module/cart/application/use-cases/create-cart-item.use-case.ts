@@ -24,14 +24,17 @@ export class CreateCartItemUseCase {
     userId: string,
     createDto: CreateCartItemDto,
   ): Promise<OneSerializedResponseDto<CartItemDto>> {
-    const { productId } = createDto;
     const cart = await this.cartService.getActiveCartOrCreateByUserId(userId);
-    const product = await this.productService.getProductByIdOrFail(productId);
-    const cartItem = await this.cartItemService.createCartItem(
+    const product = await this.productService.getProductByIdOrFail(
+      createDto.productId,
+    );
+
+    const cartItem = await this.cartItemService.createOrUpdateCartItem(
       cart,
       product,
       createDto,
     );
+
     return this.responseAdapter.oneEntityResponse(
       CartItem.getEntityName(),
       this.cartItemMapper.fromEntity<CartItemDto>(cartItem, {
