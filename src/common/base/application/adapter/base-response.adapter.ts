@@ -163,7 +163,7 @@ export class BaseResponseAdapter {
         transformIncluded,
       );
 
-    const nested = [];
+    const nested: unknown[] = [];
 
     const processed = includedResources.map((includedResource) => {
       const relDef = relationships[includedResource.type as string];
@@ -188,15 +188,14 @@ export class BaseResponseAdapter {
           true,
         );
 
-      const { included: nestedIncluded } =
-        this.serializerService.getIncludedData(
-          originalEntity,
-          nestedFlatKeys,
-          includedResource.type as string,
-          transformIncluded,
-        );
+      const deeperIncluded = this.processIncluded(
+        originalEntity,
+        relDef as RelationshipTree,
+        includedResource.type as string,
+        transformIncluded,
+      );
 
-      nested.push(...nestedIncluded);
+      nested.push(...deeperIncluded);
 
       const cleanAttributes = {
         ...(includedResource.attributes as Record<string, unknown>),

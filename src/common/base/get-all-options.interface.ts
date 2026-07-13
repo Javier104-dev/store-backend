@@ -1,4 +1,4 @@
-import { FindOptionsWhere } from 'typeorm';
+import { FindOptionsOrder, FindOptionsWhere } from 'typeorm';
 
 import { IDto } from '@common/base/application/dto/dto.interface';
 import { SortType } from '@common/base/application/enum/sort-type.enum';
@@ -41,4 +41,5 @@ export interface IGetAllOptions<Entity extends IDto | IEntity, Relations = []> {
 export interface IGetOneOptions<Entity> {
   filter?: FindOptionsWhere<Entity>;
   relations?: string[];
+  order?: FindOptionsOrder<Entity>;
 }
