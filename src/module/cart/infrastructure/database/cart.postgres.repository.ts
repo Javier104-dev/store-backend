@@ -20,7 +20,7 @@ export class CartPostgresRepository extends BaseRepository<Cart> {
     userId: string,
     options?: IGetOneOptions<Cart>,
   ): Promise<Cart> {
-    const { filter, relations } = options || {};
+    const { filter, relations, order } = options || {};
 
     const fullFilter = {
       where: {
@@ -28,6 +28,7 @@ export class CartPostgresRepository extends BaseRepository<Cart> {
         ...filter,
       },
       ...(relations && { relations }),
+      ...(order && { order }),
     };
 
     return this.getOne(fullFilter);
