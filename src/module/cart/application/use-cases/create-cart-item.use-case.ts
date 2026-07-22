@@ -38,7 +38,7 @@ export class CreateCartItemUseCase {
     return this.responseAdapter.oneEntityResponse(
       CartItem.getEntityName(),
       this.cartItemMapper.fromEntity<CartItemDto>(cartItem, {
-        exclude: ['cart', 'product'],
+        exclude: ['cart', 'product', 'productId'],
       }),
     );
   }

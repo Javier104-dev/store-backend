@@ -7,6 +7,7 @@ import { UpdateCartItemDto } from '@module/cart/application/dto/update-cart-item
 import { CreateCartItemPolicyHandler } from '@module/cart/application/policy/cart-item/create-cart-item.policy-handler';
 import { DeleteCartItemPolicyHandler } from '@module/cart/application/policy/cart-item/delete-cart-item.policy-handler';
 import { UpdateCartItemPolicyHandler } from '@module/cart/application/policy/cart-item/update-cart-item.policy-handler';
+import { ReadAllCartPolicyHandler } from '@module/cart/application/policy/cart/read-all-cart.policy-handler';
 import { ReadCartPolicyHandler } from '@module/cart/application/policy/cart/read-cart.policy-handler';
 import { CartCrudUseCase } from '@module/cart/application/use-cases/cart-crud.use-case';
 import { CreateCartItemUseCase } from '@module/cart/application/use-cases/create-cart-item.use-case';
@@ -49,7 +50,7 @@ export class CartController {
   ) {}
 
   @Get()
-  @Policies(ReadCartPolicyHandler)
+  @Policies(ReadAllCartPolicyHandler)
   @GetAllSwaggerDecorator(
     CartDto,
     CartFilterQueryParamsDto,
@@ -77,14 +78,6 @@ export class CartController {
     return this.getActiveCartUseCase.execute(user.id);
   }
 
-  @Get(':id')
-  @Policies(ReadCartPolicyHandler)
-  async getOneByIdOrFail(
-    @Param('id') id: string,
-  ): Promise<OneSerializedResponseDto<CartDto>> {
-    return this.crudUseCase.getOneByIdOrFail(id);
-  }
-
   @Post('item')
   @Policies(CreateCartItemPolicyHandler)
   async createCartItem(
@@ -94,7 +87,7 @@ export class CartController {
     return this.createCartItemUseCase.execute(user.id, createDto);
   }
 
-  @Patch(':id')
+  @Patch('item/:id')
   @Policies(UpdateCartItemPolicyHandler)
   async updateCartItem(
     @Param('id') id: string,
