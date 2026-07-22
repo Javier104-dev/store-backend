@@ -1,0 +1,20 @@
+entity: User
+items:
+  admin:
+    externalId: 00000000-0000-0000-0000-00000000000A
+    username: admin
+    email: _test_admin@biggertech.co
+    roles: ["admin"]
+    isVerified: true
+  regular:
+    externalId: 00000000-0000-0000-0000-00000000000B
+    username: regular
+    email: _test_regular@biggertech.co
+    roles: ["regular"]
+    isVerified: true
+  regular2:
+    externalId: 00000000-0000-0000-0000-00000000000C
+    username: regular2
+    email: _test_regular2@biggertech.co
+    roles: ["regular"]
+    isVerified: true

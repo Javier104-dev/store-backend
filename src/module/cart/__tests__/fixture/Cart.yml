@@ -1,0 +1,10 @@
+entity: Cart
+items:
+  cart1:
+    id: '0a5ef826-f9d6-4bf0-8d3e-6304db80c6d7'
+    status: 'active'
+    user: '@regular'
+  cart2:
+    id: 'f7fef0ab-4b9e-46bb-b95d-82d9b0d2c5a8'
+    status: 'completed'
+    user: '@regular2'
