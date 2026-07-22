@@ -3,6 +3,7 @@ import { CartMapper } from '@module/cart/application/mapper/cart.mapper';
 import { CreateCartItemPolicyHandler } from '@module/cart/application/policy/cart-item/create-cart-item.policy-handler';
 import { DeleteCartItemPolicyHandler } from '@module/cart/application/policy/cart-item/delete-cart-item.policy-handler';
 import { UpdateCartItemPolicyHandler } from '@module/cart/application/policy/cart-item/update-cart-item.policy-handler';
+import { ReadAllCartPolicyHandler } from '@module/cart/application/policy/cart/read-all-cart.policy-handler';
 import { ReadCartPolicyHandler } from '@module/cart/application/policy/cart/read-cart.policy-handler';
 import { CART_ITEM_REPOSITORY_KEY } from '@module/cart/application/repository/cart-item.repository.interface';
 import { CART_REPOSITORY_KEY } from '@module/cart/application/repository/cart.repository.interface';
@@ -28,6 +29,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 const policyHandlersProviders = [
   ReadCartPolicyHandler,
+  ReadAllCartPolicyHandler,
   CreateCartItemPolicyHandler,
   UpdateCartItemPolicyHandler,
   DeleteCartItemPolicyHandler,

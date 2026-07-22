@@ -4,4 +4,5 @@ export enum AppAction {
   Create = 'create',
   Update = 'update',
   Delete = 'delete',
+  ReadAll = 'read-all',
 }

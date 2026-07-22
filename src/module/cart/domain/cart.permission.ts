@@ -8,4 +8,7 @@ export const cartPermissions: IPermissionsDefinition = {
     can(AppAction.Read, Cart);
     can(AppAction.Manage, CartItem);
   },
+  admin(_, { can }) {
+    can(AppAction.ReadAll, Cart);
+  },
 };

@@ -9,7 +9,7 @@ import { AppAction } from '@module/iam/authorization/domain/app-action.enum';
 import { IPolicyHandler } from '@module/iam/authorization/infrastructure/policy/handler/policy-handler.interface';
 import { PolicyHandlerStorage } from '@module/iam/authorization/infrastructure/policy/storage/policies-handler.storage';
 import { User } from '@module/iam/user/domain/user.entity';
-import { Inject, Injectable } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
 import { Request } from 'express';
 
 @Injectable()
@@ -36,7 +36,7 @@ export class DeleteCartItemPolicyHandler implements IPolicyHandler {
     );
 
     if (!isAllowed) {
-      throw new Error(
+      throw new ForbiddenException(
         `You are not allowed to ${this.action.toUpperCase()} this resource`,
       );
     }
