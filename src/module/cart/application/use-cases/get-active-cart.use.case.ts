@@ -21,10 +21,14 @@ export class GetActiveCartUseCase {
     const cart = await this.cartService.getActiveCartByUserId(userId);
 
     if (!cart) {
-      return this.responseAdapter.oneEntityResponse(Cart.getEntityName(), {
-        id: null,
-        items: [],
-      });
+      return this.responseAdapter.oneEntityResponse(
+        Cart.getEntityName(),
+        {
+          id: null,
+          items: [],
+        },
+        { items: true },
+      );
     }
 
     return this.responseAdapter.oneEntityResponse(

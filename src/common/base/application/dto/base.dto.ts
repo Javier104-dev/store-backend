@@ -27,6 +27,17 @@ export function getDtoProperties<T extends object>(
   return Array.from(new Set(properties));
 }
 
+export function DtoRelationProperty<T extends object>(
+  target: T,
+  propertyKey: string,
+) {
+  const DTO_RELATIONS_KEY = `${target.constructor.name}_RELATIONS`;
+  const relations: string[] =
+    Reflect.getMetadata(DTO_RELATIONS_KEY, target.constructor) || [];
+  relations.push(propertyKey);
+  Reflect.defineMetadata(DTO_RELATIONS_KEY, relations, target.constructor);
+}
+
 export abstract class BaseDto implements IDto {
   @DtoProperty
   @IsString()

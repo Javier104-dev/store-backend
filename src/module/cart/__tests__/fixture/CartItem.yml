@@ -1,0 +1,14 @@
+entity: CartItem
+items:
+  cartItem1:
+    id: '91d4c3a8-5f76-4a12-b0f4-7e2d8b1f9c65'
+    quantity: 10
+    unitPrice: 100
+    cart: '@cart1'
+    product: '@product1'
+  cartItem2:
+    id: '2b8f9d41-6c3a-4e95-9f27-18d6a4c5e3b0'
+    quantity: 1
+    unitPrice: 200
+    cart: '@cart1'
+    product: '@product2'

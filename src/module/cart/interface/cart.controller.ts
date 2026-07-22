@@ -4,12 +4,19 @@ import { CreateCartItemDto } from '@module/cart/application/dto/create-cart-item
 import { CartFieldsQueryParamsDto } from '@module/cart/application/dto/query-param/cart-fields-query-params.dto';
 import { CartFilterQueryParamsDto } from '@module/cart/application/dto/query-param/cart-filter-query-params.dto';
 import { UpdateCartItemDto } from '@module/cart/application/dto/update-cart-item.dto';
+import { CreateCartItemPolicyHandler } from '@module/cart/application/policy/cart-item/create-cart-item.policy-handler';
+import { DeleteCartItemPolicyHandler } from '@module/cart/application/policy/cart-item/delete-cart-item.policy-handler';
+import { UpdateCartItemPolicyHandler } from '@module/cart/application/policy/cart-item/update-cart-item.policy-handler';
+import { ReadAllCartPolicyHandler } from '@module/cart/application/policy/cart/read-all-cart.policy-handler';
+import { ReadCartPolicyHandler } from '@module/cart/application/policy/cart/read-cart.policy-handler';
 import { CartCrudUseCase } from '@module/cart/application/use-cases/cart-crud.use-case';
 import { CreateCartItemUseCase } from '@module/cart/application/use-cases/create-cart-item.use-case';
 import { DeleteCartItemUseCase } from '@module/cart/application/use-cases/delete-cart-item.use-case';
 import { GetActiveCartUseCase } from '@module/cart/application/use-cases/get-active-cart.use.case';
 import { UpdateCartItemtUseCase } from '@module/cart/application/use-cases/update-cart-item.use-case';
 import { CurrentUser } from '@module/iam/authentication/infrastructure/decorator/current-user.decorator';
+import { Policies } from '@module/iam/authorization/infrastructure/policy/decorator/policy.decorator';
+import { PolicyGuard } from '@module/iam/authorization/infrastructure/policy/guard/policy.guard';
 import { User } from '@module/iam/user/domain/user.entity';
 import {
   Body,
@@ -20,6 +27,7 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -30,6 +38,7 @@ import { SortOptions } from '@common/base/get-all-options.interface';
 import { GetAllSwaggerDecorator } from '@common/base/interface/getAllSwaggerDecorator';
 
 @Controller('cart')
+@UseGuards(PolicyGuard)
 @ApiTags('cart')
 export class CartController {
   constructor(
@@ -41,6 +50,7 @@ export class CartController {
   ) {}
 
   @Get()
+  @Policies(ReadAllCartPolicyHandler)
   @GetAllSwaggerDecorator(
     CartDto,
     CartFilterQueryParamsDto,
@@ -61,20 +71,15 @@ export class CartController {
   }
 
   @Get('user')
+  @Policies(ReadCartPolicyHandler)
   async getActiveCart(
     @CurrentUser() user: User,
   ): Promise<OneSerializedResponseDto<CartDto>> {
     return this.getActiveCartUseCase.execute(user.id);
   }
 
-  @Get(':id')
-  async getOneByIdOrFail(
-    @Param('id') id: string,
-  ): Promise<OneSerializedResponseDto<CartDto>> {
-    return this.crudUseCase.getOneByIdOrFail(id);
-  }
-
   @Post('item')
+  @Policies(CreateCartItemPolicyHandler)
   async createCartItem(
     @CurrentUser() user: User,
     @Body() createDto: CreateCartItemDto,
@@ -82,7 +87,8 @@ export class CartController {
     return this.createCartItemUseCase.execute(user.id, createDto);
   }
 
-  @Patch(':id')
+  @Patch('item/:id')
+  @Policies(UpdateCartItemPolicyHandler)
   async updateCartItem(
     @Param('id') id: string,
     @Body() updateDto: UpdateCartItemDto,
@@ -92,6 +98,7 @@ export class CartController {
   }
 
   @Delete('item/:id')
+  @Policies(DeleteCartItemPolicyHandler)
   async deleteCartItem(
     @CurrentUser() user: User,
     @Param('id') id: string,
