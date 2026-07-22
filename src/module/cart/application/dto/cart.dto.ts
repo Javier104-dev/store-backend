@@ -3,7 +3,11 @@ import { CART_STATUS, CartStatus } from '@module/cart/domain/cart-status';
 import { UserDto } from '@module/iam/user/application/dto/user.dto';
 import { IsIn, IsOptional } from 'class-validator';
 
-import { BaseDto, DtoProperty } from '@common/base/application/dto/base.dto';
+import {
+  BaseDto,
+  DtoProperty,
+  DtoRelationProperty,
+} from '@common/base/application/dto/base.dto';
 
 export class CartDto extends BaseDto {
   @DtoProperty
@@ -11,11 +15,11 @@ export class CartDto extends BaseDto {
   @IsIn(Object.values(CART_STATUS))
   status?: CartStatus;
 
-  @DtoProperty
+  @DtoRelationProperty
   @IsOptional()
   user?: UserDto;
 
-  @DtoProperty
+  @DtoRelationProperty
   @IsOptional()
   items?: CartItemDto[];
 }

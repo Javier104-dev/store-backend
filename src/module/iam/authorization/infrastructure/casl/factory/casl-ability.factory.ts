@@ -21,7 +21,7 @@ export class CaslAbilityFactory {
     const builder = new AbilityBuilder<AppAbility>(createMongoAbility);
 
     user.roles.forEach((role) => {
-      this.permissions[role](user, builder);
+      this.permissions[role]?.(user, builder);
     });
 
     return builder.build({
