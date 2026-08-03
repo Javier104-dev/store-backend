@@ -1,7 +1,6 @@
 # Geek Shop API
 
-REST API for a geek products store. Handles product, category and store management
-with role-based authentication for regular users and store owners (admin).
+REST API for a geek products store. Handles product, category, store and shopping cart management with role-based authentication for regular users and store owners (admin).
 
 ## ⚡ Quick Start
 
@@ -140,6 +139,7 @@ Swagger UI available at `http://localhost:3001/api`
 | `products`   | Product management (CRUD)                                                                 |
 | `catalog`    | Orchestrates stores, categories and products to avoid circular dependencies               |
 | `upload`     | Image upload handling via AWS S3                                                          |
+| `cart`       | Shopping cart management, including cart items (CRUD)                                     |
 
 ### Authorization
 
