@@ -15,7 +15,7 @@ export class StoreService {
   constructor(
     @Inject(STORE_REPOSITORY_KEY)
     protected readonly repository: IStoreRepository,
-    protected readonly storeMapper: StoreMapper,
+    private readonly storeMapper: StoreMapper,
   ) {}
 
   async createStore(createDto: CreateStoreDto, user: User): Promise<Store> {
