@@ -81,7 +81,12 @@ export class UserService {
     return this.mapper.fromEntity<UserDto>(savedUser);
   }
 
-  async getUserByIdOrFail(id: string) {
+  async getUserByIdOrFail(id: string): Promise<UserDto> {
+    const user = await this.getUserEntityByIdOrFail(id);
+    return this.mapper.fromEntity<UserDto>(user);
+  }
+
+  async getUserEntityByIdOrFail(id: string): Promise<User> {
     const user = await this.repository.getUserById(id);
 
     if (!user) {
@@ -90,6 +95,6 @@ export class UserService {
       });
     }
 
-    return this.mapper.fromEntity<UserDto>(user);
+    return user;
   }
 }
