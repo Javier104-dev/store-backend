@@ -1,6 +1,6 @@
 export const CART_STATUS = {
   ACTIVE: 'active',
-  CONVERTED: 'completed',
+  COMPLETED: 'completed',
   ABANDONED: 'abandoned',
 } as const;
 

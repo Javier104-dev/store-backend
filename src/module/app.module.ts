@@ -10,6 +10,8 @@ import { GenreModule } from '@module/genre/genre.module';
 import { HealthController } from '@module/health/interface/health.controller';
 import { AuthenticationModule } from '@module/iam/authentication/authentication.module';
 import { IamModule } from '@module/iam/iam.module';
+import { OrderModule } from '@module/order/order.module';
+import { PaymentModule } from '@module/payment/payment.module';
 import { ProductModule } from '@module/product/product.module';
 import { StoreModule } from '@module/store/store.module';
 import { UploadModule } from '@module/upload/upload.module';
@@ -55,6 +57,8 @@ import { datasourceOptions } from '@config/orm.config';
     AwsModule,
     UploadModule,
     CartModule,
+    PaymentModule,
+    OrderModule,
   ],
   providers: [
     AppService,

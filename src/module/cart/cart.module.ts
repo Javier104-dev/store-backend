@@ -8,6 +8,7 @@ import { ReadCartPolicyHandler } from '@module/cart/application/policy/cart/read
 import { CART_ITEM_REPOSITORY_KEY } from '@module/cart/application/repository/cart-item.repository.interface';
 import { CART_REPOSITORY_KEY } from '@module/cart/application/repository/cart.repository.interface';
 import { CartItemService } from '@module/cart/application/service/cart-item.service';
+import { CartPricingService } from '@module/cart/application/service/cart-pricing.service';
 import { CartService } from '@module/cart/application/service/cart.service';
 import { CartCrudUseCase } from '@module/cart/application/use-cases/cart-crud.use-case';
 import { CreateCartItemUseCase } from '@module/cart/application/use-cases/create-cart-item.use-case';
@@ -62,6 +63,7 @@ const cartItemRepositoryProvider: Provider = {
     UpdateCartItemtUseCase,
     CreateCartItemUseCase,
     DeleteCartItemUseCase,
+    CartPricingService,
     cartRepositoryProvider,
     cartItemRepositoryProvider,
     CartMapper,
@@ -70,5 +72,6 @@ const cartItemRepositoryProvider: Provider = {
     CartItemService,
     ...policyHandlersProviders,
   ],
+  exports: [CartService, CartPricingService],
 })
 export class CartModule {}
