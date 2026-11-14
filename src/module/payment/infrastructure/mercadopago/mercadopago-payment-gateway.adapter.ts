@@ -1,4 +1,6 @@
 import { OrderItem } from '@module/order/domain/order-item.interface';
+import { CreateOrderResult } from '@module/payment/infrastructure/dto/create-order-result.interface';
+import { OrderStatusResult } from '@module/payment/infrastructure/dto/order-status-result.interface';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import MercadoPagoConfig, { Order } from 'mercadopago';
@@ -19,7 +21,7 @@ export class MercadoPagoPaymentGatewayAdapter {
     externalReference: string,
     totalAmount: string,
     items: OrderItem[],
-  ): Promise<{ externalOrderId: string; checkoutUrl: string }> {
+  ): Promise<CreateOrderResult> {
     const order = await this.client.create({
       body: {
         type: 'online',
@@ -43,11 +45,7 @@ export class MercadoPagoPaymentGatewayAdapter {
     };
   }
 
-  async getOrderStatus(orderId: string): Promise<{
-    status: string;
-    totalPaidAmount: string;
-    externalReference: string;
-  }> {
+  async getOrderStatus(orderId: string): Promise<OrderStatusResult> {
     const order = await this.client.get({ id: orderId });
 
     return {
