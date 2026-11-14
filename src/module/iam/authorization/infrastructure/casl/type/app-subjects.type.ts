@@ -6,6 +6,7 @@ import { Cart } from '@module/cart/domain/cart.entity';
 import { Category } from '@module/category/domain/category.entity';
 import { Genre } from '@module/genre/domain/genre.entity';
 import { User } from '@module/iam/user/domain/user.entity';
+import { Order } from '@module/order/domain/order.entity';
 import { Product } from '@module/product/domain/product.entity';
 import { Store } from '@module/store/domain/store.entity';
 
@@ -29,5 +30,7 @@ export type AppSubjects =
       | Cart
       | typeof CartItem
       | CartItem
+      | typeof Order
+      | Order
     >
   | 'all';

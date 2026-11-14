@@ -1,0 +1,9 @@
+import { AppAction } from '@module/iam/authorization/domain/app-action.enum';
+import { IPermissionsDefinition } from '@module/iam/authorization/infrastructure/policy/type/permissions-definition.interface';
+import { Order } from '@module/order/domain/order.entity';
+
+export const paymentPermissions: IPermissionsDefinition = {
+  regular(_, { can }) {
+    can(AppAction.Create, Order);
+  },
+};
